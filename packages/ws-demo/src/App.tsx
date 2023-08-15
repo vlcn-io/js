@@ -1,12 +1,20 @@
-import { CtxAsync, useCachedState, useQuery } from "@vlcn.io/react";
+import { useCachedState, useDB, useQuery, useSync } from "@vlcn.io/react";
 import "./App.css";
 import randomWords from "./support/randomWords.js";
 import { DBAsync } from "@vlcn.io/xplat-api";
+import workerUrl from "./worker.js?url";
 
 type TestRecord = { id: string; name: string };
 const wordOptions = { exactly: 3, join: " " };
 
-function App({ ctx }: { ctx: CtxAsync }) {
+function App({ dbname }: { dbname: string }) {
+  useSync({
+    dbname,
+    endpoint: "ws://localhost:8080/sync",
+    room: dbname,
+    workerUrl,
+  });
+  const ctx = useDB(dbname);
   const data = useQuery<TestRecord>(
     ctx,
     "SELECT * FROM test ORDER BY id DESC"

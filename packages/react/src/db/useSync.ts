@@ -3,8 +3,8 @@ import { useEffect } from "react";
 
 // hook to start syncing a DB
 export type Options = {
-  localDbName: string;
-  url: string;
+  dbname: string;
+  endpoint: string;
   room: string;
   workerUrl: string;
   authToken?: string;
@@ -12,21 +12,21 @@ export type Options = {
 
 export default function useSync({
   workerUrl,
-  localDbName,
+  dbname,
   room,
-  url,
+  endpoint,
   authToken,
 }: Options) {
   useEffect(() => {
     const worker = new WorkerInterface(workerUrl);
 
-    worker.startSync(localDbName, {
+    worker.startSync(dbname, {
       room: room,
-      url: url,
+      url: endpoint,
       authToken: authToken,
     });
     return () => {
-      worker.stopSync(localDbName);
+      worker.stopSync(dbname);
     };
-  }, [localDbName, room, url, workerUrl]);
+  }, [dbname, room, endpoint, workerUrl]);
 }
