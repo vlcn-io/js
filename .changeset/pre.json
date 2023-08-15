@@ -25,10 +25,12 @@
     "@vlcn.io/xplat-api": "0.13.0",
     "@vlcn.io/xplat-tests": "0.12.0",
     "@vlcn.io/tsbuild-all": "0.12.0",
-    "@vlcn.io/py-correctness": "0.12.0"
+    "@vlcn.io/py-correctness": "0.12.0",
+    "@vlcn.io/id": "0.0.1"
   },
   "changesets": [
     "clever-ligers-press",
+    "strange-pumpkins-wait",
     "witty-frogs-wink"
   ]
 }
