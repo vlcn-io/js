@@ -61,20 +61,7 @@ function TodoList() {
 
 ## Sync
 
-```ts
-import tblrx from "@vlcn.io/rx-tbl";
-import startSync from "@vlcn.io/client-websocket";
-
-const rx = tblrx(db);
-const sync = await startSync(`ws://${window.location.hostname}:8080/sync`, {
-  localDb: db,
-  remoteDbId: dbid,
-  create: {
-    schemaName: "todo-mvc",
-  },
-  rx,
-});
-```
+See official docs or the `vite-starter` 
 
 # Packages
 
@@ -85,8 +72,10 @@ const sync = await startSync(`ws://${window.location.hostname}:8080/sync`, {
 
 ## Sync
 
-- [client-websocket](./packages/client-websocket): Websocket client to sync the browser's database to a database hosted on a websocket server.
-- [server-websocket](./packages/server-websocket): Websocket server implementation.
+- [client-websocket](./packages/ws-client): Websocket client to sync the browser's database to a database hosted on a websocket server.
+- [server-websocket](./packages/ws-server): Websocket server implementation.
+- [Websocket Demo](./packages/ws-demo)
+- HTTP GET & Server Sent Events: https://github.com/vlcn-io/vite-starter
 - p2p: A peer to peer networking implementation, based on webrtc
 
 ## UI
