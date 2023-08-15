@@ -1,40 +1,57 @@
-import { WorkerInterface } from "@vlcn.io/ws-client";
-import workerUrl from "@vlcn.io/ws-client/worker.js?url";
-import initWasm, { SQLite3 } from "@vlcn.io/crsqlite-wasm";
-import wasmUrl from "@vlcn.io/crsqlite-wasm/crsqlite.wasm?url";
 import schemaContent from "./schemas/main.sql?raw";
 import ReactDOM from "react-dom/client";
-import tblx from "@vlcn.io/rx-tbl";
 import App from "./App.js";
 import "./index.css";
+import { DBProvider } from "@vlcn.io/react";
 
-initWasm(() => wasmUrl).then(startApp);
+const hash = parseHash();
+const room = getRoomId(hash);
+if (room != hash.room) {
+  hash.room = room;
+  window.location.hash = writeHash(hash);
+}
+localStorage.setItem("room", room);
 
-async function startApp(sqlite: SQLite3) {
-  console.log("start app");
-  const db = await sqlite.open("some-db");
-  await db.automigrateTo("main.sql", schemaContent);
-  await startSync();
-  const rx = tblx(db);
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+  <DBProvider
+    dbname={room}
+    schema={{
+      name: "main.sql",
+      content: schemaContent,
+    }}
+  >
+    <App dbname={room} />
+  </DBProvider>
+);
 
-  const ctx = {
-    db,
-    rx,
-  };
+type HashBag = { [key: string]: string };
+function parseHash(): HashBag {
+  const hash = window.location.hash;
+  const ret: { [key: string]: string } = {};
+  if (hash.length > 1) {
+    const substr = hash.substring(1);
+    const parts = substr.split(",");
+    for (const part of parts) {
+      const [key, value] = part.split("=");
+      ret[key] = value;
+    }
+  }
 
-  ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-    <App ctx={ctx} />
-  );
+  return ret;
 }
 
-async function startSync() {
-  const worker = new WorkerInterface(
-    import.meta.env.DEV ? workerUrl : undefined
-  );
+function writeHash(hash: HashBag) {
+  const parts = [];
+  for (const key in hash) {
+    parts.push(`${key}=${hash[key]}`);
+  }
+  return parts.join(",");
+}
 
-  // Kicks off sync in a webworker.
-  worker.startSync("some-db", {
-    room: "some-room",
-    url: "ws://localhost:8080/sync",
-  });
+function getRoomId(hash: HashBag): string {
+  return (
+    hash.room ||
+    localStorage.getItem("room") ||
+    crypto.randomUUID().replaceAll("-", "")
+  );
 }
