@@ -1,28 +1,16 @@
 import { TransporOptions } from "../transport/Transport.js";
 import { DBID } from "../types.js";
-import { ConfigureMsg, StartSyncMsg, StopSyncMsg } from "./workerMsgTypes.js";
+import { StartSyncMsg, StopSyncMsg } from "./workerMsgTypes.js";
 
 export default class WorkerInterface {
   readonly #worker;
   readonly #syncs = new Set<DBID>();
 
-  constructor(configUri: string, workerUri?: string) {
-    if (workerUri) {
-      this.#worker = new Worker(workerUri, {
-        type: "module",
-        name: "ws-sync",
-      });
-    } else {
-      this.#worker = new Worker(new URL("./worker.js", import.meta.url), {
-        type: "module",
-        name: "ws-sync",
-      });
-    }
-
-    this.#worker.postMessage({
-      _tag: "Configure",
-      configModule: configUri,
-    } satisfies ConfigureMsg);
+  constructor(workerUri: string) {
+    this.#worker = new Worker(workerUri, {
+      type: "module",
+      name: "ws-sync",
+    });
   }
 
   startSync(dbid: DBID, transportOpts: TransporOptions) {

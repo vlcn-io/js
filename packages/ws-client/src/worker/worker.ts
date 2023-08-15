@@ -1,33 +1,21 @@
 import { Msg } from "./workerMsgTypes.js";
 import SyncService from "./SyncService.js";
+import { Config } from "../config.js";
 
-let syncSvcResolver: (svc: SyncService) => void;
-let svcPromise: Promise<SyncService> = new Promise((resolve, reject) => {
-  syncSvcResolver = resolve;
-});
+export function start(config: Config) {
+  const svc = new SyncService(config);
+  self.onmessage = (e: MessageEvent<Msg>) => {
+    const msg = e.data;
 
-self.onmessage = (e: MessageEvent<Msg>) => {
-  const msg = e.data;
-
-  switch (msg._tag) {
-    case "Configure": {
-      // TODO
-      import(msg.configModule /* @vite-ignore */).then((module) => {
-        syncSvcResolver(new SyncService(module.config));
-      });
-      break;
-    }
-    case "StartSync": {
-      // update the promise so `StopSync` is guaranteed to be called after `StartSync`
-      svcPromise = svcPromise.then((svc) => {
+    switch (msg._tag) {
+      case "StartSync": {
         svc.startSync(msg);
-        return svc;
-      });
-      break;
+        break;
+      }
+      case "StopSync": {
+        svc.stopSync(msg);
+        break;
+      }
     }
-    case "StopSync": {
-      svcPromise.then((svc) => svc.stopSync(msg));
-      break;
-    }
-  }
-};
+  };
+}
