@@ -6,4 +6,4 @@
 	url = https://github.com/vlcn-io/wa-sqlite.git
 [submodule "deps/cr-sqlite"]
 	path = deps/cr-sqlite
-	url = https://github.com/vlcn-io/cr-sqlite
+	url = https://github.com/vlcn-io/js

@@ -13,6 +13,5 @@ Builds upon https://github.com/rhashimoto/wa-sqlite/. The only delta is that we 
 # Examples
 
 - [Observable Notebook](https://observablehq.com/@tantaman/cr-sqlite-basic-setup)
-- [Working TODO MVC](https://github.com/vlcn-io/cr-sqlite/tree/main/js/examples/p2p-todomvc)
+- [Working TODO MVC](https://github.com/vlcn-io/js/tree/main/js/examples/p2p-todomvc)
 - [WIP Local-First Presentation Editor](https://github.com/tantaman/strut)
-

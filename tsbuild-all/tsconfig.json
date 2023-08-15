@@ -20,6 +20,7 @@
     { "path": "../packages/ws-server" },
     { "path": "../packages/ws-common" },
     { "path": "../packages/ws-client" },
-    { "path": "../packages/ws-browserdb" }
+    { "path": "../packages/ws-browserdb" },
+    { "path": "../packages/id" }
   ]
 }

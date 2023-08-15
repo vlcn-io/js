@@ -26,8 +26,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:vlcn-io/cr-sqlite.git",
-    "directory": "https://github.com/vlcn-io/cr-sqlite/tree/main/js/packages/direct-connect-browser"
+    "url": "git@github.com:vlcn-io/js.git",
+    "directory": "https://github.com/vlcn-io/js/tree/main/js/packages/direct-connect-browser"
   },
   "dependencies": {
     "@vlcn.io/crsqlite-wasm": "workspace:*",
