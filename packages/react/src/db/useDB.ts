@@ -1,6 +1,6 @@
-import dbFactory, { DBID } from "./DBFactory.js";
+import dbFactory from "./DBFactory.js";
 import { CtxAsync } from "../context.js";
 
-export default function useDB(dbid: DBID): CtxAsync {
-  return dbFactory.getHook(dbid)!()!;
+export default function useDB(dbname: string): CtxAsync {
+  return dbFactory.getHook(dbname)!()!;
 }
