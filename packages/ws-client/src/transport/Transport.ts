@@ -8,6 +8,7 @@ import {
 export type TransporOptions = {
   url: string;
   room: string;
+  authToken?: string;
 };
 
 export interface Transport {

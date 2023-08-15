@@ -40,7 +40,11 @@ export default class WebSocketTransport implements Transport {
     }
 
     const socket = new WebSocket(options.url, [
-      btoa(`room=${options.room}`).replaceAll("=", ""),
+      btoa(
+        `${options.authToken != null ? `auth=${options.authToken},` : ""}room=${
+          options.room
+        }`
+      ).replaceAll("=", ""),
     ]);
     socket.binaryType = "arraybuffer";
 
