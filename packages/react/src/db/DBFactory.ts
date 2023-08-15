@@ -1,4 +1,3 @@
-import { WorkerInterface } from "@vlcn.io/direct-connect-browser";
 import initWasm, { SQLite3 } from "@vlcn.io/crsqlite-wasm";
 import tblrx from "@vlcn.io/rx-tbl";
 import { CtxAsync } from "../context.js";
@@ -6,22 +5,12 @@ import { CtxAsync } from "../context.js";
 // TODO: xplat-api new pkg has these types
 export type DBID = string;
 export type Schema = {
-  namespace: string;
   name: string;
-  active: boolean;
   content: string;
 };
 
 const dbMap = new Map<DBID, Promise<CtxAsync>>();
 const hooks = new Map<DBID, () => CtxAsync | null>();
-
-export type SyncEdnpoints = {
-  createOrMigrate: URL;
-  applyChanges: URL;
-  startOutboundStream: URL;
-  worker?: string;
-  wasm?: string;
-};
 
 let initPromise: Promise<SQLite3> | null = null;
 function init(wasmUri?: string) {
@@ -34,48 +23,41 @@ function init(wasmUri?: string) {
 }
 
 const dbFactory = {
-  async get(
-    dbid: DBID,
-    schema: Schema,
-    endpoints: SyncEdnpoints,
-    hook?: () => CtxAsync | null
-  ) {
+  async get(dbname: string, schema: Schema, hook?: () => CtxAsync | null) {
     if (hook) {
-      hooks.set(dbid, hook);
+      hooks.set(dbname, hook);
     }
-    if (dbMap.has(dbid)) {
-      return await dbMap.get(dbid)!;
+    if (dbMap.has(dbname)) {
+      return await dbMap.get(dbname)!;
     }
 
     const entry = (async () => {
-      const sqlite = await init(endpoints.wasm);
-      const db = await sqlite.open(dbid);
+      const sqlite = await init();
+      const db = await sqlite.open(dbname);
       await db.automigrateTo(schema.name, schema.content);
       const rx = tblrx(db);
-      const syncWorker = new WorkerInterface(endpoints.worker);
-      syncWorker.startSync(endpoints.wasm, dbid as any, endpoints);
       return {
         db,
         rx,
       };
     })();
-    dbMap.set(dbid, entry);
+    dbMap.set(dbname, entry);
 
     return await entry;
   },
 
-  async closeAndRemove(dbid: DBID) {
-    const db = await dbMap.get(dbid);
-    hooks.delete(dbid);
+  async closeAndRemove(dbname: string) {
+    const db = await dbMap.get(dbname);
+    hooks.delete(dbname);
     if (db) {
-      dbMap.delete(dbid);
+      dbMap.delete(dbname);
       db.rx.dispose();
       await db.db.close();
     }
   },
 
-  getHook(dbid: DBID) {
-    return hooks.get(dbid);
+  getHook(dbname: string) {
+    return hooks.get(dbname);
   },
 } as const;
 

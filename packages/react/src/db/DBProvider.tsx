@@ -1,38 +1,33 @@
-/**
- * Constructs the MetaDB and provides it to children.
- *
- * Suspensy?
- */
+// Just provide a DB.
+// Do not do any sync. Sync can be configured separately.
+// no wasm url.. that optimize deps thinger
+
 import react, { useEffect, useRef, useState } from "react";
-import { createContext } from "./DBContext.js";
-import dbFactory, { Schema, DBID, SyncEdnpoints } from "./DBFactory.js";
+import dbFactory, { Schema } from "./DBFactory.js";
 import { CtxAsync } from "../context.js";
+import { createContext } from "./DBContext.js";
 
 export default function DBProvider({
-  dbid,
-  children,
+  dbname,
   schema,
-  endpoints,
+  children,
 }: {
-  dbid: DBID;
+  dbname: string;
   schema: Schema;
   children: react.ReactNode;
-  endpoints: SyncEdnpoints;
 }) {
   const contextRef = useRef(createContext());
   const [dbRef, setDbRef] = useState<CtxAsync | null>(null);
   useEffect(() => {
-    dbFactory
-      .get(dbid, schema, endpoints, contextRef.current.useDb)
-      .then((db) => {
-        setDbRef(db);
-      });
+    dbFactory.get(dbname, schema, contextRef.current.useDb).then((db) => {
+      setDbRef(db);
+    });
     return () => {
-      dbFactory.closeAndRemove(dbid);
+      dbFactory.closeAndRemove(dbname);
     };
-  }, [dbid, schema, contextRef.current.useDb]);
+  }, [dbname, schema, contextRef.current.useDb]);
   if (dbRef === null) {
-    return <div>Creating DB {dbid}</div>;
+    return <div>Creating DB {dbname}</div>;
   }
   return (
     <DbAvailable ctx={dbRef} DBContext={contextRef.current.DBContext}>
