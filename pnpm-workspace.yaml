@@ -20,5 +20,6 @@ packages:
   - "packages/xplat-tests"
   - "packages/sandbox"
   - "packages/sandbox-node"
+  - "packages/id"
   - "tsbuild-all"
   - "deps/wa-sqlite"

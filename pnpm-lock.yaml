@@ -191,6 +191,16 @@ importers:
         specifier: ^0.30.1
         version: 0.30.1
 
+  packages/id:
+    dependencies:
+      react:
+        specifier: ^18
+        version: 18.2.0
+    devDependencies:
+      vitest:
+        specifier: ^0.30.1
+        version: 0.30.1
+
   packages/node-allinone:
     dependencies:
       '@vlcn.io/crsqlite':

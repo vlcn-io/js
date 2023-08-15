@@ -61,13 +61,13 @@ function TodoList() {
 
 ## Sync
 
-See official docs or the `vite-starter` 
+See official docs or the `vite-starter`
 
 # Packages
 
 ## Storage
 
-- [crsqlite](https://github.com/vlcn-io/cr-sqlite): The cr-sqlite loadable extension for use in NodeJS/Deno/Bun. Can be used with the SQLite bindings you currently use.
+- [crsqlite](https://github.com/vlcn-io/js): The cr-sqlite loadable extension for use in NodeJS/Deno/Bun. Can be used with the SQLite bindings you currently use.
 - [crsqlite-wasm](./packages/crsqlite-wasm): WASM build of CR-SQLite & SQLite for use in the browser.
 
 ## Sync

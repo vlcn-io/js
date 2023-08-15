@@ -17,8 +17,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:vlcn-io/cr-sqlite.git",
-    "directory": "https://github.com/vlcn-io/cr-sqlite/tree/main/js/packages/ws-browserdb"
+    "url": "git@github.com:vlcn-io/js.git",
+    "directory": "https://github.com/vlcn-io/js/tree/main/js/packages/ws-browserdb"
   },
   "dependencies": {
     "@types/throttle-debounce": "^5.0.0",
