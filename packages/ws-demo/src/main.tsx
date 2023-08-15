@@ -1,6 +1,5 @@
 import { WorkerInterface } from "@vlcn.io/ws-client";
 import workerUrl from "@vlcn.io/ws-client/worker.js?url";
-import syncConfigUrl from "./syncConfig.js?url";
 import initWasm, { SQLite3 } from "@vlcn.io/crsqlite-wasm";
 import wasmUrl from "@vlcn.io/crsqlite-wasm/crsqlite.wasm?url";
 import schemaContent from "./schemas/main.sql?raw";
@@ -30,7 +29,6 @@ async function startApp(sqlite: SQLite3) {
 
 async function startSync() {
   const worker = new WorkerInterface(
-    syncConfigUrl,
     import.meta.env.DEV ? workerUrl : undefined
   );
 
