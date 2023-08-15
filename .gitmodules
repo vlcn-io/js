@@ -1,0 +1,6 @@
+[submodule "deps/emsdk"]
+	path = deps/emsdk
+	url = https://github.com/emscripten-core/emsdk.git
+[submodule "deps/wa-sqlite"]
+	path = deps/wa-sqlite
+	url = https://github.com/vlcn-io/wa-sqlite.git
