@@ -17,11 +17,11 @@ function App({ dbname }: { dbname: string }) {
   const ctx = useDB(dbname);
   const data = useQuery<TestRecord>(
     ctx,
-    "SELECT * FROM test ORDER BY id DESC"
+    `SELECT * FROM test ORDER BY id DESC`
   ).data;
 
   const addData = () => {
-    ctx.db.exec("INSERT INTO test (id, name) VALUES (?, ?);", [
+    ctx.db.exec(`INSERT INTO test (id, name) VALUES (?, ?);`, [
       nanoid(10),
       randomWords(wordOptions) as string,
     ]);
