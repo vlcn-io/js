@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App.js";
 import "./index.css";
 import { DBProvider } from "@vlcn.io/react";
+import React from "react";
 
 const hash = parseHash();
 const room = getRoomId(hash);
@@ -13,15 +14,17 @@ if (room != hash.room) {
 localStorage.setItem("room", room);
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <DBProvider
-    dbname={room}
-    schema={{
-      name: "main.sql",
-      content: schemaContent,
-    }}
-  >
-    <App dbname={room} />
-  </DBProvider>
+  <React.StrictMode>
+    <DBProvider
+      dbname={room}
+      schema={{
+        name: "main.sql",
+        content: schemaContent,
+      }}
+    >
+      <App dbname={room} />
+    </DBProvider>
+  </React.StrictMode>
 );
 
 type HashBag = { [key: string]: string };
