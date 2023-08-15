@@ -22,6 +22,7 @@ function init(wasmUri?: string) {
   return initPromise;
 }
 
+// TODO: serialize the DB factory because react concurrent mode bogusness
 const dbFactory = {
   async get(dbname: string, schema: Schema, hook?: () => CtxAsync | null) {
     if (hook) {
@@ -61,14 +62,15 @@ const dbFactory = {
     if (!entry) {
       return;
     }
-    const [_, promise] = entry;
-    const db = await promise;
     hooks.delete(dbname);
-    if (db) {
-      dbMap.delete(dbname);
+    dbMap.delete(dbname);
+    const [_, promise] = entry;
+    const newPromise = promise.then(async (db) => {
       db.rx.dispose();
       await db.db.close();
-    }
+      return db;
+    });
+    entry[1] = newPromise;
   },
 
   getHook(dbname: string) {
