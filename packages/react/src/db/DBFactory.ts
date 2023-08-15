@@ -9,7 +9,7 @@ export type Schema = {
   content: string;
 };
 
-const dbMap = new Map<DBID, Promise<CtxAsync>>();
+const dbMap = new Map<DBID, [string, Promise<CtxAsync>]>();
 const hooks = new Map<DBID, () => CtxAsync | null>();
 
 let initPromise: Promise<SQLite3> | null = null;
@@ -28,10 +28,20 @@ const dbFactory = {
       hooks.set(dbname, hook);
     }
     if (dbMap.has(dbname)) {
-      return await dbMap.get(dbname)!;
+      const entry = dbMap.get(dbname)!;
+      const [currentSchemaContent, promise] = entry;
+      if (currentSchemaContent !== schema.content) {
+        console.warn("Got a schema change. Automigrating.");
+        const newPromise = promise.then(async (ctx) => {
+          await ctx.db.automigrateTo(schema.name, schema.content);
+          return ctx;
+        });
+        entry[1] = newPromise;
+      }
+      return await promise;
     }
 
-    const entry = (async () => {
+    const promise = (async () => {
       const sqlite = await init();
       const db = await sqlite.open(dbname);
       await db.automigrateTo(schema.name, schema.content);
@@ -41,13 +51,18 @@ const dbFactory = {
         rx,
       };
     })();
-    dbMap.set(dbname, entry);
+    dbMap.set(dbname, [schema.content, promise]);
 
-    return await entry;
+    return await promise;
   },
 
   async closeAndRemove(dbname: string) {
-    const db = await dbMap.get(dbname);
+    const entry = dbMap.get(dbname);
+    if (!entry) {
+      return;
+    }
+    const [_, promise] = entry;
+    const db = await promise;
     hooks.delete(dbname);
     if (db) {
       dbMap.delete(dbname);

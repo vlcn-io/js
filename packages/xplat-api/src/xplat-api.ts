@@ -75,6 +75,10 @@ export interface DBAsync extends TXAsync {
     ) => void
   ): () => void;
   createFunction(name: string, fn: (...args: any) => unknown, opts?: {}): void;
+  automigrateTo(
+    schemaName: string,
+    schemaContent: string
+  ): Promise<"noop" | "apply" | "migrate">;
 }
 
 export interface Stmt {
