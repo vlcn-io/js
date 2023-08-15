@@ -1,5 +1,18 @@
 # @vlcn.io/ws-demo
 
+## 1.0.0-next.1
+
+### Major Changes
+
+- react hooks now use websocket sync, sync and db provider split
+
+### Patch Changes
+
+- Updated dependencies
+  - @vlcn.io/react@3.0.0-next.1
+  - @vlcn.io/ws-browserdb@0.1.0-next.1
+  - @vlcn.io/ws-client@0.1.0-next.13
+
 ## 0.1.0-next.0
 
 ### Minor Changes
