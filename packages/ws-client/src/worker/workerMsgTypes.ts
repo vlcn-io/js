@@ -2,7 +2,7 @@ import { Config } from "../config";
 import { TransporOptions } from "../transport/Transport";
 import { DBID } from "../types";
 
-export type Msg = StartSyncMsg | StopSyncMsg | ConfigureMsg;
+export type Msg = StartSyncMsg | StopSyncMsg;
 
 export type StartSyncMsg = {
   _tag: "StartSync";
@@ -13,9 +13,4 @@ export type StartSyncMsg = {
 export type StopSyncMsg = {
   _tag: "StopSync";
   dbid: DBID;
-};
-
-export type ConfigureMsg = {
-  _tag: "Configure";
-  configModule: string;
 };
