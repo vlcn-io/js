@@ -1,5 +1,5 @@
 packages:
-  - "deps/core"
+  - "deps/cr-sqlite/core"
   - "packages/browser-tests"
   - "packages/crsqlite-wasm"
   - "packages/node-allinone"
