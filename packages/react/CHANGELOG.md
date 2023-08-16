@@ -1,5 +1,13 @@
 # @vlcn.io/react
 
+## 3.0.0-next.5
+
+### Patch Changes
+
+- update react hooks to accept typed-sql typings
+- Updated dependencies
+  - @vlcn.io/typed-sql@0.2.7-next.0
+
 ## 3.0.0-next.4
 
 ### Patch Changes

@@ -26,13 +26,15 @@
     "@vlcn.io/xplat-tests": "0.12.0",
     "@vlcn.io/tsbuild-all": "0.12.0",
     "@vlcn.io/py-correctness": "0.12.0",
-    "@vlcn.io/id": "0.0.1"
+    "@vlcn.io/id": "0.0.1",
+    "@vlcn.io/typed-sql": "0.2.6"
   },
   "changesets": [
     "big-icons-join",
     "clever-ligers-press",
     "sharp-coats-push",
     "strange-pumpkins-wait",
+    "strong-cats-listen",
     "warm-roses-impress",
     "witty-frogs-wink"
   ]
