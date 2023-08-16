@@ -1,5 +1,11 @@
 # sandbox-node
 
+## 0.6.0-next.1
+
+### Patch Changes
+
+- rebuild
+
 ## 0.6.0-next.0
 
 ### Minor Changes

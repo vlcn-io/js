@@ -1,5 +1,11 @@
 # @vlcn.io/tsbuild-all
 
+## 0.13.0-next.1
+
+### Patch Changes
+
+- rebuild
+
 ## 0.13.0-next.0
 
 ### Minor Changes

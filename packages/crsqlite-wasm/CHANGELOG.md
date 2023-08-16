@@ -1,5 +1,14 @@
 # @vlcn.io/wa-crsqlite
 
+## 0.15.0-next.3
+
+### Patch Changes
+
+- rebuild
+- Updated dependencies
+  - @vlcn.io/wa-sqlite@0.21.0-next.1
+  - @vlcn.io/xplat-api@0.14.0-next.1
+
 ## 0.15.0-next.2
 
 ### Patch Changes
