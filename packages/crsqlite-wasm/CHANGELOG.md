@@ -1,5 +1,11 @@
 # @vlcn.io/wa-crsqlite
 
+## 0.15.0-next.2
+
+### Patch Changes
+
+- rebuild
+
 ## 0.15.0-next.1
 
 ### Patch Changes
