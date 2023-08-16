@@ -1,5 +1,13 @@
 # @vlcn.io/react
 
+## 3.0.0-next.2
+
+### Patch Changes
+
+- fixes for react strict mode
+- Updated dependencies
+  - @vlcn.io/crsqlite-wasm@0.15.0-next.1
+
 ## 3.0.0-next.1
 
 ### Major Changes

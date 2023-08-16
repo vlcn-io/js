@@ -29,6 +29,7 @@
     "@vlcn.io/id": "0.0.1"
   },
   "changesets": [
+    "big-icons-join",
     "clever-ligers-press",
     "strange-pumpkins-wait",
     "witty-frogs-wink"
