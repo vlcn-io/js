@@ -9,6 +9,7 @@ import {
 export { first, firstPick, pick } from "@vlcn.io/xplat-api";
 import { CtxAsync } from "./context.js";
 import { RowID } from "./rowid.js";
+import { Query } from "@vlcn.io/typed-sql";
 
 export type QueryData<T> = {
   readonly loading: boolean;
@@ -24,8 +25,6 @@ const EMPTY_ARRAY: readonly any[] = Object.freeze([]);
 // const log = console.log.bind(console);
 const log = (...args: any) => {};
 
-export type SQL<R> = string;
-
 const allUpdateTypes = [
   UPDATE_TYPE.INSERT,
   UPDATE_TYPE.UPDATE,
@@ -35,7 +34,7 @@ const allUpdateTypes = [
 export function usePointQuery<R, M = R>(
   ctx: CtxAsync,
   _rowid_: RowID<R>,
-  query: SQL<R>,
+  query: string,
   bindings?: any[],
   postProcess?: (rows: R[]) => M
 ): QueryData<M> {
@@ -51,7 +50,7 @@ export function usePointQuery<R, M = R>(
 
 export function useRangeQuery<R, M = R[]>(
   ctx: CtxAsync,
-  query: SQL<R>,
+  query: string,
   bindings?: any[],
   postProcess?: (rows: R[]) => M
 ) {
@@ -63,7 +62,7 @@ export function useRangeQuery<R, M = R[]>(
 
 export function useQuery<R, M = R[]>(
   ctx: CtxAsync,
-  query: SQL<R>,
+  query: string,
   bindings?: any[],
   postProcess?: (rows: R[]) => M,
   updateTypes: UpdateType[] = allUpdateTypes,
@@ -109,6 +108,17 @@ export function useQuery<R, M = R[]>(
     stateMachine.current.subscribeReactInternals,
     stateMachine.current.getSnapshot
   );
+}
+
+export function useQuery2<R, M = R[]>(
+  ctx: CtxAsync,
+  query: Query<R>,
+  bindings?: any[],
+  postProcess?: (rows: R[]) => M,
+  updateTypes: UpdateType[] = allUpdateTypes,
+  _rowid_?: RowID<R>
+): QueryData<M> {
+  return useQuery(ctx, query, bindings, postProcess, updateTypes, _rowid_);
 }
 
 let pendingQuery: number | null = null;

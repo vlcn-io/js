@@ -1,5 +1,7 @@
 packages:
   - "deps/cr-sqlite/core"
+  - "deps/wa-sqlite"
+  - "deps/typed-sql/packages/typed-sql"
   - "packages/browser-tests"
   - "packages/crsqlite-wasm"
   - "packages/node-allinone"
@@ -22,4 +24,3 @@ packages:
   - "packages/sandbox-node"
   - "packages/id"
   - "tsbuild-all"
-  - "deps/wa-sqlite"
