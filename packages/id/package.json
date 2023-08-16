@@ -16,7 +16,7 @@
     "build": "tsc --build",
     "watch": "tsc --build --watch",
     "deep-clean": "rm -rf ./dist || true && rm tsconfig.tsbuildinfo || true",
-    "test": "vitest run"
+    "test": "echo no tests here yet"
   },
   "repository": {
     "type": "git",
