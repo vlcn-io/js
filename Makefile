@@ -26,7 +26,7 @@ test: $(tsbuildinfo) $(wasm-file) FORCE
 clean:
 	./deep-clean.sh
 	cd deps/wa-sqlite && make clean
-	cd ../core/ && make clean
+	cd deps/cr-sqlite/core/ && make clean
 
 FORCE:
 
