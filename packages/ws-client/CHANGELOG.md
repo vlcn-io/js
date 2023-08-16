@@ -1,5 +1,13 @@
 # @vlcn.io/ws-client
 
+## 0.1.0-next.14
+
+### Patch Changes
+
+- rebuild
+- Updated dependencies
+  - @vlcn.io/ws-common@0.1.0-next.1
+
 ## 0.1.0-next.13
 
 ### Patch Changes
