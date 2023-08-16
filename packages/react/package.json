@@ -27,10 +27,11 @@
     "directory": "https://github.com/vlcn-io/js/tree/main/js/react"
   },
   "dependencies": {
+    "@vlcn.io/crsqlite-wasm": "workspace:*",
     "@vlcn.io/rx-tbl": "workspace:*",
-    "@vlcn.io/xplat-api": "workspace:*",
     "@vlcn.io/ws-client": "workspace:*",
-    "@vlcn.io/crsqlite-wasm": "workspace:*"
+    "@vlcn.io/xplat-api": "workspace:*",
+    "async-mutex": "^0.4.0"
   },
   "peerDependencies": {
     "react": "^18"

@@ -19,12 +19,15 @@ export default function DBProvider({
   const contextRef = useRef(createContext());
   const [dbRef, setDbRef] = useState<CtxAsync | null>(null);
   useEffect(() => {
-    console.log("running provider effect");
+    let closed = false;
     dbFactory.get(dbname, schema, contextRef.current.useDb).then((db) => {
-      console.log("setting db");
-      setDbRef(db);
+      if (!closed) {
+        setDbRef(db);
+      }
     });
     return () => {
+      closed = true;
+      setDbRef(null);
       dbFactory.closeAndRemove(dbname);
     };
   }, [dbname, schema, contextRef.current.useDb]);
