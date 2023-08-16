@@ -1,5 +1,11 @@
 # @vlcn.io/wa-crsqlite
 
+## 0.15.0-next.1
+
+### Patch Changes
+
+- fixes for react strict mode
+
 ## 0.15.0-next.0
 
 ### Minor Changes
