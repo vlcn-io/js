@@ -1,6 +1,6 @@
 import TX from "./TX.js";
 import { Mutex } from "async-mutex";
-import { DBAsync, TMutex, TXAsync } from "@vlcn.io/xplat-api";
+import { TMutex, TXAsync } from "@vlcn.io/xplat-api";
 import log from "./log.js";
 
 /**
