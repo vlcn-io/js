@@ -1,5 +1,13 @@
 # @vlcn.io/ws-client
 
+## 0.1.0-next.15
+
+### Patch Changes
+
+- react strict mode fiex, migrator fixes, typed-sql basic support, ws replication, db provider hooks
+- Updated dependencies
+  - @vlcn.io/ws-common@0.1.0-next.2
+
 ## 0.1.0-next.14
 
 ### Patch Changes

@@ -27,11 +27,15 @@
     "@vlcn.io/tsbuild-all": "0.12.0",
     "@vlcn.io/py-correctness": "0.12.0",
     "@vlcn.io/id": "0.0.1",
-    "@vlcn.io/typed-sql": "0.2.6"
+    "@vlcn.io/typed-sql": "0.2.6",
+    "@vlcn.io/typed-sql-cli": "0.2.6",
+    "@vlcn.io/type-gen-ts-adapter": "0.2.6",
+    "typed-sql-type-gen": "0.1.0"
   },
   "changesets": [
     "big-icons-join",
     "clever-ligers-press",
+    "pretty-points-explain",
     "sharp-coats-push",
     "strange-pumpkins-wait",
     "strong-cats-listen",

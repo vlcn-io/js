@@ -1,5 +1,15 @@
 # @vlcn.io/direct-connect-nodejs
 
+## 0.6.0-next.2
+
+### Patch Changes
+
+- react strict mode fiex, migrator fixes, typed-sql basic support, ws replication, db provider hooks
+- Updated dependencies
+  - @vlcn.io/crsqlite@0.15.0-next.1
+  - @vlcn.io/direct-connect-common@0.6.0-next.2
+  - @vlcn.io/xplat-api@0.14.0-next.2
+
 ## 0.6.0-next.1
 
 ### Patch Changes

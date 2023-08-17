@@ -1,5 +1,19 @@
 # @vlcn.io/ws-demo
 
+## 1.0.0-next.6
+
+### Patch Changes
+
+- react strict mode fiex, migrator fixes, typed-sql basic support, ws replication, db provider hooks
+- Updated dependencies
+  - @vlcn.io/crsqlite-wasm@0.15.0-next.4
+  - @vlcn.io/react@3.0.0-next.6
+  - @vlcn.io/rx-tbl@0.14.0-next.2
+  - @vlcn.io/ws-browserdb@0.1.0-next.5
+  - @vlcn.io/ws-client@0.1.0-next.15
+  - @vlcn.io/ws-server@0.1.0-next.14
+  - @vlcn.io/xplat-api@0.14.0-next.2
+
 ## 1.0.0-next.5
 
 ### Patch Changes

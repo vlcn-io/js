@@ -2,7 +2,7 @@
   "name": "@vlcn.io/ws-demo",
   "type": "module",
   "private": true,
-  "version": "1.0.0-next.5",
+  "version": "1.0.0-next.6",
   "files": [
     "dist",
     "src"

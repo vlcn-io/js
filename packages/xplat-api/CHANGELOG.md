@@ -1,5 +1,11 @@
 # @vlcn.io/xplat-api
 
+## 0.14.0-next.2
+
+### Patch Changes
+
+- react strict mode fiex, migrator fixes, typed-sql basic support, ws replication, db provider hooks
+
 ## 0.14.0-next.1
 
 ### Patch Changes
