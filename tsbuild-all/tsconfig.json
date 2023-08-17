@@ -21,6 +21,9 @@
     { "path": "../packages/ws-common" },
     { "path": "../packages/ws-client" },
     { "path": "../packages/ws-browserdb" },
-    { "path": "../packages/id" }
+    { "path": "../packages/id" },
+    { "path": "../deps/typed-sql/packages/typed-sql" },
+    { "path": "../deps/typed-sql/packages/cli" },
+    { "path": "../deps/typed-sql/packages/type-gen-ts-adapter" }
   ]
 }
