@@ -6,3 +6,4 @@ export { default as DBProvider } from "./db/DBProvider.js";
 export { default as useDB } from "./db/useDB.js";
 export { default as useSync } from "./db/useSync.js";
 export { default as dbFactory } from "./db/DBFactory.js";
+export { Query } from "@vlcn.io/typed-sql";
