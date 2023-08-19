@@ -5,6 +5,7 @@ import {
   UPDATE_TYPE,
   UpdateType,
   TXAsync,
+  first,
 } from "@vlcn.io/xplat-api";
 export { first, firstPick, pick } from "@vlcn.io/xplat-api";
 import { CtxAsync } from "./context.js";
@@ -119,6 +120,35 @@ export function useQuery2<R, M = R[]>(
   _rowid_?: RowID<R>
 ): QueryData<M> {
   return useQuery(ctx, query, bindings, postProcess, updateTypes, _rowid_);
+}
+
+// TODO: finish rx cache so we don't need the user to differentiate btwn point queries and not
+export function usePointQuery2<R>(
+  ctx: CtxAsync,
+  _rowid_: RowID<R>,
+  query: Query<R>,
+  bindings?: any[]
+): QueryData<R | undefined> {
+  return useQuery(
+    ctx,
+    query,
+    bindings,
+    first<R>,
+    [UPDATE_TYPE.UPDATE, UPDATE_TYPE.DELETE],
+    _rowid_
+  );
+}
+
+export function useRangeQuery2<R, M = R[]>(
+  ctx: CtxAsync,
+  query: Query<R>,
+  bindings?: any[],
+  postProcess?: (rows: R[]) => M
+) {
+  return useQuery(ctx, query, bindings, postProcess, [
+    UPDATE_TYPE.INSERT,
+    UPDATE_TYPE.DELETE,
+  ]);
 }
 
 let pendingQuery: number | null = null;
