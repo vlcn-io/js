@@ -5,6 +5,7 @@ import type { Server } from "http";
 import DBCache from "./DBCache.js";
 import ConnectionBroker from "./ConnectionBroker.js";
 import { Config } from "./config.js";
+import FSNotify from "./litefs/FSNotify.js";
 
 export * from "./config.js";
 
@@ -21,7 +22,16 @@ export function attachWebsocketServer(
   ) => void = noopAuth
 ) {
   // warn on multiple instantiations?
-  const dbCache = new DBCache(config);
+  let fsnotify: FSNotify | null;
+  if (config.dbFolder == null) {
+    console.warn(
+      "In-memory databases cannot be listened to by other processes or replicas!"
+    );
+    fsnotify = null;
+  } else {
+    fsnotify = new FSNotify(config);
+  }
+  const dbCache = new DBCache(config, fsnotify);
   const wss = new WebSocketServer({ noServer: true });
 
   server.on("upgrade", (request, socket, head) => {
