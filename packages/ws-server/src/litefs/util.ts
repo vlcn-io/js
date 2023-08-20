@@ -1,21 +1,12 @@
-import { Config } from "../Types.js";
 import path from "path";
 import os from "os";
 import fs from "fs";
-import { bytesToHex } from "@vlcn.io/direct-connect-common";
+import { Config } from "../config";
 
 const needsTouchHack = os.platform() === "darwin" || os.platform() === "win32";
 const ex = {
-  getDbFilename(config: Config, dbid: Uint8Array): string {
-    const ret = path.join(config.dbsDir, bytesToHex(dbid) + ".db");
-    if (ret === config.serviceDbPath) {
-      throw new Error("Service dbid is reserved");
-    }
-    return ret;
-  },
-
-  getTouchFilename(config: Config, dbid: Uint8Array): string {
-    return path.join(config.dbsDir, bytesToHex(dbid) + ".touch");
+  getTouchFilename(dbpath: string): string {
+    return dbpath + ".touch";
   },
 
   fileEventNameToDbId(filename: string): string {
@@ -26,15 +17,13 @@ const ex = {
     return needsTouchHack;
   },
 
-  touchFile(config: Config, dbid: Uint8Array): Promise<void> {
+  touchFile(dbpath: string): Promise<void> {
     if (!needsTouchHack) {
-      throw new Error("Touch hack is only required for darwin and windows");
+      throw new Error("Touch hack is only required for darwin");
     }
-    return fs.promises
-      .open(ex.getTouchFilename(config, dbid), "w")
-      .then((fd) => {
-        return fd.close();
-      });
+    return fs.promises.open(ex.getTouchFilename(dbpath), "w").then((fd) => {
+      return fd.close();
+    });
   },
 
   uuidToBytes(uuid: string) {

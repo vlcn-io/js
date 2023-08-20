@@ -13,7 +13,7 @@ test("db instantiation", () => {
 
   const schemaContent = fs.readFileSync("./testSchemas/test.sql", "utf-8");
   const schemaVersion = cryb64(schemaContent);
-  const db = new DB(config, "some-db", "test.sql", schemaVersion);
+  const db = new DB(config, null, "some-db", "test.sql", schemaVersion);
   expect(db).toBeDefined();
   db.close();
 });

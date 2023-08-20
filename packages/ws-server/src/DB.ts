@@ -5,6 +5,8 @@ import fs from "node:fs";
 import { extensionPath } from "@vlcn.io/crsqlite";
 import { Change, bytesToHex, cryb64 } from "@vlcn.io/ws-common";
 import { throttle } from "throttle-debounce";
+import FSNotify from "./litefs/FSNotify.js";
+import touchHack from "./litefs/touchHack.js";
 
 /**
  * Abstracts over a DB and provides just the operations requred by the sync server.
@@ -15,6 +17,7 @@ import { throttle } from "throttle-debounce";
 export default class DB {
   readonly #db;
   readonly #schemaName;
+  readonly #fsnotify;
   readonly #schemaVersion;
   readonly #changeCallbacks = new Set<() => void>();
   readonly #siteid;
@@ -23,17 +26,46 @@ export default class DB {
   readonly #applyChangesStmt;
   readonly #setLastSeenStmt;
   readonly #applyChangesAndSetLastSeenTx;
+  readonly #dbname;
+  readonly #dbpath;
+
+  /**
+   * A trivial `notifyOfChange` implementation.
+   *
+   * Our other server implementations support geo-distributed strongly consistent replication of the DB **and** change
+   * notification.
+   *
+   * This here only supports monitoring changes to a DB that are made through the same instance
+   * of this class. Given all connections share the same DB instance, via DBCache, this works for now.
+   *
+   * @param cb
+   */
+  readonly #notifyOfChange;
 
   constructor(
     config: Config,
+    fsnotify: FSNotify | null,
     name: string,
     requestedSchema: string,
     requestedSchemaVersion: bigint
   ) {
     // TODO: different rooms may need different DB schemas.
     // We should support some way of defining this.
-    const db = new Database(getDbPath(name, config));
+    this.#dbpath = getDbPath(name, config);
+    const db = new Database(this.#dbpath);
     this.#db = db;
+    this.#dbname = name;
+    this.#fsnotify = fsnotify;
+    this.#notifyOfChange = throttle(config.notifyLatencyMs || 50, () => {
+      for (const cb of this.#changeCallbacks) {
+        try {
+          cb();
+          // failure of 1 callback shouldn't prevent notification of other callbacks.
+        } catch (e) {
+          console.warn(e);
+        }
+      }
+    });
     db.pragma("journal_mode = WAL");
     db.pragma("synchronous = NORMAL");
     db.loadExtension(extensionPath);
@@ -170,7 +202,11 @@ export default class DB {
     newLastSeen: readonly [bigint, number]
   ): void {
     this.#applyChangesAndSetLastSeenTx(changes, siteId, newLastSeen);
-    this.#notifyOfChange();
+    if (this.#fsnotify == null) {
+      this.#notifyOfChange();
+    } else {
+      touchHack(this.#dbpath);
+    }
   }
 
   pullChangeset(
@@ -187,35 +223,15 @@ export default class DB {
   }
 
   onChange(cb: () => void) {
-    this.#changeCallbacks.add(cb);
-    return () => {
-      this.#changeCallbacks.delete(cb);
-    };
-  }
-
-  /**
-   * A trivial `notifyOfChange` implementation.
-   *
-   * Our other server implementations support geo-distributed strongly consistent replication of the DB **and** change
-   * notification.
-   *
-   * This here only supports monitoring changes to a DB that are made through the same instance
-   * of this class. Given all connections share the same DB instance, via DBCache, this works for now.
-   *
-   * @param cb
-   */
-  // TODO: a better implementation would understand the current backpressure on different
-  // websockets rather than a random 50 ms throttle.
-  #notifyOfChange = throttle(50, () => {
-    for (const cb of this.#changeCallbacks) {
-      try {
-        cb();
-        // failure of 1 callback shouldn't prevent notification of other callbacks.
-      } catch (e) {
-        console.warn(e);
-      }
+    if (this.#fsnotify == null) {
+      this.#changeCallbacks.add(cb);
+      return () => {
+        this.#changeCallbacks.delete(cb);
+      };
+    } else {
+      return this.#fsnotify.addListener(this.#dbname, cb);
     }
-  });
+  }
 
   close() {
     this.#db.prepare(`SELECT crsql_finalize()`).run();
@@ -280,7 +296,7 @@ export default class DB {
   }
 }
 
-function getDbPath(dbName: string, config: Config) {
+export function getDbPath(dbName: string, config: Config) {
   if (hasPathParts(dbName)) {
     throw new Error(`${dbName} must not include '..', '/', or '\\'`);
   }

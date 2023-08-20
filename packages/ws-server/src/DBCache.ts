@@ -1,5 +1,6 @@
 import DB from "./DB.js";
 import { Config } from "./config.js";
+import FSNotify from "./litefs/FSNotify.js";
 import logger from "./logger.js";
 
 /**
@@ -11,16 +12,21 @@ import logger from "./logger.js";
 export default class DBCache {
   readonly #dbs = new Map<string, [number, DB]>();
   readonly #config;
+  readonly #fsnotify;
 
-  constructor(config: Config) {
+  constructor(config: Config, fsnotify: FSNotify | null) {
     this.#config = config;
+    this.#fsnotify = fsnotify;
   }
 
   getAndRef(roomId: string, schemaName: string, schemaVersion: bigint) {
     logger.info(`Get db from cache for room "${roomId}"`);
     let entry = this.#dbs.get(roomId);
     if (entry == null) {
-      entry = [1, new DB(this.#config, roomId, schemaName, schemaVersion)];
+      entry = [
+        1,
+        new DB(this.#config, this.#fsnotify, roomId, schemaName, schemaVersion),
+      ];
       this.#dbs.set(roomId, entry);
     } else {
       const db = entry[1];
