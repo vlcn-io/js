@@ -14,7 +14,7 @@ importers:
 
   ../cr-sqlite/core: {}
 
-  deps/typed-sql/packages/cli:
+  ../typed-sql/packages/cli:
     dependencies:
       '@vlcn.io/type-gen-ts-adapter':
         specifier: workspace:*
@@ -33,7 +33,7 @@ importers:
         specifier: ^20.4.0
         version: 20.4.0
 
-  deps/typed-sql/packages/type-gen-ts-adapter:
+  ../typed-sql/packages/type-gen-ts-adapter:
     dependencies:
       typed-sql-type-gen:
         specifier: workspace:*
@@ -46,9 +46,9 @@ importers:
         specifier: ^0.33.0
         version: 0.33.0
 
-  deps/typed-sql/packages/type-gen/pkg: {}
+  ../typed-sql/packages/type-gen/pkg: {}
 
-  deps/typed-sql/packages/typed-sql:
+  ../typed-sql/packages/typed-sql:
     devDependencies:
       typescript:
         specifier: ^5.1.6
@@ -338,7 +338,7 @@ importers:
         version: link:../rx-tbl
       '@vlcn.io/typed-sql':
         specifier: workspace:*
-        version: link:../../deps/typed-sql/packages/typed-sql
+        version: link:../../../typed-sql/packages/typed-sql
       '@vlcn.io/ws-client':
         specifier: workspace:*
         version: link:../ws-client

@@ -13,7 +13,7 @@ $(git-deps):
 	git submodule update --init --recursive
 
 $(typed-sql-pkg):
-	cd ./deps/typed-sql/packages/type-gen; ./build.sh
+	cd ../typed-sql/packages/type-gen; ./build.sh
 
 $(node-deps): $(git-deps) $(typed-sql-pkg)
 	pnpm install
