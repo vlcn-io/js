@@ -11,6 +11,6 @@
     { "path": "../xplat-api" },
     { "path": "../rx-tbl" },
     { "path": "../ws-client" },
-    { "path": "../../deps/typed-sql/packages/typed-sql" }
+    { "path": "../../../typed-sql/packages/typed-sql" }
   ]
 }
