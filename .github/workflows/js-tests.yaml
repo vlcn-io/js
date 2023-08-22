@@ -29,7 +29,7 @@ jobs:
       - name: Load .env file
         uses: xom9ikk/dotenv@v2
         with:
-          path: ./
+          path: ./js
           load-mode: strict
 
       - name: Install wabt (linux)
@@ -56,4 +56,4 @@ jobs:
         run: npm install --global windows-build-tools
 
       - name: Test
-        run: make test
+        run: cd js; make test
