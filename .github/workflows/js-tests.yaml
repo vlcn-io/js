@@ -43,13 +43,13 @@ jobs:
       - name: Install wasm-pack
         run: cargo install wasm-pack
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 19.x
+
+      - name: Install pnpm
+        run: npm install -g pnpm
 
       - name: Windows build tools
         if: runner.os == 'Windows'
