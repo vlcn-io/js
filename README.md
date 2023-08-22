@@ -107,3 +107,4 @@ git clone --recurse-submodules git@github.com:vlcn-io/workspace.git
 ```
 
 Running `make` in that directory will get you set up. Ensure you have the rust nightly toolchain installed and activated before running make.
+
