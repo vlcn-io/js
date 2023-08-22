@@ -12,7 +12,7 @@ importers:
         specifier: ^2.26.1
         version: 2.26.1
 
-  deps/cr-sqlite/core: {}
+  ../cr-sqlite/core: {}
 
   deps/typed-sql/packages/cli:
     dependencies:
@@ -195,7 +195,7 @@ importers:
     dependencies:
       '@vlcn.io/crsqlite':
         specifier: workspace:*
-        version: link:../../deps/cr-sqlite/core
+        version: link:../../../cr-sqlite/core
       '@vlcn.io/direct-connect-common':
         specifier: workspace:*
         version: link:../direct-connect-common
@@ -248,7 +248,7 @@ importers:
     dependencies:
       '@vlcn.io/crsqlite':
         specifier: workspace:*
-        version: link:../../deps/cr-sqlite/core
+        version: link:../../../cr-sqlite/core
       '@vlcn.io/xplat-api':
         specifier: workspace:*
         version: link:../xplat-api
@@ -273,7 +273,7 @@ importers:
     dependencies:
       '@vlcn.io/crsqlite':
         specifier: workspace:*
-        version: link:../../deps/cr-sqlite/core
+        version: link:../../../cr-sqlite/core
       '@vlcn.io/crsqlite-allinone':
         specifier: workspace:*
         version: link:../node-allinone
@@ -442,7 +442,7 @@ importers:
     devDependencies:
       '@vlcn.io/crsqlite':
         specifier: workspace:*
-        version: link:../../deps/cr-sqlite/core
+        version: link:../../../cr-sqlite/core
       vite:
         specifier: ^4.2.2
         version: 4.2.2(@types/node@18.16.1)
@@ -540,7 +540,7 @@ importers:
     dependencies:
       '@vlcn.io/crsqlite':
         specifier: workspace:*
-        version: link:../../deps/cr-sqlite/core
+        version: link:../../../cr-sqlite/core
       '@vlcn.io/ws-common':
         specifier: workspace:*
         version: link:../ws-common
