@@ -4,9 +4,6 @@
 [submodule "deps/wa-sqlite"]
 	path = deps/wa-sqlite
 	url = https://github.com/vlcn-io/wa-sqlite.git
-[submodule "deps/cr-sqlite"]
-	path = deps/cr-sqlite
-	url = https://github.com/vlcn-io/cr-sqlite
 [submodule "deps/typed-sql"]
 	path = deps/typed-sql
 	url = https://github.com/vlcn-io/typed-sql.git
