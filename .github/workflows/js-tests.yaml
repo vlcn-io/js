@@ -25,6 +25,12 @@ jobs:
           submodules: recursive
           path: ./cr-sqlite
           repository: vlcn-io/cr-sqlite
+      - name: Checkout typed-sql
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          path: ./typed-sql
+          repository: vlcn-io/typed-sql
 
       - name: Load .env file
         uses: xom9ikk/dotenv@v2
