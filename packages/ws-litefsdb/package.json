@@ -1,7 +1,7 @@
 {
-  "name": "@vlcn.io/ws-server",
+  "name": "@vlcn.io/ws-litefsdb",
   "type": "module",
-  "version": "0.1.0-next.14",
+  "version": "0.1.0-next.0",
   "files": [
     "dist",
     "src"
@@ -12,27 +12,23 @@
     "build": "tsc --build",
     "watch": "tsc --build --watch",
     "test": "vitest run",
-    "rmtdata": "rm testDbs/*",
     "deep-clean": "rm -rf ./dist || true && rm tsconfig.tsbuildinfo || true"
   },
   "repository": {
     "type": "git",
     "url": "git@github.com:vlcn-io/js.git",
-    "directory": "https://github.com/vlcn-io/js/tree/main/js/packages/ws-server"
+    "directory": "https://github.com/vlcn-io/js/tree/main/js/packages/ws-litefsdb"
   },
   "dependencies": {
     "@vlcn.io/crsqlite": "workspace:*",
     "@vlcn.io/ws-common": "workspace:*",
     "better-sqlite3": "^8.3.0",
-    "chokidar": "^3.5.3",
     "throttle-debounce": "^5.0.0",
-    "winston": "^3.10.0",
-    "ws": "^8.13.0"
+    "winston": "^3.10.0"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.4",
     "@types/throttle-debounce": "^5.0.0",
-    "@types/ws": "^8.5.5",
     "vitest": "^0.30.1"
   }
 }
