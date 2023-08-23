@@ -10,6 +10,12 @@ declare -a pkgs=(
   "@vlcn.io/rx-tbl"
   "@vlcn.io/xplat-api"
   "@vlcn.io/wa-sqlite"
+  "@vlcn.io/ws-common"
+  "@vlcn.io/ws-server"
+  "@vlcn.io/ws-client"
+  "@vlcn.io/ws-browserdb"
+  "@vlcn.io/typed-sql"
+  "@vlcn.io/typed-sql-cli"
 )
 
 # two packages have directory names mismatched with package names hence this array.
@@ -25,4 +31,10 @@ declare -a pkgslocal=(
   "@vlcn.io/rx-tbl:../vulcan/js/packages/rx-tbl"
   "@vlcn.io/xplat-api:../vulcan/js/packages/xplat-api"
   "@vlcn.io/wa-sqlite:../vulcan/js/packages/wa-sqlite"
+  "@vlcn.io/ws-common:../vulcan/js/packages/ws-common"
+  "@vlcn.io/ws-server:../vulcan/js/packages/ws-server"
+  "@vlcn.io/ws-client:../vulcan/js/packages/ws-client"
+  "@vlcn.io/ws-browserdb:../vulcan/js/packages/ws-browserdb"
+  "@vlcn.io/typed-sql:../vulcan/typed-sql/packages/typed-sql"
+  "@vlcn.io/typed-sql-cli:../vulcan/typed-sql/packages/cli"
 )
