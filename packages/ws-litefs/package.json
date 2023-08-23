@@ -1,5 +1,5 @@
 {
-  "name": "@vlcn.io/ws-litefsdb",
+  "name": "@vlcn.io/ws-litefs",
   "type": "module",
   "version": "0.1.0-next.0",
   "files": [
@@ -17,7 +17,7 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:vlcn-io/js.git",
-    "directory": "https://github.com/vlcn-io/js/tree/main/js/packages/ws-litefsdb"
+    "directory": "https://github.com/vlcn-io/js/tree/main/js/packages/ws-litefs"
   },
   "dependencies": {
     "@vlcn.io/crsqlite": "workspace:*",

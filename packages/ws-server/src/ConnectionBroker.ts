@@ -3,6 +3,14 @@ import SyncConnection from "./SyncConnection.js";
 import DBCache from "./DBCache.js";
 import { WebSocket } from "ws";
 import Transport from "./Trasnport.js";
+import { IWriteForwarder } from "./IWriteForwarder.js";
+
+export type Options = {
+  ws: WebSocket;
+  dbCache: DBCache;
+  room: string;
+  writeForwarder?: IWriteForwarder;
+};
 
 /**
  * A connection broker maps PartyKit connections to Database Sync connections
@@ -14,11 +22,13 @@ export default class ConnectionBroker {
   readonly #dbCache;
   readonly #ws;
   readonly #room;
+  readonly #writeForwarder;
 
-  constructor(ws: WebSocket, dbCache: DBCache, room: string) {
+  constructor({ ws, dbCache, room, writeForwarder }: Options) {
     this.#dbCache = dbCache;
     this.#ws = ws;
     this.#room = room;
+    this.#writeForwarder = writeForwarder;
 
     this.#ws.on("message", (data) => {
       // TODO: for litefs support we should just read the tag out
@@ -38,6 +48,7 @@ export default class ConnectionBroker {
       this.close();
     });
     // TODO: impl ping & pong heartbeat
+    // so we can force close if we don't get a close event.
     // this.#ws.on("pong", () => {});
     // this.#ws.on("ping", () => {});
   }
@@ -53,6 +64,14 @@ export default class ConnectionBroker {
               this.#room
             } was already started for the given websocket`
           );
+        }
+
+        if (this.#writeForwarder) {
+          // forward and await the write
+          // then go.
+          // How do we know when the underlying db has receive the changes
+          // on this replica tho? Need to check replication status...
+          // The write forwarder should block us and handle that detail.
         }
 
         const syncConnection = new SyncConnection(

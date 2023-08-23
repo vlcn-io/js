@@ -10,9 +10,16 @@
  */
 
 export const endpoints = {
-  createDb() {},
+  // createDb() {},
   // How will we ensure all other connections on all other replicas are torn down on migrate?
   // We can check `schema_version` pragma
-  applySchema() {},
-  applyChangesetAndSetLastSeen() {},
+  // applySchema() {},
+  // applyChangesetAndSetLastSeen() {},
+  // if we do at top level:
+  // changesReceived()
+  // presenceAnnounced()
+  // but... this isn't quite right.
+  // or maybe it is fine.
+  // we still set up state on slave but hand off write.
+  // since slave is ensuring correct state we won't need stateful streams on master.
 };

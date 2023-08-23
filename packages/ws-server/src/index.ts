@@ -9,7 +9,11 @@ import FSNotify from "./fs/FSNotify.js";
 
 export * from "./config.js";
 
-function noopAuth(req: IncomingMessage, cb: (err: any) => void) {
+function noopAuth(
+  req: IncomingMessage,
+  token: string | null,
+  cb: (err: any) => void
+) {
   cb(null);
 }
 
@@ -18,6 +22,7 @@ export function attachWebsocketServer(
   config: Config,
   authenticate: (
     req: IncomingMessage,
+    token: string | null,
     cb: (err: any) => void
   ) => void = noopAuth
 ) {
@@ -36,7 +41,8 @@ export function attachWebsocketServer(
 
   server.on("upgrade", (request, socket, head) => {
     logger.info("upgrading to ws connection");
-    authenticate(request, (err) => {
+    const options = pullSecHeaders(request);
+    authenticate(request, options.auth || null, (err) => {
       if (err) {
         logger.error("failed to authenticate");
         socket.write("HTTP/1.1 401 Unauthorized\r\n\r\n");
@@ -55,22 +61,26 @@ export function attachWebsocketServer(
   wss.on("connection", (ws: WebSocket, request) => {
     logger.info(`Connection opened`);
 
-    const proto = request.headers["sec-websocket-protocol"];
-    if (proto == null) {
-      throw new Error("Expected sec-websocket-protocol header");
-    }
-    console.log(proto);
-    const entries = proto?.split(",");
-    const options: { [key: string]: string } = {};
-    for (const entry of entries) {
-      const [key, value] = atob(entry).split("=");
-      options[key] = value;
-    }
+    const options = pullSecHeaders(request);
     if (!options.room) {
       console.error("Expected to receive a room in the sec-websocket-protocol");
       ws.close();
       return;
     }
-    new ConnectionBroker(ws, dbCache, options.room);
+    new ConnectionBroker({ ws, dbCache, room: options.room });
   });
+}
+
+function pullSecHeaders(request: IncomingMessage) {
+  const proto = request.headers["sec-websocket-protocol"];
+  if (proto == null) {
+    throw new Error("Expected sec-websocket-protocol header");
+  }
+  const entries = proto?.split(",");
+  const options: { [key: string]: string } = {};
+  for (const entry of entries) {
+    const [key, value] = atob(entry).split("=");
+    options[key] = value;
+  }
+  return options;
 }
