@@ -5,8 +5,8 @@ import fs from "node:fs";
 import { extensionPath } from "@vlcn.io/crsqlite";
 import { Change, bytesToHex, cryb64 } from "@vlcn.io/ws-common";
 import { throttle } from "throttle-debounce";
-import FSNotify from "./litefs/FSNotify.js";
-import touchHack from "./litefs/touchHack.js";
+import FSNotify from "./fs/FSNotify.js";
+import touchHack from "./fs/touchHack.js";
 
 /**
  * Abstracts over a DB and provides just the operations requred by the sync server.
@@ -98,7 +98,7 @@ export default class DB {
         );
       }
 
-      // TODO: how should we handle creating a new db entirely?
+      // TODO: how should we handle creating a new db entirely for litefs?
       if (schemaVersion != requestedSchemaVersion) {
         schemaVersion = this.#tryUpdatingSchema(
           config,
