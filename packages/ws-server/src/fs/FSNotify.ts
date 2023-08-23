@@ -8,6 +8,8 @@ import { collect } from "./collapser.js";
  * Notifies outbound streams of changes to the database file.
  *
  * These changes could be made by other connections, processes or even other regions when running on litefs.
+ *
+ * For litefs we can simply just watch `dbname-pos`
  */
 export default class FSNotify {
   private readonly watcher: chokidar.FSWatcher;
