@@ -21,6 +21,8 @@ export default class ConnectionBroker {
     this.#room = room;
 
     this.#ws.on("message", (data) => {
+      // TODO: for litefs support we should just read the tag out
+      // then pass the message to the primary
       const msg = decode(new Uint8Array(data as any));
       try {
         this.#handleMessage(msg);
