@@ -98,6 +98,7 @@ export default class DB {
         );
       }
 
+      // TODO: how should we handle creating a new db entirely?
       if (schemaVersion != requestedSchemaVersion) {
         schemaVersion = this.#tryUpdatingSchema(
           config,
@@ -196,6 +197,7 @@ export default class DB {
     return [result[0], Number(result[1])];
   }
 
+  // TODO: forward
   applyChangesetAndSetLastSeen(
     changes: readonly Change[],
     siteId: Uint8Array,
@@ -239,6 +241,7 @@ export default class DB {
   }
 
   // No schema exists on the db. Straight apply it.
+  // TODO: forwardable
   #applySchema(
     config: Config,
     name: string,
