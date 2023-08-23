@@ -5,7 +5,7 @@ import type { Server } from "http";
 import DBCache from "./DBCache.js";
 import ConnectionBroker from "./ConnectionBroker.js";
 import { Config } from "./config.js";
-import FSNotify from "./litefs/FSNotify.js";
+import FSNotify from "./fs/FSNotify.js";
 
 export * from "./config.js";
 
