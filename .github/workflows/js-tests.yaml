@@ -36,7 +36,6 @@ jobs:
         uses: xom9ikk/dotenv@v2
         with:
           path: ./js
-          mode: strict
 
       - name: Install wabt (linux)
         if: runner.os == 'Linux'
