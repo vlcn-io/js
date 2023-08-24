@@ -1,6 +1,7 @@
 import { Changes, greaterThanOrEqual, tags } from "@vlcn.io/ws-common";
 import DB from "../DB.js";
 import Transport from "../Trasnport.js";
+import { IWriteForwarder } from "../IWriteForwarder.js";
 
 /**
  * Processes a stream of changes from the given sender.
@@ -14,11 +15,18 @@ export default class InboundStream {
   readonly #db;
   readonly #from;
   #lastSeen: readonly [bigint, number] | null = null;
+  readonly #writeForwarder: IWriteForwarder | null;
 
-  constructor(transport: Transport, db: DB, from: Uint8Array) {
+  constructor(
+    transport: Transport,
+    db: DB,
+    from: Uint8Array,
+    writeForwarder: IWriteForwarder | null
+  ) {
     this.#transport = transport;
     this.#db = db;
     this.#from = from;
+    this.#writeForwarder = writeForwarder;
   }
 
   start() {
@@ -57,7 +65,18 @@ export default class InboundStream {
     }
     const lastChange = msg.changes[msg.changes.length - 1];
     const newLastSeen = [lastChange[5], 0] as const;
-    this.#db.applyChangesetAndSetLastSeen(msg.changes, msg.sender, newLastSeen);
+    if (
+      this.#writeForwarder != null &&
+      this.#writeForwarder.shouldForwardWrites()
+    ) {
+      // forward the write
+    } else {
+      this.#db.applyChangesetAndSetLastSeen(
+        msg.changes,
+        msg.sender,
+        newLastSeen
+      );
+    }
     this.#lastSeen = newLastSeen;
   }
 }

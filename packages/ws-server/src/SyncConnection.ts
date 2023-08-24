@@ -9,6 +9,7 @@ import OutboundStream from "./streams/OutboundStream.js";
 import InboundStream from "./streams/InboundStream.js";
 import Transport from "./Trasnport.js";
 import logger from "./logger.js";
+import { IWriteForwarder } from "./IWriteForwarder.js";
 
 /**
  *
@@ -19,13 +20,16 @@ export default class SyncConnection {
   readonly #room;
   readonly #outboundStream;
   readonly #inboundStream;
+  readonly #writeForwarder;
 
   constructor(
     dbCache: DBCache,
     transport: Transport,
     room: string,
-    msg: AnnouncePresence
+    msg: AnnouncePresence,
+    writeForwarder: IWriteForwarder | null
   ) {
+    this.#writeForwarder = writeForwarder;
     logger.info(
       `Spun up a sync connection on room ${room} to client ws and client dbid ${bytesToHex(
         msg.sender
@@ -41,7 +45,12 @@ export default class SyncConnection {
       msg.lastSeens,
       msg.sender
     );
-    this.#inboundStream = new InboundStream(transport, this.#db, msg.sender);
+    this.#inboundStream = new InboundStream(
+      transport,
+      this.#db,
+      msg.sender,
+      this.#writeForwarder
+    );
   }
 
   start() {

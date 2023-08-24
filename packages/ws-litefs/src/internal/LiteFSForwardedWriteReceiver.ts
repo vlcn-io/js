@@ -18,6 +18,7 @@ export class LiteFSForwardedWriteReceiver {
   // Receive an AnnouncePresence message from a follower
   // Does the setup then returns the txid.
   // Caller should catch errors and return?
+  // This is unrelated to "presence" (mouse position) information.
   async receivedPresence(
     room: string,
     msg: AnnouncePresence
@@ -53,8 +54,16 @@ export class LiteFSForwardedWriteReceiver {
   }
 
   // Receives a Changes message from a follower
-  async receivedChanges(msg: Changes): Promise<void> {
+  async receivedChanges(
+    msg: Changes,
+    newLastSeen: [bigint, number]
+  ): Promise<void> {
     // apply changes against the db
+    this.#db?.applyChangesetAndSetLastSeen(
+      msg.changes,
+      msg.sender,
+      newLastSeen
+    );
   }
 
   close() {

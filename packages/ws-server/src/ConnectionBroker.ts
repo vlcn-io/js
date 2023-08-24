@@ -28,7 +28,7 @@ export default class ConnectionBroker {
     this.#dbCache = dbCache;
     this.#ws = ws;
     this.#room = room;
-    this.#writeForwarder = writeForwarder;
+    this.#writeForwarder = writeForwarder || null;
 
     this.#ws.on("message", (data) => {
       // TODO: for litefs support we should just read the tag out
@@ -81,7 +81,8 @@ export default class ConnectionBroker {
           this.#dbCache,
           new Transport(this.#ws),
           this.#room,
-          msg
+          msg,
+          this.#writeForwarder
         );
         this.#syncConnection = syncConnection;
         syncConnection.start();
