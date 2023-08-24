@@ -1,4 +1,6 @@
 import { Config } from "@vlcn.io/ws-server";
+import chokidar from "chokidar";
+import path from "path";
 
 /**
  * This will observe the db directory for `-pos` files.
@@ -15,6 +17,13 @@ export default class PrimaryStatusObserver {
 
   constructor(config: Config) {
     this.#observers = new Map<string, Set<() => void>>();
+    chokidar.watch(config.dbFolder + path.sep + "*-pos", {
+      followSymlinks: false,
+      usePolling: false,
+      interval: 100,
+      binaryInterval: 300,
+      ignoreInitial: false,
+    });
   }
 
   observe(room: string, cb: () => void) {}

@@ -80,7 +80,6 @@ export function attachWebsocketServer(
       ws,
       dbCache,
       room: options.room,
-      writeForwarder: config.writeForwarder,
     });
   });
 }

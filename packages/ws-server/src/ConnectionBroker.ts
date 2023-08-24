@@ -22,13 +22,11 @@ export default class ConnectionBroker {
   readonly #dbCache;
   readonly #ws;
   readonly #room;
-  readonly #writeForwarder;
 
-  constructor({ ws, dbCache, room, writeForwarder }: Options) {
+  constructor({ ws, dbCache, room }: Options) {
     this.#dbCache = dbCache;
     this.#ws = ws;
     this.#room = room;
-    this.#writeForwarder = writeForwarder || null;
 
     this.#ws.on("message", (data) => {
       // TODO: for litefs support we should just read the tag out
@@ -66,23 +64,11 @@ export default class ConnectionBroker {
           );
         }
 
-        if (
-          this.#writeForwarder &&
-          this.#writeForwarder.shouldForwardWrites()
-        ) {
-          // forward and await the write
-          // then go.
-          // How do we know when the underlying db has receive the changes
-          // on this replica tho? Need to check replication status...
-          // The write forwarder should block us and handle that detail.
-        }
-
         const syncConnection = new SyncConnection(
           this.#dbCache,
           new Transport(this.#ws),
           this.#room,
-          msg,
-          this.#writeForwarder
+          msg
         );
         this.#syncConnection = syncConnection;
         syncConnection.start();

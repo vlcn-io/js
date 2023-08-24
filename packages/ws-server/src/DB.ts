@@ -3,10 +3,12 @@ import { Config } from "./config.js";
 import path from "node:path";
 import fs from "node:fs";
 import { extensionPath } from "@vlcn.io/crsqlite";
-import { Change, bytesToHex, cryb64 } from "@vlcn.io/ws-common";
+import { Change, cryb64 } from "@vlcn.io/ws-common";
 import { throttle } from "throttle-debounce";
 import FSNotify from "./fs/FSNotify.js";
 import touchHack from "./fs/touchHack.js";
+
+export interface IDB {}
 
 /**
  * Abstracts over a DB and provides just the operations requred by the sync server.

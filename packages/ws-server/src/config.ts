@@ -1,10 +1,11 @@
-import { IWriteForwarder } from "./IWriteForwarder";
+import DBFactory, { IDBFactory } from "./DBFactory.js";
 
 export const defaultConfig: Config = Object.freeze({
   dbFolder: "./dbs",
   schemaFolder: "./schemas",
   pathPattern: /\/vlcn-ws/,
   notifyLatencyMs: 50,
+  dbFactory: new DBFactory(),
 });
 
 export type Config = Readonly<{
@@ -12,6 +13,5 @@ export type Config = Readonly<{
   schemaFolder: string;
   pathPattern: RegExp;
   notifyLatencyMs?: number;
-  writeForwarder?: IWriteForwarder;
-  writeForwarderPort?: number;
+  dbFactory: IDBFactory;
 }>;
