@@ -57,7 +57,20 @@ export default class DBCache {
       entry[1].close();
       this.#dbs.delete(roomId);
     } else if (entry[0] < 0) {
-      throw new Error(`illegal state -- ref count less than 0 for ${roomId}`);
+      throw new Error(
+        `illegal state -- ref count less than 0 for ${roomId}. Maybe closing threw?`
+      );
     }
+  }
+
+  destroy() {
+    for (const [ref, db] of this.#dbs.values()) {
+      try {
+        db.close();
+      } catch (e) {
+        logger.error(e);
+      }
+    }
+    this.#dbs.clear();
   }
 }

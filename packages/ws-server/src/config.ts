@@ -1,3 +1,5 @@
+import { IWriteForwarder } from "./IWriteForwarder";
+
 export const defaultConfig: Config = Object.freeze({
   dbFolder: "./dbs",
   schemaFolder: "./schemas",
@@ -10,4 +12,6 @@ export type Config = Readonly<{
   schemaFolder: string;
   pathPattern: RegExp;
   notifyLatencyMs?: number;
+  writeForwarder?: IWriteForwarder;
+  writeForwarderPort?: number;
 }>;

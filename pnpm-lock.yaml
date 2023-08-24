@@ -539,6 +539,37 @@ importers:
         specifier: ^5.0.4
         version: 5.0.4
 
+  packages/ws-litefs:
+    dependencies:
+      '@vlcn.io/crsqlite':
+        specifier: workspace:*
+        version: link:../../../cr-sqlite/core
+      '@vlcn.io/ws-common':
+        specifier: workspace:*
+        version: link:../ws-common
+      '@vlcn.io/ws-server':
+        specifier: workspace:*
+        version: link:../ws-server
+      better-sqlite3:
+        specifier: ^8.3.0
+        version: 8.3.0
+      throttle-debounce:
+        specifier: ^5.0.0
+        version: 5.0.0
+      winston:
+        specifier: ^3.10.0
+        version: 3.10.0
+    devDependencies:
+      '@types/better-sqlite3':
+        specifier: ^7.6.4
+        version: 7.6.4
+      '@types/throttle-debounce':
+        specifier: ^5.0.0
+        version: 5.0.0
+      vitest:
+        specifier: ^0.30.1
+        version: 0.30.1
+
   packages/ws-server:
     dependencies:
       '@vlcn.io/crsqlite':

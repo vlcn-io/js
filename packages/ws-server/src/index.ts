@@ -3,9 +3,18 @@ import { WebSocketServer, WebSocket } from "ws";
 import logger from "./logger.js";
 import type { Server } from "http";
 import DBCache from "./DBCache.js";
+import DB from "./DB.js";
 import ConnectionBroker from "./ConnectionBroker.js";
 import { Config } from "./config.js";
 import FSNotify from "./fs/FSNotify.js";
+export * from "./IWriteForwarder.js";
+import { getDbPath } from "./DB.js";
+
+export const internal = {
+  DBCache,
+  DB,
+  getDbPath,
+};
 
 export * from "./config.js";
 
@@ -67,7 +76,12 @@ export function attachWebsocketServer(
       ws.close();
       return;
     }
-    new ConnectionBroker({ ws, dbCache, room: options.room });
+    new ConnectionBroker({
+      ws,
+      dbCache,
+      room: options.room,
+      writeForwarder: config.writeForwarder,
+    });
   });
 }
 
