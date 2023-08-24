@@ -3,12 +3,14 @@ import DB from "../DB.js";
 import fs from "node:fs";
 import { Config } from "../config.js";
 import { cryb64 } from "@vlcn.io/ws-common";
+import DBFactory from "../DBFactory.js";
 
 test("db instantiation", () => {
   const config: Config = {
     schemaFolder: "./testSchemas",
     dbFolder: null,
     pathPattern: /\/vlcn-ws/,
+    dbFactory: new DBFactory(),
   };
 
   const schemaContent = fs.readFileSync("./testSchemas/test.sql", "utf-8");

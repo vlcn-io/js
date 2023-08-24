@@ -20,16 +20,13 @@ export default class SyncConnection {
   readonly #room;
   readonly #outboundStream;
   readonly #inboundStream;
-  readonly #writeForwarder;
 
   constructor(
     dbCache: DBCache,
     transport: Transport,
     room: string,
-    msg: AnnouncePresence,
-    writeForwarder: IWriteForwarder | null
+    msg: AnnouncePresence
   ) {
-    this.#writeForwarder = writeForwarder;
     logger.info(
       `Spun up a sync connection on room ${room} to client ws and client dbid ${bytesToHex(
         msg.sender
@@ -45,12 +42,7 @@ export default class SyncConnection {
       msg.lastSeens,
       msg.sender
     );
-    this.#inboundStream = new InboundStream(
-      transport,
-      this.#db,
-      msg.sender,
-      this.#writeForwarder
-    );
+    this.#inboundStream = new InboundStream(transport, this.#db, msg.sender);
   }
 
   start() {
