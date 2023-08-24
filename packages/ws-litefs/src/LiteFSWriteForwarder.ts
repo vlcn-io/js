@@ -28,4 +28,11 @@ export class LiteFSWriteForwarder implements IWriteForwarder {
   // Does not block the caller as the caller does not
   // need to post a response or read the db.
   async changes(room: string, msg: Changes): Promise<void> {}
+
+  shouldForwardWrites(): boolean {
+    // only return true if we are currently the primary.
+    // Should we observe the primary status or read it on each
+    // write request?
+    return false;
+  }
 }
