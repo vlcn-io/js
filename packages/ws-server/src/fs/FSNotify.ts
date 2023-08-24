@@ -24,7 +24,7 @@ export default class FSNotify {
       );
     }
     // If we're OSX, only watch poke files.
-    // TODO: collapse events over some period? So we only notify for 1 db at most once every N ms.
+    // TODO: if we're LiteFS watch `-pos` files only.
     console.log("Pat:", this.config.dbFolder + "/*");
     this.watcher = chokidar.watch(this.config.dbFolder + path.sep + "*", {
       followSymlinks: false,

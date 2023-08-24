@@ -22,6 +22,7 @@
   "dependencies": {
     "@vlcn.io/crsqlite": "workspace:*",
     "@vlcn.io/ws-common": "workspace:*",
+    "@vlcn.io/ws-server": "workspace:*",
     "better-sqlite3": "^8.3.0",
     "throttle-debounce": "^5.0.0",
     "winston": "^3.10.0"

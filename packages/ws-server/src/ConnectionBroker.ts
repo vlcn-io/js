@@ -66,7 +66,10 @@ export default class ConnectionBroker {
           );
         }
 
-        if (this.#writeForwarder) {
+        if (
+          this.#writeForwarder &&
+          this.#writeForwarder.shouldForwardWrites()
+        ) {
           // forward and await the write
           // then go.
           // How do we know when the underlying db has receive the changes
