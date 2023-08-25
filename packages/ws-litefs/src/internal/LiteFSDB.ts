@@ -1,15 +1,20 @@
 import { Change } from "@vlcn.io/ws-common";
 import { IDB } from "@vlcn.io/ws-server";
-import { util } from "./util.js";
+import { PrimaryConnection } from "./PrimaryConnection.js";
 
 export class LiteFSDB implements IDB {
   readonly #proxied;
   readonly #room;
-  // #primaryConnection;
+  readonly #primaryConnection;
 
-  constructor(room: string, proxied: IDB) {
+  constructor(
+    room: string,
+    proxied: IDB,
+    primaryConnection: PrimaryConnection
+  ) {
     this.#proxied = proxied;
     this.#room = room;
+    this.#primaryConnection = primaryConnection;
   }
 
   get siteId(): Uint8Array {
@@ -31,8 +36,12 @@ export class LiteFSDB implements IDB {
     siteId: Uint8Array,
     newLastSeen: readonly [bigint, number]
   ): Promise<void> {
-    const primary = await util.readPrimaryFileIfExists();
-    if (primary != null) {
+    if (!this.#primaryConnection.isPrimary()) {
+      await this.#primaryConnection.applyChangesetAndSetLastSeen(
+        changes,
+        siteId,
+        newLastSeen
+      );
     } else {
       this.#proxied.applyChangesetAndSetLastSeen(changes, siteId, newLastSeen);
     }

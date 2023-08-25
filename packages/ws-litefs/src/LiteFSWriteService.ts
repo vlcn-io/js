@@ -20,11 +20,6 @@ class EstablishedConnection {
   readonly #schemaNamesAndVersions = new Map<string, [string, bigint]>();
   readonly #intervalHandle;
 
-  // Opens a port and listens for connections
-  // This service will be alive even on followers to handle the case
-  // where a follower is promoted.
-  // If we are de-promoted we should tear down open connections.
-  // ---
   constructor(
     conn: net.Socket,
     config: Config,
@@ -46,7 +41,7 @@ class EstablishedConnection {
 
     // - presence
     // - apply changes
-    // - close a given room
+    // - close a given room? We have idle callbacks so that should cover the close case.
 
     // decodes the binary-encoded message
     // processes it by passing it to #writer
@@ -138,6 +133,14 @@ class EstablishedConnection {
   };
 }
 
+/**
+ * Creates a server that listens for forwarded writes.
+ * This server is running on all leaders and followers. On followers it doesn't do anything
+ * since nobody will connect to it. Once a follower is promoted, however, other followers
+ * will begin moving their connections here.
+ * @param config
+ * @param dbcache
+ */
 export function createLiteFSWriteService(config: Config, dbcache: DBCache) {
   const server = net.createServer();
   server.on("connection", (conn) => handleConnection(conn, config, dbcache));

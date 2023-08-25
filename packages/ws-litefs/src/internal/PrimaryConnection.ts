@@ -2,6 +2,7 @@ import { primaryFilePath, util } from "./util.js";
 import chokidar from "chokidar";
 import net from "net";
 import { port } from "../LiteFSWriteService.js";
+import { Change } from "@vlcn.io/ws-common";
 
 // A connection from a follower to the primary.
 // Follows the primary as it moves.
@@ -32,6 +33,12 @@ export class PrimaryConnection {
   isPrimary() {
     return this.#currentPrimary == null;
   }
+
+  async applyChangesetAndSetLastSeen(
+    changes: readonly Change[],
+    siteId: Uint8Array,
+    newLastSeen: readonly [bigint, number]
+  ): Promise<void> {}
 
   // TODO: test when we only watch a single file and not a dir.
   #primaryFileCreatedOrRemoved = async (path: string) => {

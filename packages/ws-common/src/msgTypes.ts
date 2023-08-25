@@ -5,6 +5,8 @@ export const tags = {
   Changes: 2,
   RejectChanges: 3,
   StartStreaming: 4,
+  // ForwardedAnnouncePresence: 5,
+  // ForwardedChanges: 6,
 } as const;
 
 export type Tags = typeof tags;
@@ -54,3 +56,16 @@ export type StartStreaming = Readonly<{
   excludeSites: readonly Uint8Array[];
   localOnly: boolean;
 }>;
+
+export type ForwardedAnnouncePresence = Readonly<{
+  // _tag: tags.ForwardedAnnouncePresence;
+  room: string;
+}> &
+  Omit<AnnouncePresence, "_tag">;
+
+export type ForwardedChanges = Readonly<{
+  // _tag: tags.ForwardedChanges;
+  room: string;
+  newLastSeen: readonly [bigint, number];
+}> &
+  Omit<Changes, "_tag">;
