@@ -1,5 +1,5 @@
 import { Msg, decode, tags } from "@vlcn.io/ws-common";
-import SyncConnection from "./SyncConnection.js";
+import SyncConnection, { createSyncConnection } from "./SyncConnection.js";
 import DBCache from "./DBCache.js";
 import { WebSocket } from "ws";
 import Transport from "./Trasnport.js";
@@ -28,12 +28,12 @@ export default class ConnectionBroker {
     this.#ws = ws;
     this.#room = room;
 
-    this.#ws.on("message", (data) => {
+    this.#ws.on("message", async (data) => {
       // TODO: for litefs support we should just read the tag out
       // then pass the message to the primary
       const msg = decode(new Uint8Array(data as any));
       try {
-        this.#handleMessage(msg);
+        await this.#handleMessage(msg);
       } catch (e) {
         console.error(e);
         this.close();
@@ -51,7 +51,7 @@ export default class ConnectionBroker {
     // this.#ws.on("ping", () => {});
   }
 
-  #handleMessage(msg: Msg) {
+  async #handleMessage(msg: Msg) {
     const tag = msg._tag;
     switch (tag) {
       // Note: room could go in the `AnnouncePresence` message instead of the random headers.
@@ -64,7 +64,7 @@ export default class ConnectionBroker {
           );
         }
 
-        const syncConnection = new SyncConnection(
+        const syncConnection = await createSyncConnection(
           this.#dbCache,
           new Transport(this.#ws),
           this.#room,
@@ -79,7 +79,7 @@ export default class ConnectionBroker {
         // apply the changes
         // if no inbound stream is started, this'll start one.
         const syncConn = this.#syncConnection!;
-        syncConn.receiveChanges(msg);
+        await syncConn.receiveChanges(msg);
         return;
       }
       case tags.RejectChanges: {

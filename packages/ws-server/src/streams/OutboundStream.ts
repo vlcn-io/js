@@ -4,7 +4,7 @@ import {
   tags,
   uintArraysEqual,
 } from "@vlcn.io/ws-common";
-import DB from "../DB.js";
+import DB, { IDB } from "../DB.js";
 import Transport from "../Trasnport.js";
 import logger from "../logger.js";
 
@@ -24,7 +24,7 @@ export default class OutboundStream {
 
   constructor(
     transport: Transport,
-    db: DB,
+    db: IDB,
     lastSeenByClient: readonly [Uint8Array, [bigint, number]][],
     clientDbId: Uint8Array
   ) {

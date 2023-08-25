@@ -1,4 +1,4 @@
-import DB from "./DB.js";
+import { IDB } from "./DB.js";
 import { Config } from "./config.js";
 import FSNotify from "./fs/FSNotify.js";
 import logger from "./logger.js";
@@ -10,7 +10,7 @@ import logger from "./logger.js";
  * Connection re-creation can be expensive due to the work required to setup sqlite + load extensions.
  */
 export default class DBCache {
-  readonly #dbs = new Map<string, [number, DB]>();
+  readonly #dbs = new Map<string, [number, Promise<IDB>]>();
   readonly #config;
   readonly #fsnotify;
 
@@ -19,31 +19,43 @@ export default class DBCache {
     this.#fsnotify = fsnotify;
   }
 
-  getAndRef(roomId: string, schemaName: string, schemaVersion: bigint) {
+  async getAndRef(roomId: string, schemaName: string, schemaVersion: bigint) {
     logger.info(`Get db from cache for room "${roomId}"`);
     let entry = this.#dbs.get(roomId);
     if (entry == null) {
-      entry = [
-        1,
-        new DB(this.#config, this.#fsnotify, roomId, schemaName, schemaVersion),
-      ];
+      const dbPromise = this.#config.dbFactory.createDB(
+        this.#config,
+        this.#fsnotify,
+        roomId,
+        schemaName,
+        schemaVersion
+      );
+      entry = [1, dbPromise];
       this.#dbs.set(roomId, entry);
     } else {
-      const db = entry[1];
-      if (db.schemasMatch(schemaName, schemaVersion)) {
+      try {
+        // set ref count before we await so a return of a db in an event loop
+        // tick doesn't kill the db being created
         entry[0] += 1;
-      } else {
-        // TODO: note that this is not 100% accurate. We could be running an old schema version
-        // in a cached db and use this as a trigger to tear down existing connections and upgrade the schema.
-        throw new Error(
-          `Requested a schema name and version that the server does not have.`
-        );
+        const db = await entry[1];
+        if (!db.schemasMatch(schemaName, schemaVersion)) {
+          throw new Error(
+            `Requested a schema name and version that the server does not have.`
+          );
+        } else {
+          // TODO: note that this is not 100% accurate. We could be running an old schema version
+          // in a cached db and use this as a trigger to tear down existing connections and upgrade the schema.
+        }
+      } catch (e) {
+        this.unref(roomId);
+        throw e;
       }
     }
+
     return entry[1];
   }
 
-  unref(roomId: string) {
+  async unref(roomId: string) {
     logger.info(`Remove db from cache for room "${roomId}"`);
     const entry = this.#dbs.get(roomId);
     if (entry == null) {
@@ -54,8 +66,9 @@ export default class DBCache {
 
     entry[0] -= 1;
     if (entry[0] === 0) {
-      entry[1].close();
       this.#dbs.delete(roomId);
+      const db = await entry[1];
+      db.close();
     } else if (entry[0] < 0) {
       throw new Error(
         `illegal state -- ref count less than 0 for ${roomId}. Maybe closing threw?`
@@ -63,14 +76,16 @@ export default class DBCache {
     }
   }
 
-  destroy() {
+  async destroy() {
+    const promises: Promise<IDB>[] = [];
     for (const [ref, db] of this.#dbs.values()) {
-      try {
-        db.close();
-      } catch (e) {
-        logger.error(e);
-      }
+      promises.push(db);
     }
+    await Promise.all(
+      promises.map(async (p) => {
+        (await p).close();
+      })
+    );
     this.#dbs.clear();
   }
 }

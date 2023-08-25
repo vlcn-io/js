@@ -10,6 +10,7 @@ import InboundStream from "./streams/InboundStream.js";
 import Transport from "./Trasnport.js";
 import logger from "./logger.js";
 import { IWriteForwarder } from "./IWriteForwarder.js";
+import { IDB } from "./DB.js";
 
 /**
  *
@@ -23,6 +24,7 @@ export default class SyncConnection {
 
   constructor(
     dbCache: DBCache,
+    db: IDB,
     transport: Transport,
     room: string,
     msg: AnnouncePresence
@@ -33,7 +35,7 @@ export default class SyncConnection {
       )}`
     );
     this.#dbCache = dbCache;
-    this.#db = dbCache.getAndRef(room, msg.schemaName, msg.schemaVersion);
+    this.#db = db;
     this.#room = room;
 
     this.#outboundStream = new OutboundStream(
@@ -51,9 +53,9 @@ export default class SyncConnection {
     this.#outboundStream.start();
   }
 
-  receiveChanges(changes: Changes) {
+  async receiveChanges(changes: Changes) {
     logger.info(`Sync connection received changes`);
-    this.#inboundStream.receiveChanges(changes);
+    await this.#inboundStream.receiveChanges(changes);
   }
 
   changesRejected(rejection: RejectChanges) {
@@ -69,4 +71,14 @@ export default class SyncConnection {
     // tell the cache we're done. It'll close the db on 0 references.
     this.#dbCache.unref(this.#room);
   }
+}
+
+export async function createSyncConnection(
+  dbCache: DBCache,
+  transport: Transport,
+  room: string,
+  msg: AnnouncePresence
+) {
+  const db = await dbCache.getAndRef(room, msg.schemaName, msg.schemaVersion);
+  return new SyncConnection(dbCache, db, transport, room, msg);
 }
