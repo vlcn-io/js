@@ -1,15 +1,22 @@
-export type Msg = AnnouncePresence | Changes | RejectChanges | StartStreaming;
+export type Msg =
+  | AnnouncePresence
+  | Changes
+  | RejectChanges
+  | StartStreaming
+  | ForwardedAnnouncePresence
+  | ForwardedChanges;
 
 export const tags = {
   AnnouncePresence: 1,
   Changes: 2,
   RejectChanges: 3,
   StartStreaming: 4,
-  // ForwardedAnnouncePresence: 5,
-  // ForwardedChanges: 6,
+  ForwardedAnnouncePresence: 5,
+  ForwardedChanges: 6,
 } as const;
 
 export type Tags = typeof tags;
+export type TagValues = Tags[keyof Tags];
 
 export type CID = string;
 export type PackedPks = Uint8Array;
@@ -57,15 +64,15 @@ export type StartStreaming = Readonly<{
   localOnly: boolean;
 }>;
 
-export type ForwardedAnnouncePresence = Readonly<{
-  // _tag: tags.ForwardedAnnouncePresence;
-  room: string;
-}> &
-  Omit<AnnouncePresence, "_tag">;
+export type ForwardedAnnouncePresence = Omit<AnnouncePresence, "_tag"> &
+  Readonly<{
+    _tag: Tags["ForwardedAnnouncePresence"];
+    room: string;
+  }>;
 
-export type ForwardedChanges = Readonly<{
-  // _tag: tags.ForwardedChanges;
-  room: string;
-  newLastSeen: readonly [bigint, number];
-}> &
-  Omit<Changes, "_tag">;
+export type ForwardedChanges = Omit<Changes, "_tag"> &
+  Readonly<{
+    _tag: Tags["ForwardedChanges"];
+    room: string;
+    newLastSeen: readonly [bigint, number];
+  }>;
