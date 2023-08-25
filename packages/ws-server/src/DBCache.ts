@@ -19,6 +19,14 @@ export default class DBCache {
     this.#fsnotify = fsnotify;
   }
 
+  __tests_only_checkRef(roomId: string): number {
+    let ret = this.#dbs.get(roomId);
+    if (ret == null) {
+      return 0;
+    }
+    return ret[0];
+  }
+
   async getAndRef(roomId: string, schemaName: string, schemaVersion: bigint) {
     logger.info(`Get db from cache for room "${roomId}"`);
     let entry = this.#dbs.get(roomId);
