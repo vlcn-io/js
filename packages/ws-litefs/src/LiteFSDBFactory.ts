@@ -1,11 +1,14 @@
 import { Config, IDBFactory } from "@vlcn.io/ws-server";
 import { IDB, internal } from "@vlcn.io/ws-server";
-import { PrimaryConnection } from "./internal/PrimaryConnection";
+import {
+  PrimaryConnection,
+  createPrimaryConnection,
+} from "./internal/PrimaryConnection.js";
 
 export class LiteFSDBFactory implements IDBFactory {
   readonly #primaryConnection;
-  constructor() {
-    this.#primaryConnection = new PrimaryConnection();
+  constructor(primaryConnection: PrimaryConnection) {
+    this.#primaryConnection = primaryConnection;
   }
 
   async createDB(
@@ -21,4 +24,9 @@ export class LiteFSDBFactory implements IDBFactory {
     // internal.DB
     throw new Error("unimplemented");
   }
+}
+
+export async function createLiteFSDBFactory() {
+  const primaryConnection = await createPrimaryConnection();
+  return new LiteFSDBFactory(primaryConnection);
 }
