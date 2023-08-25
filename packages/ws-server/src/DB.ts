@@ -8,7 +8,26 @@ import { throttle } from "throttle-debounce";
 import FSNotify from "./fs/FSNotify.js";
 import touchHack from "./fs/touchHack.js";
 
-export interface IDB {}
+export interface IDB {
+  readonly siteId: Uint8Array;
+  readonly schemaName: string;
+  readonly schemaVersion: bigint;
+
+  getLastSeen(site: Uint8Array): [bigint, number];
+  applyChangesetAndSetLastSeen(
+    changes: readonly Change[],
+    siteId: Uint8Array,
+    newLastSeen: readonly [bigint, number]
+  ): Promise<void>;
+  pullChangeset(
+    since: readonly [bigint, number],
+    excludeSite: Uint8Array
+  ): readonly Change[];
+
+  schemasMatch(schemaName: string, schemaVersion: bigint): boolean;
+  onChange(cb: () => void): () => void;
+  close(): void;
+}
 
 /**
  * Abstracts over a DB and provides just the operations requred by the sync server.
@@ -16,7 +35,7 @@ export interface IDB {}
  * We could theoretically use Turso in this setup. Once they support multi-tenancy.
  * fly and litefs is another option if we can control deploying ourselves.
  */
-export default class DB {
+export default class DB implements IDB {
   readonly #db;
   readonly #schemaName;
   readonly #fsnotify;
@@ -199,18 +218,18 @@ export default class DB {
     return [result[0], Number(result[1])];
   }
 
-  // TODO: forward
   applyChangesetAndSetLastSeen(
     changes: readonly Change[],
     siteId: Uint8Array,
     newLastSeen: readonly [bigint, number]
-  ): void {
+  ): Promise<void> {
     this.#applyChangesAndSetLastSeenTx(changes, siteId, newLastSeen);
     if (this.#fsnotify == null) {
       this.#notifyOfChange();
     } else {
       touchHack(this.#dbpath);
     }
+    return Promise.resolve();
   }
 
   pullChangeset(

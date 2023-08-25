@@ -1,5 +1,5 @@
 import { Changes, greaterThanOrEqual, tags } from "@vlcn.io/ws-common";
-import DB from "../DB.js";
+import DB, { IDB } from "../DB.js";
 import Transport from "../Trasnport.js";
 
 /**
@@ -15,7 +15,7 @@ export default class InboundStream {
   readonly #from;
   #lastSeen: readonly [bigint, number] | null = null;
 
-  constructor(transport: Transport, db: DB, from: Uint8Array) {
+  constructor(transport: Transport, db: IDB, from: Uint8Array) {
     this.#transport = transport;
     this.#db = db;
     this.#from = from;
@@ -35,7 +35,7 @@ export default class InboundStream {
     });
   }
 
-  receiveChanges(msg: Changes) {
+  async receiveChanges(msg: Changes) {
     // check for contiguity
     // apply
     if (this.#lastSeen == null) {
@@ -57,7 +57,11 @@ export default class InboundStream {
     }
     const lastChange = msg.changes[msg.changes.length - 1];
     const newLastSeen = [lastChange[5], 0] as const;
-    this.#db.applyChangesetAndSetLastSeen(msg.changes, msg.sender, newLastSeen);
+    await this.#db.applyChangesetAndSetLastSeen(
+      msg.changes,
+      msg.sender,
+      newLastSeen
+    );
 
     this.#lastSeen = newLastSeen;
   }
