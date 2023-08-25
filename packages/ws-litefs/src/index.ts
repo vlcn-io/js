@@ -1,2 +1,2 @@
-export { LiteFSWriteForwarder } from "./internal/LiteFSWriteForwarder.js";
 export { createLiteFSWriteService } from "./LiteFSWriteService.js";
+export { createLiteFSDBFactory } from "./LiteFSDBFactory.js";
