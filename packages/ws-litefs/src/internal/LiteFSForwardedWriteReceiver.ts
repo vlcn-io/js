@@ -1,12 +1,12 @@
 import { AnnouncePresence, Changes } from "@vlcn.io/ws-common";
-import { Config, PresenceResponse, internal } from "@vlcn.io/ws-server";
+import { Config, IDB, PresenceResponse, internal } from "@vlcn.io/ws-server";
 import fs from "fs";
 
 // Master side. Receives a forwarded write.
 // Should we only allow message that are inside the same network? Can we determine the litefs network?
 export class LiteFSForwardedWriteReceiver {
   readonly #dbcache;
-  #db: InstanceType<typeof internal.DB> | null = null;
+  #db: IDB | null = null;
   #room: string | null = null;
   readonly #config;
 
@@ -23,13 +23,13 @@ export class LiteFSForwardedWriteReceiver {
     room: string,
     msg: AnnouncePresence
   ): Promise<PresenceResponse> {
-    if (this.#room != null) {
-      throw new Error(`illegal state -- room already set ${room}`);
+    if (this.#room != null || this.#db != null) {
+      throw new Error(`illegal state -- room and db already set ${room}`);
     }
     // The master needs to create the DB and apply (or migrate) the schema
     // which is done when retrieving the DB from the cache.
     try {
-      this.#db = this.#dbcache.getAndRef(
+      this.#db = await this.#dbcache.getAndRef(
         room,
         msg.schemaName,
         msg.schemaVersion
