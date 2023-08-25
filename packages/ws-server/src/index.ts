@@ -16,6 +16,7 @@ export const internal = {
   DBCache,
   DB,
   getDbPath,
+  FSNotify,
 };
 
 export * from "./config.js";

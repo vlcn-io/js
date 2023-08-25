@@ -5,14 +5,15 @@ import { LiteFSForwardedWriteReceiver } from "./internal/LiteFSForwardedWriteRec
 class EstablishedConnection {
   readonly #writer;
   #closed = false;
+  readonly #conn;
 
   // Opens a port and listens for connections
   // This service will be alive even on followers to handle the case
-  // where a follow is promoted.
+  // where a follower is promoted.
   // If we are de-promoted we should tear down open connections.
-  // and clear the db cache.
   // ---
   constructor(conn: net.Socket, config: Config) {
+    this.#conn = conn;
     conn.on("data", this.#handleMessage);
     conn.on("close", this.close);
     conn.on("error", this.close);
@@ -25,12 +26,16 @@ class EstablishedConnection {
       return;
     }
     // decodes the binary-encoded message
-    // processes it.
+    // processes it by passing it to #writer
   };
 
   close = () => {
+    if (this.#closed) {
+      return;
+    }
     this.#closed = true;
     this.#writer.close();
+    this.#conn.destroy();
   };
 }
 
