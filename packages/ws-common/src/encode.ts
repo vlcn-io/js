@@ -1,5 +1,5 @@
 import * as encoding from "lib0/encoding";
-import { Change, Msg, tags } from "./msgTypes.js";
+import { AnnouncePresence, Change, Changes, Msg, tags } from "./msgTypes.js";
 
 // TODO: we can compress most of this by:
 // 1. adding varint encdoing support for bigints
@@ -12,23 +12,10 @@ export function encode(msg: Msg): Uint8Array {
 
   switch (msg._tag) {
     case tags.AnnouncePresence:
-      encoding.writeUint8Array(encoder, msg.sender);
-      encoding.writeVarUint(encoder, msg.lastSeens.length);
-      for (const lastSeen of msg.lastSeens) {
-        encoding.writeUint8Array(encoder, lastSeen[0]);
-        // TODO: lib0 needs to support varbigints. This wastes a ton of space.
-        encoding.writeBigInt64(encoder, lastSeen[1][0]);
-        encoding.writeVarInt(encoder, lastSeen[1][1]);
-      }
-      encoding.writeVarString(encoder, msg.schemaName);
-      encoding.writeBigInt64(encoder, msg.schemaVersion);
+      writeAnnouncePresenceSansTag(encoder, msg);
       return encoding.toUint8Array(encoder);
     case tags.Changes:
-      encoding.writeUint8Array(encoder, msg.sender);
-      encoding.writeBigInt64(encoder, msg.since[0]);
-      encoding.writeVarInt(encoder, msg.since[1]);
-      writeChanges(encoder, msg.changes);
-
+      writeChangesMsgSansTag(encoder, msg);
       return encoding.toUint8Array(encoder);
     case tags.RejectChanges:
       encoding.writeUint8Array(encoder, msg.whose);
@@ -44,7 +31,44 @@ export function encode(msg: Msg): Uint8Array {
       }
       encoding.writeUint8(encoder, msg.localOnly ? 1 : 0);
       return encoding.toUint8Array(encoder);
+    case tags.ForwardedAnnouncePresence:
+      writeAnnouncePresenceSansTag(encoder, msg);
+      encoding.writeVarString(encoder, msg.room);
+      return encoding.toUint8Array(encoder);
+    case tags.ForwardedChanges:
+      writeChangesMsgSansTag(encoder, msg);
+      encoding.writeVarString(encoder, msg.room);
+      encoding.writeBigInt64(encoder, msg.newLastSeen[0]);
+      encoding.writeVarInt(encoder, msg.newLastSeen[1]);
+      return encoding.toUint8Array(encoder);
   }
+}
+
+// Tag is expected to already have been written
+function writeAnnouncePresenceSansTag(
+  encoder: encoding.Encoder,
+  msg: Omit<AnnouncePresence, "_tag">
+) {
+  encoding.writeUint8Array(encoder, msg.sender);
+  encoding.writeVarUint(encoder, msg.lastSeens.length);
+  for (const lastSeen of msg.lastSeens) {
+    encoding.writeUint8Array(encoder, lastSeen[0]);
+    // TODO: lib0 needs to support varbigints. This wastes a ton of space.
+    encoding.writeBigInt64(encoder, lastSeen[1][0]);
+    encoding.writeVarInt(encoder, lastSeen[1][1]);
+  }
+  encoding.writeVarString(encoder, msg.schemaName);
+  encoding.writeBigInt64(encoder, msg.schemaVersion);
+}
+
+function writeChangesMsgSansTag(
+  encoder: encoding.Encoder,
+  msg: Omit<Changes, "_tag">
+) {
+  encoding.writeUint8Array(encoder, msg.sender);
+  encoding.writeBigInt64(encoder, msg.since[0]);
+  encoding.writeVarInt(encoder, msg.since[1]);
+  writeChanges(encoder, msg.changes);
 }
 
 // export function decode(data: Uint8Array): Msg {}
