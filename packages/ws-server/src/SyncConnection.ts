@@ -9,7 +9,6 @@ import OutboundStream from "./streams/OutboundStream.js";
 import InboundStream from "./streams/InboundStream.js";
 import Transport from "./Trasnport.js";
 import logger from "./logger.js";
-import { IWriteForwarder } from "./IWriteForwarder.js";
 import { IDB } from "./DB.js";
 
 /**

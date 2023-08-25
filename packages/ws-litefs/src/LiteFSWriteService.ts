@@ -6,7 +6,9 @@ import DBCache from "@vlcn.io/ws-server/src/DBCache.js";
 
 export const port = 9000;
 
-// 1 connection per follower.
+/**
+ * Represents a connection from the leader to a follower.
+ */
 class EstablishedConnection {
   #closed = false;
   readonly #conn;
@@ -16,6 +18,7 @@ class EstablishedConnection {
   // Async management of the cache could cause a race of two people trying to insert the same entry.
   readonly #dbs = new Map<string, [number, Promise<IDB>]>();
   readonly #schemaNamesAndVersions = new Map<string, [string, bigint]>();
+  readonly #intervalHandle;
 
   // Opens a port and listens for connections
   // This service will be alive even on followers to handle the case
@@ -30,6 +33,7 @@ class EstablishedConnection {
     this.#conn = conn;
     this.#config = config;
     this.#dbcache = dbcache;
+    this.#intervalHandle = setInterval(this.#cleanupIdleDBs, 60_000);
     conn.on("data", this.#handleMessage);
     conn.on("close", this.close);
     conn.on("error", this.close);
@@ -102,16 +106,33 @@ class EstablishedConnection {
     return entry;
   }
 
-  #cleanupIdleDBs = () => {};
+  #cleanupIdleDBs = () => {
+    const now = Date.now();
+    for (const [room, [lastUsed, _]] of this.#dbs.entries()) {
+      if (now - lastUsed > 5 * 60_000) {
+        this.#dbs.delete(room);
+        try {
+          this.#dbcache.unref(room);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    }
+  };
 
   close = () => {
     if (this.#closed) {
       return;
     }
     this.#closed = true;
+    clearInterval(this.#intervalHandle);
     for (const [room, entry] of this.#dbs.entries()) {
       this.#dbs.delete(room);
-      this.#dbcache.unref(room);
+      try {
+        this.#dbcache.unref(room);
+      } catch (e) {
+        console.error(e);
+      }
     }
     this.#conn.destroy();
   };

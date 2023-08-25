@@ -16,17 +16,16 @@ export type Version = bigint;
 export type CausalLength = bigint;
 export type Val = any;
 
-export type Change =
-  | readonly [
-      TableName,
-      PackedPks,
-      CID,
-      Val,
-      Version, // col version
-      Version, // db version
-      Uint8Array | null,
-      CausalLength
-    ];
+export type Change = readonly [
+  TableName,
+  PackedPks,
+  CID,
+  Val,
+  Version, // col version
+  Version, // db version
+  Uint8Array | null,
+  CausalLength,
+];
 
 export type AnnouncePresence = Readonly<{
   _tag: Tags["AnnouncePresence"];
