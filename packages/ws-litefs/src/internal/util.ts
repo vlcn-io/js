@@ -1,9 +1,16 @@
+import fs from "fs";
+
+export let primaryFilePath = "/var/lib/litefs/.primary";
+
 export const util = {
-  /**
-   * Do we need to forward writes for the given room?
-   * @param room
-   */
-  async shouldForwardWrites(room: string): Promise<boolean> {
-    return false;
+  async readPrimaryFileIfExists(): Promise<string | null> {
+    return fs.promises
+      .readFile(primaryFilePath, { encoding: "utf-8" })
+      .then((content) => {
+        return content.split("\n")[0];
+      })
+      .catch((e) => {
+        return null;
+      });
   },
 };

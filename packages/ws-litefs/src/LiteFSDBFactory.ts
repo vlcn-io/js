@@ -1,7 +1,13 @@
 import { Config, IDBFactory } from "@vlcn.io/ws-server";
 import { IDB, internal } from "@vlcn.io/ws-server";
+import { PrimaryConnection } from "./internal/PrimaryConnection";
 
 export class LiteFSDBFactory implements IDBFactory {
+  readonly #primaryConnection;
+  constructor() {
+    this.#primaryConnection = new PrimaryConnection();
+  }
+
   async createDB(
     config: Config,
     fsnotify: InstanceType<typeof internal.FSNotify> | null,

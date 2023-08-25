@@ -5,6 +5,7 @@ import { util } from "./util.js";
 export class LiteFSDB implements IDB {
   readonly #proxied;
   readonly #room;
+  // #primaryConnection;
 
   constructor(room: string, proxied: IDB) {
     this.#proxied = proxied;
@@ -30,7 +31,10 @@ export class LiteFSDB implements IDB {
     siteId: Uint8Array,
     newLastSeen: readonly [bigint, number]
   ): Promise<void> {
-    if (await util.shouldForwardWrites(this.#room)) {
+    const primary = await util.readPrimaryFileIfExists();
+    if (primary != null) {
+    } else {
+      this.#proxied.applyChangesetAndSetLastSeen(changes, siteId, newLastSeen);
     }
   }
 
