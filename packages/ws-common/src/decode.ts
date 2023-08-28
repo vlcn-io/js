@@ -4,9 +4,9 @@ import {
   Change,
   Changes,
   Err,
-  ForwardedAnnouncePresence,
-  ForwardedChanges,
-  ForwardedChangesResponse,
+  CreateDbOnPrimary,
+  ApplyChangesOnPrimary,
+  ApplyChangesOnPrimaryResponse,
   Msg,
   Ping,
   Pong,
@@ -16,7 +16,6 @@ import {
   tags,
 } from "./msgTypes.js";
 import { BIGINT, BLOB, BOOL, NULL, NUMBER, STRING } from "./encode.js";
-import { F } from "vitest/dist/types-e3c9754d.js";
 
 export function decode(msg: Uint8Array): Msg {
   const decoder = decoding.createDecoder(msg);
@@ -61,9 +60,9 @@ export function decode(msg: Uint8Array): Msg {
         ),
         localOnly: decoding.readUint8(decoder) == 1 ? true : false,
       } satisfies StartStreaming;
-    case tags.ForwardedAnnouncePresence:
+    case tags.CreateDbOnPrimary:
       return {
-        _tag: tags.ForwardedAnnouncePresence,
+        _tag: tags.CreateDbOnPrimary,
         sender: decoding.readUint8Array(decoder, 16),
         lastSeens: Array.from({ length: decoding.readVarUint(decoder) }).map(
           (_) => {
@@ -76,10 +75,10 @@ export function decode(msg: Uint8Array): Msg {
         schemaName: decoding.readVarString(decoder),
         schemaVersion: decoding.readBigInt64(decoder),
         room: decoding.readVarString(decoder),
-      } satisfies ForwardedAnnouncePresence;
-    case tags.ForwardedChanges:
+      } satisfies CreateDbOnPrimary;
+    case tags.ApplyChangesOnPrimary:
       return {
-        _tag: tags.ForwardedChanges,
+        _tag: tags.ApplyChangesOnPrimary,
         sender: decoding.readUint8Array(decoder, 16),
         since: [decoding.readBigInt64(decoder), decoding.readVarInt(decoder)],
         changes: readChanges(decoder),
@@ -88,13 +87,13 @@ export function decode(msg: Uint8Array): Msg {
           decoding.readBigInt64(decoder),
           decoding.readVarInt(decoder),
         ],
-      } satisfies ForwardedChanges;
+      } satisfies ApplyChangesOnPrimary;
     case tags.Ping:
     case tags.Pong:
-    case tags.ForwardedChangesResponse:
+    case tags.ApplyChangesOnPrimaryResponse:
       return {
         _tag: tag,
-      } satisfies Ping | Pong | ForwardedChangesResponse;
+      } satisfies Ping | Pong | ApplyChangesOnPrimaryResponse;
     case tags.Err:
       return {
         _tag: tags.Err,

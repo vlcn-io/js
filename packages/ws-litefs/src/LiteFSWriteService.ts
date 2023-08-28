@@ -2,9 +2,9 @@ import { Config, IDB, internal } from "@vlcn.io/ws-server";
 import net from "net";
 import {
   Err,
-  ForwardedAnnouncePresence,
-  ForwardedAnnouncePresenceResonse,
-  ForwardedChanges,
+  CreateDbOnPrimary,
+  CreateDbOnPrimaryResponse,
+  ApplyChangesOnPrimary,
   Msg,
   Pong,
   decode,
@@ -52,10 +52,10 @@ class EstablishedConnection {
     const msg = decode(data);
     let ret: Msg | null = null;
     switch (msg._tag) {
-      case tags.ForwardedAnnouncePresence:
+      case tags.CreateDbOnPrimary:
         ret = await this.#presenceAnnounced(msg.room, msg);
         break;
-      case tags.ForwardedChanges:
+      case tags.ApplyChangesOnPrimary:
         ret = await this.#changesReceived(msg.room, msg, msg.newLastSeen);
         break;
       case tags.Ping:
@@ -81,8 +81,8 @@ class EstablishedConnection {
 
   async #presenceAnnounced(
     room: string,
-    msg: ForwardedAnnouncePresence
-  ): Promise<ForwardedAnnouncePresenceResonse | Err> {
+    msg: CreateDbOnPrimary
+  ): Promise<CreateDbOnPrimaryResponse | Err> {
     this.#schemaNamesAndVersions.set(room, [msg.schemaName, msg.schemaVersion]);
     const dbEntry = this.#getDB(room);
     dbEntry[0] = Date.now();
@@ -98,14 +98,14 @@ class EstablishedConnection {
     }
 
     return {
-      _tag: tags.ForwardedAnnouncePresenceResonse,
+      _tag: tags.CreateDbOnPrimaryResponse,
       txid: await util.getTxId(this.#config, room),
     };
   }
 
   async #changesReceived(
     room: string,
-    msg: ForwardedChanges,
+    msg: ApplyChangesOnPrimary,
     newLastSeen: readonly [bigint, number]
   ) {
     const dbEntry = this.#getDB(room);
@@ -113,7 +113,7 @@ class EstablishedConnection {
     const db = await dbEntry[1];
     await db.applyChangesetAndSetLastSeen(msg.changes, msg.sender, newLastSeen);
     return {
-      _tag: tags.ForwardedChangesResponse,
+      _tag: tags.ApplyChangesOnPrimaryResponse,
     };
   }
 

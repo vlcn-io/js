@@ -28,7 +28,7 @@ export class LiteFSDBFactory implements IDBFactory {
       // get txid back
       // await our file to catch up to that txid
       // return the db.
-      this.#primaryConnection.
+      this.#primaryConnection.createDbOnPrimary();
     } else {
       return new internal.DB(config, fsnotify, room, schemaName, schemaVersion);
     }
