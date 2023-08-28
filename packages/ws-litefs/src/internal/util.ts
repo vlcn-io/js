@@ -1,11 +1,11 @@
 import { Config, internal } from "@vlcn.io/ws-server";
 import fs from "fs";
-import { primaryFilePath } from "../config.js";
+import { config } from "../config.js";
 
 export const util = {
   async readPrimaryFileIfExists(): Promise<string | null> {
     return fs.promises
-      .readFile(primaryFilePath, { encoding: "utf-8" })
+      .readFile(config.primaryFilePath, { encoding: "utf-8" })
       .then((content) => {
         return content.split("\n")[0];
       })

@@ -9,7 +9,7 @@ import {
   ApplyChangesOnPrimary,
   Err,
 } from "@vlcn.io/ws-common";
-import { port } from "../config";
+import { config } from "../config";
 
 export class PrimarySocket {
   readonly #currentPrimaryHostname;
@@ -86,7 +86,7 @@ export class PrimarySocket {
   #connect() {
     const socket = new net.Socket();
 
-    socket.connect(port, this.#currentPrimaryHostname);
+    socket.connect(config.port, this.#currentPrimaryHostname);
     socket.on("data", this.#handleMessage);
     socket.on("error", this.#onError);
     socket.on("close", this.#onClose);
