@@ -32,11 +32,13 @@ export function encode(msg: Msg): Uint8Array {
       encoding.writeUint8(encoder, msg.localOnly ? 1 : 0);
       return encoding.toUint8Array(encoder);
     case tags.CreateDbOnPrimary:
-      writeAnnouncePresenceSansTag(encoder, msg);
       encoding.writeVarString(encoder, msg.room);
+      encoding.writeVarString(encoder, msg.schemaName);
+      encoding.writeBigInt64(encoder, msg.schemaVersion);
       return encoding.toUint8Array(encoder);
     case tags.ApplyChangesOnPrimary:
-      writeChangesMsgSansTag(encoder, msg);
+      encoding.writeUint8Array(encoder, msg.sender);
+      writeChanges(encoder, msg.changes);
       encoding.writeVarString(encoder, msg.room);
       encoding.writeBigInt64(encoder, msg.newLastSeen[0]);
       encoding.writeVarInt(encoder, msg.newLastSeen[1]);

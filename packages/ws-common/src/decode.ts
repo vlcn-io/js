@@ -63,24 +63,14 @@ export function decode(msg: Uint8Array): Msg {
     case tags.CreateDbOnPrimary:
       return {
         _tag: tags.CreateDbOnPrimary,
-        sender: decoding.readUint8Array(decoder, 16),
-        lastSeens: Array.from({ length: decoding.readVarUint(decoder) }).map(
-          (_) => {
-            return [
-              decoding.readUint8Array(decoder, 16),
-              [decoding.readBigInt64(decoder), decoding.readVarInt(decoder)],
-            ];
-          }
-        ),
+        room: decoding.readVarString(decoder),
         schemaName: decoding.readVarString(decoder),
         schemaVersion: decoding.readBigInt64(decoder),
-        room: decoding.readVarString(decoder),
       } satisfies CreateDbOnPrimary;
     case tags.ApplyChangesOnPrimary:
       return {
         _tag: tags.ApplyChangesOnPrimary,
         sender: decoding.readUint8Array(decoder, 16),
-        since: [decoding.readBigInt64(decoder), decoding.readVarInt(decoder)],
         changes: readChanges(decoder),
         room: decoding.readVarString(decoder),
         newLastSeen: [

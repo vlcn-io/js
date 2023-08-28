@@ -29,3 +29,20 @@ export const util = {
     return BigInt("0x" + txidHex);
   },
 };
+
+export function waitUntil(
+  config: Config,
+  room: string,
+  txid: bigint,
+  notifier: InstanceType<typeof internal.FSNotify>
+) {
+  return new Promise<void>((resolve, reject) => {
+    const removeListener = notifier.addListener(room, async () => {
+      const currentTxid = await util.getTxId(config, room);
+      if (currentTxid >= txid) {
+        removeListener();
+        resolve();
+      }
+    });
+  });
+}

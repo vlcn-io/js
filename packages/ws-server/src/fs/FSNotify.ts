@@ -20,7 +20,7 @@ export default class FSNotify {
     const dbfolder = this.config.dbFolder;
     if (dbfolder == null) {
       throw new Error(
-        `FSNotify cannot be used with in-memory databases. dbFolder was null in your config.`
+        `FSNotify cannot be used with in-memory databases. dbFolder was null in your config which indicates you want an in-memory db.`
       );
     }
     // If we're OSX, only watch poke files.

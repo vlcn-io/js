@@ -4,6 +4,7 @@ import {
   PrimaryConnection,
   createPrimaryConnection,
 } from "./internal/PrimaryConnection.js";
+import { waitUntil } from "./internal/util.js";
 
 /**
  * A DBFactory on the follower or leader.
@@ -12,8 +13,13 @@ import {
  */
 export class LiteFSDBFactory implements IDBFactory {
   readonly #primaryConnection;
-  constructor(primaryConnection: PrimaryConnection) {
+  readonly #fsnotify;
+  constructor(
+    primaryConnection: PrimaryConnection,
+    fsnotify: InstanceType<typeof internal.FSNotify>
+  ) {
     this.#primaryConnection = primaryConnection;
+    this.#fsnotify = fsnotify;
   }
 
   async createDB(
@@ -24,18 +30,24 @@ export class LiteFSDBFactory implements IDBFactory {
     schemaVersion: bigint
   ): Promise<IDB> {
     if (!this.#primaryConnection.isPrimary()) {
-      // create on primary
-      // get txid back
-      // await our file to catch up to that txid
-      // return the db.
-      this.#primaryConnection.createDbOnPrimary();
-    } else {
-      return new internal.DB(config, fsnotify, room, schemaName, schemaVersion);
+      // If we are not primary then:
+      // 1. Create the DB on the primary
+      // 2. Get the TXID back
+      // 3. Wait for our DB to match that txid
+      const response = await this.#primaryConnection.createDbOnPrimary(
+        room,
+        schemaName,
+        schemaVersion
+      );
+      await waitUntil(config, room, response.txid, this.#fsnotify);
     }
+    return new internal.DB(config, fsnotify, room, schemaName, schemaVersion);
   }
 }
 
-export async function createLiteFSDBFactory() {
+export async function createLiteFSDBFactory(
+  fsnotify: InstanceType<typeof internal.FSNotify>
+) {
   const primaryConnection = await createPrimaryConnection();
-  return new LiteFSDBFactory(primaryConnection);
+  return new LiteFSDBFactory(primaryConnection, fsnotify);
 }
