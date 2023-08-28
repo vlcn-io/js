@@ -11,6 +11,7 @@ import {
   tags,
   CreateDbOnPrimary,
   ApplyChangesOnPrimary,
+  Err,
 } from "@vlcn.io/ws-common";
 
 let nextRequestId = 0;
@@ -116,6 +117,7 @@ export class PrimaryConnection {
 
   close() {
     this.#closed = true;
+    this.#primarySocket?.close();
     this.#watcher.close();
   }
 }
@@ -130,11 +132,11 @@ class PrimarySocket {
   // which request is which.
   readonly #createDbRequests = new Map<
     number,
-    (msg: CreateDbOnPrimaryResponse) => void
+    (msg: CreateDbOnPrimaryResponse | Err) => void
   >();
   readonly #applyChangesRequests = new Map<
     number,
-    (msg: ApplyChangesOnPrimaryResponse) => void
+    (msg: ApplyChangesOnPrimaryResponse | Err) => void
   >();
   #closed = false;
 
@@ -151,9 +153,13 @@ class PrimarySocket {
       const requestId = nextRequestId++;
       this.#createDbRequests.set(
         requestId,
-        (msg: CreateDbOnPrimaryResponse) => {
+        (msg: CreateDbOnPrimaryResponse | Err) => {
           this.#createDbRequests.delete(requestId);
-          resolve(msg);
+          if (msg._tag == tags.Err) {
+            reject(msg);
+          } else {
+            resolve(msg);
+          }
         }
       );
       this.#socket.write(encode(msg), (e) => {
@@ -172,9 +178,13 @@ class PrimarySocket {
       const requestId = nextRequestId++;
       this.#applyChangesRequests.set(
         requestId,
-        (msg: ApplyChangesOnPrimaryResponse) => {
+        (msg: ApplyChangesOnPrimaryResponse | Err) => {
           this.#applyChangesRequests.delete(requestId);
-          resolve(msg);
+          if (msg._tag == tags.Err) {
+            reject(msg);
+          } else {
+            resolve(msg);
+          }
         }
       );
       this.#socket.write(encode(msg), (e) => {
@@ -198,16 +208,43 @@ class PrimarySocket {
   }
 
   #handleMessage = (data: Buffer) => {
-    // ping pong processing to re-establish connection that was broken for unknown reasons
     const msg = decode(data);
     switch (msg._tag) {
       case tags.Pong:
         this.#lastPong = Date.now();
         return;
       case tags.CreateDbOnPrimaryResponse:
-
+        const createDbRequest = this.#createDbRequests.get(msg._reqid);
+        if (createDbRequest == null) {
+          throw new Error(
+            `Received a response for a request that doesn't exist: ${msg._reqid}`
+          );
+        }
+        createDbRequest(msg);
+        return;
       case tags.Err:
+        const createRequest = this.#createDbRequests.get(msg._reqid);
+        if (createRequest != null) {
+          createRequest(msg);
+          return;
+        }
+        const applyRequest = this.#applyChangesRequests.get(msg._reqid);
+        if (applyRequest != null) {
+          applyRequest(msg);
+          return;
+        }
+        throw new Error(
+          `Received an error response for a request that doesn't exist: ${msg._reqid}`
+        );
       case tags.ApplyChangesOnPrimaryResponse:
+        const applyChangesRequest = this.#applyChangesRequests.get(msg._reqid);
+        if (applyChangesRequest == null) {
+          throw new Error(
+            `Received a response for a request that doesn't exist: ${msg._reqid}`
+          );
+        }
+        applyChangesRequest(msg);
+        return;
       default:
         throw new Error(`Unexpected message type: ${msg._tag}`);
     }
@@ -215,11 +252,13 @@ class PrimarySocket {
 
   #onError = () => {
     if (!this.#closed) {
+      this.#rejectPending();
       this.#onPrematurelyClosed();
     }
   };
   #onClose = () => {
     if (!this.#closed) {
+      this.#rejectPending();
       this.#onPrematurelyClosed();
     }
   };
@@ -242,6 +281,26 @@ class PrimarySocket {
     );
   };
 
+  #rejectPending() {
+    for (const [_, reject] of this.#createDbRequests) {
+      reject({
+        _tag: tags.Err,
+        _reqid: -1,
+        err: "Primary connection closed",
+      });
+    }
+    this.#createDbRequests.clear();
+
+    for (const [_, reject] of this.#applyChangesRequests) {
+      reject({
+        _tag: tags.Err,
+        _reqid: -1,
+        err: "Primary connection closed",
+      });
+    }
+    this.#applyChangesRequests.clear();
+  }
+
   get currentPrimaryHostname() {
     return this.#currentPrimaryHostname;
   }
@@ -250,6 +309,7 @@ class PrimarySocket {
     this.#closed = true;
     this.#socket.destroy();
     clearInterval(this.#pingPongHandle);
+    this.#rejectPending();
   }
 }
 
