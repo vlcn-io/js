@@ -3,13 +3,15 @@ import { WebSocketServer, WebSocket } from "ws";
 import logger from "./logger.js";
 import type { Server } from "http";
 import DBCache from "./DBCache.js";
-import DB from "./DB.js";
+import DB, { IDB } from "./DB.js";
 import ConnectionBroker from "./ConnectionBroker.js";
 import { Config } from "./config.js";
 import FSNotify from "./fs/FSNotify.js";
 export { IDBFactory } from "./DBFactory.js";
 import { getDbPath } from "./DB.js";
+import DBFactory from "./DBFactory.js";
 export { IDB } from "./DB.js";
+import { IDBFactory } from "./DBFactory.js";
 
 export const internal = {
   DBCache,
@@ -31,6 +33,7 @@ function noopAuth(
 export function attachWebsocketServer(
   server: Server,
   config: Config,
+  dbFactory: IDBFactory = new DBFactory(),
   authenticate: (
     req: IncomingMessage,
     token: string | null,
@@ -47,7 +50,7 @@ export function attachWebsocketServer(
   } else {
     fsnotify = new FSNotify(config);
   }
-  const dbCache = new DBCache(config, fsnotify);
+  const dbCache = new DBCache(config, fsnotify, dbFactory);
   const wss = new WebSocketServer({ noServer: true });
 
   server.on("upgrade", (request, socket, head) => {
