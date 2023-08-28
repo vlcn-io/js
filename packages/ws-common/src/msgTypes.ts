@@ -3,26 +3,26 @@ export type Msg =
   | Changes
   | RejectChanges
   | StartStreaming
-  | ForwardedAnnouncePresence
-  | ForwardedChanges
+  | CreateDbOnPrimary
+  | ApplyChangesOnPrimary
   | Ping
   | Pong
-  | ForwardedAnnouncePresenceResonse
+  | CreateDbOnPrimaryResponse
   | Err
-  | ForwardedChangesResponse;
+  | ApplyChangesOnPrimaryResponse;
 
 export const tags = {
   AnnouncePresence: 1,
   Changes: 2,
   RejectChanges: 3,
   StartStreaming: 4,
-  ForwardedAnnouncePresence: 5,
-  ForwardedChanges: 6,
+  CreateDbOnPrimary: 5,
+  ApplyChangesOnPrimary: 6,
   Ping: 7,
   Pong: 8,
-  ForwardedAnnouncePresenceResonse: 9,
+  CreateDbOnPrimaryResponse: 9,
   Err: 10,
-  ForwardedChangesResponse: 11,
+  ApplyChangesOnPrimaryResponse: 11,
 } as const;
 
 export type Tags = typeof tags;
@@ -74,26 +74,26 @@ export type StartStreaming = Readonly<{
   localOnly: boolean;
 }>;
 
-export type ForwardedAnnouncePresence = Omit<AnnouncePresence, "_tag"> &
+export type CreateDbOnPrimary = Omit<AnnouncePresence, "_tag"> &
   Readonly<{
-    _tag: Tags["ForwardedAnnouncePresence"];
+    _tag: Tags["CreateDbOnPrimary"];
     room: string;
   }>;
 
-export type ForwardedChanges = Omit<Changes, "_tag"> &
+export type ApplyChangesOnPrimary = Omit<Changes, "_tag"> &
   Readonly<{
-    _tag: Tags["ForwardedChanges"];
+    _tag: Tags["ApplyChangesOnPrimary"];
     room: string;
     newLastSeen: readonly [bigint, number];
   }>;
 
-export type ForwardedAnnouncePresenceResonse = Readonly<{
-  _tag: Tags["ForwardedAnnouncePresenceResonse"];
+export type CreateDbOnPrimaryResponse = Readonly<{
+  _tag: Tags["CreateDbOnPrimaryResponse"];
   txid: bigint;
 }>;
 
-export type ForwardedChangesResponse = Readonly<{
-  _tag: Tags["ForwardedChangesResponse"];
+export type ApplyChangesOnPrimaryResponse = Readonly<{
+  _tag: Tags["ApplyChangesOnPrimaryResponse"];
 }>;
 
 export type Err = Readonly<{

@@ -184,7 +184,7 @@ test("encoded, decode pairing Changes", () => {
       fc.tuple(fc.bigIntN(64), fc.integer({ min: 0 })),
       (sender, since, changes, room, newLastSeen) => {
         const msg = {
-          _tag: tags.ForwardedChanges,
+          _tag: tags.ApplyChangesOnPrimary,
           sender,
           since,
           changes,
@@ -214,7 +214,7 @@ test("encoded, decode pairing ForwardedAnnouncePresence", () => {
       fc.string(),
       (sender, lastSeens, schemaName, schemaVersion, room) => {
         const msg = {
-          _tag: tags.ForwardedAnnouncePresence,
+          _tag: tags.CreateDbOnPrimary,
           sender,
           lastSeens,
           schemaName,

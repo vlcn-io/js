@@ -5,8 +5,8 @@ import { port } from "../LiteFSWriteService.js";
 import {
   AnnouncePresence,
   Change,
-  ForwardedAnnouncePresenceResonse,
-  ForwardedChangesResponse,
+  CreateDbOnPrimaryResponse,
+  ApplyChangesOnPrimaryResponse,
   decode,
   encode,
   tags,
@@ -46,7 +46,7 @@ export class PrimaryConnection {
     room: string,
     schemaName: string,
     schemaVersion: bigint
-  ): Promise<ForwardedAnnouncePresenceResonse> {
+  ): Promise<CreateDbOnPrimaryResponse> {
     throw new Error("unimplemented");
   }
 
@@ -55,7 +55,7 @@ export class PrimaryConnection {
     changes: readonly Change[],
     siteId: Uint8Array,
     newLastSeen: readonly [bigint, number]
-  ): Promise<ForwardedChangesResponse> {
+  ): Promise<ApplyChangesOnPrimaryResponse> {
     throw new Error("unimplemented");
   }
 
@@ -97,9 +97,9 @@ class PrimarySocket {
     const msg = decode(data);
     switch (msg._tag) {
       case tags.Pong:
-      case tags.ForwardedAnnouncePresenceResonse:
+      case tags.CreateDbOnPrimaryResponse:
       case tags.Err:
-      case tags.ForwardedChangesResponse:
+      case tags.ApplyChangesOnPrimaryResponse:
     }
   };
 

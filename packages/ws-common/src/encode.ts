@@ -31,11 +31,11 @@ export function encode(msg: Msg): Uint8Array {
       }
       encoding.writeUint8(encoder, msg.localOnly ? 1 : 0);
       return encoding.toUint8Array(encoder);
-    case tags.ForwardedAnnouncePresence:
+    case tags.CreateDbOnPrimary:
       writeAnnouncePresenceSansTag(encoder, msg);
       encoding.writeVarString(encoder, msg.room);
       return encoding.toUint8Array(encoder);
-    case tags.ForwardedChanges:
+    case tags.ApplyChangesOnPrimary:
       writeChangesMsgSansTag(encoder, msg);
       encoding.writeVarString(encoder, msg.room);
       encoding.writeBigInt64(encoder, msg.newLastSeen[0]);
@@ -43,9 +43,9 @@ export function encode(msg: Msg): Uint8Array {
       return encoding.toUint8Array(encoder);
     case tags.Ping:
     case tags.Pong:
-    case tags.ForwardedChangesResponse:
+    case tags.ApplyChangesOnPrimaryResponse:
       return encoding.toUint8Array(encoder);
-    case tags.ForwardedAnnouncePresenceResonse:
+    case tags.CreateDbOnPrimaryResponse:
       encoding.writeBigInt64(encoder, msg.txid);
       return encoding.toUint8Array(encoder);
     case tags.Err:
