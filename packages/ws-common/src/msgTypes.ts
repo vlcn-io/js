@@ -76,6 +76,7 @@ export type StartStreaming = Readonly<{
 
 export type CreateDbOnPrimary = Readonly<{
   _tag: Tags["CreateDbOnPrimary"];
+  _reqid: number;
   room: string;
   schemaName: string;
   schemaVersion: bigint;
@@ -84,21 +85,25 @@ export type CreateDbOnPrimary = Readonly<{
 export type ApplyChangesOnPrimary = Omit<Changes, "_tag" | "since"> &
   Readonly<{
     _tag: Tags["ApplyChangesOnPrimary"];
+    _reqid: number;
     room: string;
     newLastSeen: readonly [bigint, number];
   }>;
 
 export type CreateDbOnPrimaryResponse = Readonly<{
   _tag: Tags["CreateDbOnPrimaryResponse"];
+  _reqid: number;
   txid: bigint;
 }>;
 
 export type ApplyChangesOnPrimaryResponse = Readonly<{
   _tag: Tags["ApplyChangesOnPrimaryResponse"];
+  _reqid: number;
 }>;
 
 export type Err = Readonly<{
   _tag: Tags["Err"];
+  _reqid: number;
   err: string;
 }>;
 

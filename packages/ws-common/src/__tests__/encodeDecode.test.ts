@@ -149,11 +149,10 @@ test("encoded, decode pairing StartStreaming", () => {
   );
 });
 
-test("encoded, decode pairing Changes", () => {
+test("encoded, decode pairing ApplyChangesOnPrimary", () => {
   fc.assert(
     fc.property(
       fc.uint8Array({ minLength: 16, maxLength: 16 }),
-      fc.tuple(fc.bigIntN(64), fc.integer({ min: 0 })),
       fc.array(
         fc.tuple(
           fc.string(),
@@ -182,11 +181,11 @@ test("encoded, decode pairing Changes", () => {
       ),
       fc.string(),
       fc.tuple(fc.bigIntN(64), fc.integer({ min: 0 })),
-      (sender, since, changes, room, newLastSeen) => {
+      (sender, changes, room, newLastSeen) => {
         const msg = {
           _tag: tags.ApplyChangesOnPrimary,
+          _reqid: 0,
           sender,
-          since,
           changes,
           room,
           newLastSeen,
@@ -199,24 +198,16 @@ test("encoded, decode pairing Changes", () => {
   );
 });
 
-test("encoded, decode pairing ForwardedAnnouncePresence", () => {
+test("encoded, decode pairing CraeteDBOnPrimary", () => {
   fc.assert(
     fc.property(
-      fc.uint8Array({ minLength: 16, maxLength: 16 }),
-      fc.array(
-        fc.tuple(
-          fc.uint8Array({ minLength: 16, maxLength: 16 }),
-          fc.tuple(fc.bigIntN(64), fc.integer({ min: 0 }))
-        )
-      ),
       fc.string(),
       fc.bigIntN(64),
       fc.string(),
-      (sender, lastSeens, schemaName, schemaVersion, room) => {
+      (schemaName, schemaVersion, room) => {
         const msg = {
           _tag: tags.CreateDbOnPrimary,
-          sender,
-          lastSeens,
+          _reqid: 0,
           schemaName,
           schemaVersion,
           room,
