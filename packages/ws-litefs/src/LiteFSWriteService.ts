@@ -13,8 +13,7 @@ import {
 } from "@vlcn.io/ws-common";
 import DBCache from "@vlcn.io/ws-server/src/DBCache.js";
 import { util } from "./internal/util.js";
-
-export const port = 9000;
+import { port } from "./config.js";
 
 /**
  * Represents a connection from the leader to a follower.
