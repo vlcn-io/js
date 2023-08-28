@@ -1,8 +1,14 @@
 import { Config, IDB, PresenceResponse, internal } from "@vlcn.io/ws-server";
 import net from "net";
-import { AnnouncePresence, Change, Changes } from "@vlcn.io/ws-common";
-import fs from "fs";
+import {
+  ForwardedAnnouncePresence,
+  ForwardedChanges,
+  decode,
+  encode,
+  tags,
+} from "@vlcn.io/ws-common";
 import DBCache from "@vlcn.io/ws-server/src/DBCache.js";
+import { util } from "./internal/util.js";
 
 export const port = 9000;
 
@@ -34,22 +40,32 @@ class EstablishedConnection {
     conn.on("error", this.close);
   }
 
-  #handleMessage = (data: Buffer) => {
+  #handleMessage = async (data: Buffer) => {
     if (this.#closed) {
       return;
     }
 
-    // - presence
-    // - apply changes
-    // - close a given room? We have idle callbacks so that should cover the close case.
-
-    // decodes the binary-encoded message
-    // processes it by passing it to #writer
+    const msg = decode(data);
+    switch (msg._tag) {
+      case tags.ForwardedAnnouncePresence:
+        await this.#presenceAnnounced(msg.room, msg);
+        return;
+      case tags.ForwardedChanges:
+        await this.#changesReceived(msg.room, msg, msg.newLastSeen);
+        return;
+      case tags.Ping:
+        this.#pingReceived();
+        return;
+      default:
+        throw new Error(
+          `Unexpected message type on forwarded write service: ${msg._tag}`
+        );
+    }
   };
 
   async #presenceAnnounced(
     room: string,
-    msg: AnnouncePresence
+    msg: ForwardedAnnouncePresence
   ): Promise<PresenceResponse> {
     this.#schemaNamesAndVersions.set(room, [msg.schemaName, msg.schemaVersion]);
     const dbEntry = this.#getDB(room);
@@ -64,28 +80,32 @@ class EstablishedConnection {
       };
     }
 
-    const content = await fs.promises.readFile(
-      internal.getDbPath(room, this.#config) + "-pos",
-      { encoding: "utf-8" }
-    );
-    const [txidHex, _checksum] = content.split("/");
-
-    if (txidHex.length != 16) {
-      throw new Error("Unexpected txid length");
-    }
-
-    return { txid: BigInt("0x" + txidHex) };
+    return { txid: await util.getTxId(this.#config, room) };
   }
 
   async #changesReceived(
     room: string,
-    msg: Changes,
+    msg: ForwardedChanges,
     newLastSeen: readonly [bigint, number]
   ) {
     const dbEntry = this.#getDB(room);
     dbEntry[0] = Date.now();
     const db = await dbEntry[1];
     await db.applyChangesetAndSetLastSeen(msg.changes, msg.sender, newLastSeen);
+  }
+
+  #pingReceived() {
+    const cb = (err?: Error) => {
+      if (err) {
+        console.error(err);
+      }
+    };
+    this.#conn.write(
+      encode({
+        _tag: tags.Pong,
+      }),
+      cb
+    );
   }
 
   #getDB(room: string) {
@@ -130,7 +150,13 @@ class EstablishedConnection {
       }
     }
     this.#conn.destroy();
+    // do not destroy the db cache. It is shared with the overall process which is still valid
+    // when we're downgraded from primary to follower.
   };
+
+  __dbs_TESTS_ONLY() {
+    return this.#dbs;
+  }
 }
 
 /**

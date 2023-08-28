@@ -84,6 +84,11 @@ export function decode(msg: Uint8Array): Msg {
           decoding.readVarInt(decoder),
         ],
       } satisfies ForwardedChanges;
+    case tags.Ping:
+    case tags.Pong:
+      return {
+        _tag: tag,
+      };
     default:
       tag as never;
   }

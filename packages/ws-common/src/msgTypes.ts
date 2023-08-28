@@ -4,7 +4,9 @@ export type Msg =
   | RejectChanges
   | StartStreaming
   | ForwardedAnnouncePresence
-  | ForwardedChanges;
+  | ForwardedChanges
+  | Ping
+  | Pong;
 
 export const tags = {
   AnnouncePresence: 1,
@@ -13,6 +15,8 @@ export const tags = {
   StartStreaming: 4,
   ForwardedAnnouncePresence: 5,
   ForwardedChanges: 6,
+  Ping: 7,
+  Pong: 8,
 } as const;
 
 export type Tags = typeof tags;
@@ -76,3 +80,6 @@ export type ForwardedChanges = Omit<Changes, "_tag"> &
     room: string;
     newLastSeen: readonly [bigint, number];
   }>;
+
+export type Ping = { _tag: Tags["Ping"] };
+export type Pong = { _tag: Tags["Pong"] };

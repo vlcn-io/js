@@ -41,6 +41,9 @@ export function encode(msg: Msg): Uint8Array {
       encoding.writeBigInt64(encoder, msg.newLastSeen[0]);
       encoding.writeVarInt(encoder, msg.newLastSeen[1]);
       return encoding.toUint8Array(encoder);
+    case tags.Ping:
+    case tags.Pong:
+      return encoding.toUint8Array(encoder);
   }
 }
 
