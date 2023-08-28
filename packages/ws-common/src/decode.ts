@@ -63,6 +63,7 @@ export function decode(msg: Uint8Array): Msg {
     case tags.CreateDbOnPrimary:
       return {
         _tag: tags.CreateDbOnPrimary,
+        _reqid: decoding.readVarInt(decoder),
         room: decoding.readVarString(decoder),
         schemaName: decoding.readVarString(decoder),
         schemaVersion: decoding.readBigInt64(decoder),
@@ -70,6 +71,7 @@ export function decode(msg: Uint8Array): Msg {
     case tags.ApplyChangesOnPrimary:
       return {
         _tag: tags.ApplyChangesOnPrimary,
+        _reqid: decoding.readVarInt(decoder),
         sender: decoding.readUint8Array(decoder, 16),
         changes: readChanges(decoder),
         room: decoding.readVarString(decoder),
@@ -80,13 +82,18 @@ export function decode(msg: Uint8Array): Msg {
       } satisfies ApplyChangesOnPrimary;
     case tags.Ping:
     case tags.Pong:
+      return {
+        _tag: tag,
+      } satisfies Ping | Pong;
     case tags.ApplyChangesOnPrimaryResponse:
       return {
         _tag: tag,
-      } satisfies Ping | Pong | ApplyChangesOnPrimaryResponse;
+        _reqid: decoding.readVarInt(decoder),
+      } satisfies ApplyChangesOnPrimaryResponse;
     case tags.Err:
       return {
         _tag: tags.Err,
+        _reqid: decoding.readVarInt(decoder),
         err: decoding.readVarString(decoder),
       } satisfies Err;
     default:

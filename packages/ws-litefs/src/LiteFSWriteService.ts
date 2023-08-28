@@ -93,12 +93,14 @@ class EstablishedConnection {
     } catch (e: any) {
       return {
         _tag: tags.Err,
+        _reqid: msg._reqid,
         err: e.message,
       };
     }
 
     return {
       _tag: tags.CreateDbOnPrimaryResponse,
+      _reqid: msg._reqid,
       txid: await util.getTxId(this.#config, room),
     };
   }
@@ -114,6 +116,7 @@ class EstablishedConnection {
     await db.applyChangesetAndSetLastSeen(msg.changes, msg.sender, newLastSeen);
     return {
       _tag: tags.ApplyChangesOnPrimaryResponse,
+      _reqid: msg._reqid,
     };
   }
 

@@ -55,6 +55,7 @@ export class PrimaryConnection {
   ): Promise<CreateDbOnPrimaryResponse> {
     return this.#primarySocket!.sendCreateDb({
       _tag: tags.CreateDbOnPrimary,
+      _reqid: nextRequestId++,
       room,
       schemaName,
       schemaVersion,
@@ -69,6 +70,7 @@ export class PrimaryConnection {
   ): Promise<ApplyChangesOnPrimaryResponse> {
     return this.#primarySocket!.sendApplyChanges({
       _tag: tags.ApplyChangesOnPrimary,
+      _reqid: nextRequestId++,
       room,
       changes,
       sender: siteId,
@@ -126,8 +128,14 @@ class PrimarySocket {
   #lastPong;
   // since we multiplex requests over a single socket, we need to keep track of
   // which request is which.
-  readonly #createDbRequests = new Map<number, () => void>();
-  readonly #applyChangesRequests = new Map<number, () => void>();
+  readonly #createDbRequests = new Map<
+    number,
+    (msg: CreateDbOnPrimaryResponse) => void
+  >();
+  readonly #applyChangesRequests = new Map<
+    number,
+    (msg: ApplyChangesOnPrimaryResponse) => void
+  >();
   #closed = false;
 
   constructor(currentPrimaryHostname: string, onPrematurelyClosed: () => void) {
@@ -141,13 +149,13 @@ class PrimarySocket {
   sendCreateDb(msg: CreateDbOnPrimary): Promise<CreateDbOnPrimaryResponse> {
     return new Promise((resolve, reject) => {
       const requestId = nextRequestId++;
-      this.#createDbRequests.set(requestId, () => {
-        this.#createDbRequests.delete(requestId);
-        resolve({
-          _tag: tags.CreateDbOnPrimaryResponse,
-          txid: BigInt(0),
-        });
-      });
+      this.#createDbRequests.set(
+        requestId,
+        (msg: CreateDbOnPrimaryResponse) => {
+          this.#createDbRequests.delete(requestId);
+          resolve(msg);
+        }
+      );
       this.#socket.write(encode(msg), (e) => {
         if (e) {
           this.#createDbRequests.delete(requestId);
@@ -162,12 +170,13 @@ class PrimarySocket {
   ): Promise<ApplyChangesOnPrimaryResponse> {
     return new Promise((resolve, reject) => {
       const requestId = nextRequestId++;
-      this.#applyChangesRequests.set(requestId, () => {
-        this.#applyChangesRequests.delete(requestId);
-        resolve({
-          _tag: tags.ApplyChangesOnPrimaryResponse,
-        });
-      });
+      this.#applyChangesRequests.set(
+        requestId,
+        (msg: ApplyChangesOnPrimaryResponse) => {
+          this.#applyChangesRequests.delete(requestId);
+          resolve(msg);
+        }
+      );
       this.#socket.write(encode(msg), (e) => {
         if (e) {
           this.#applyChangesRequests.delete(requestId);
