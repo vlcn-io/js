@@ -37,7 +37,8 @@ export class LiteFSDB implements IDB {
     newLastSeen: readonly [bigint, number]
   ): Promise<void> {
     if (!this.#primaryConnection.isPrimary()) {
-      await this.#primaryConnection.applyChangesetAndSetLastSeen(
+      await this.#primaryConnection.applyChangesOnPrimary(
+        this.#room,
         changes,
         siteId,
         newLastSeen

@@ -1,8 +1,12 @@
-import { Config, IDB, PresenceResponse, internal } from "@vlcn.io/ws-server";
+import { Config, IDB, internal } from "@vlcn.io/ws-server";
 import net from "net";
 import {
+  Err,
   ForwardedAnnouncePresence,
+  ForwardedAnnouncePresenceResonse,
   ForwardedChanges,
+  Msg,
+  Pong,
   decode,
   encode,
   tags,
@@ -46,27 +50,39 @@ class EstablishedConnection {
     }
 
     const msg = decode(data);
+    let ret: Msg | null = null;
     switch (msg._tag) {
       case tags.ForwardedAnnouncePresence:
-        await this.#presenceAnnounced(msg.room, msg);
-        return;
+        ret = await this.#presenceAnnounced(msg.room, msg);
+        break;
       case tags.ForwardedChanges:
-        await this.#changesReceived(msg.room, msg, msg.newLastSeen);
-        return;
+        ret = await this.#changesReceived(msg.room, msg, msg.newLastSeen);
+        break;
       case tags.Ping:
-        this.#pingReceived();
+        ret = this.#pingReceived();
         return;
       default:
         throw new Error(
           `Unexpected message type on forwarded write service: ${msg._tag}`
         );
     }
+
+    if (ret == null) {
+      throw new Error(
+        `failed to generate a return value for msg type ${msg._tag}`
+      );
+    }
+    this.#conn.write(encode(ret), (err?: Error) => {
+      if (err) {
+        console.error(err);
+      }
+    });
   };
 
   async #presenceAnnounced(
     room: string,
     msg: ForwardedAnnouncePresence
-  ): Promise<PresenceResponse> {
+  ): Promise<ForwardedAnnouncePresenceResonse | Err> {
     this.#schemaNamesAndVersions.set(room, [msg.schemaName, msg.schemaVersion]);
     const dbEntry = this.#getDB(room);
     dbEntry[0] = Date.now();
@@ -76,11 +92,15 @@ class EstablishedConnection {
       await dbEntry[1];
     } catch (e: any) {
       return {
+        _tag: tags.Err,
         err: e.message,
       };
     }
 
-    return { txid: await util.getTxId(this.#config, room) };
+    return {
+      _tag: tags.ForwardedAnnouncePresenceResonse,
+      txid: await util.getTxId(this.#config, room),
+    };
   }
 
   async #changesReceived(
@@ -92,20 +112,13 @@ class EstablishedConnection {
     dbEntry[0] = Date.now();
     const db = await dbEntry[1];
     await db.applyChangesetAndSetLastSeen(msg.changes, msg.sender, newLastSeen);
+    return {
+      _tag: tags.ForwardedChangesResponse,
+    };
   }
 
-  #pingReceived() {
-    const cb = (err?: Error) => {
-      if (err) {
-        console.error(err);
-      }
-    };
-    this.#conn.write(
-      encode({
-        _tag: tags.Pong,
-      }),
-      cb
-    );
+  #pingReceived(): Pong {
+    return { _tag: tags.Pong };
   }
 
   #getDB(room: string) {

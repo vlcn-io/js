@@ -3,13 +3,11 @@ import SyncConnection, { createSyncConnection } from "./SyncConnection.js";
 import DBCache from "./DBCache.js";
 import { WebSocket } from "ws";
 import Transport from "./Trasnport.js";
-import { IWriteForwarder } from "./IWriteForwarder.js";
 
 export type Options = {
   ws: WebSocket;
   dbCache: DBCache;
   room: string;
-  writeForwarder?: IWriteForwarder;
 };
 
 /**

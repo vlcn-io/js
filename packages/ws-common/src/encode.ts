@@ -43,6 +43,13 @@ export function encode(msg: Msg): Uint8Array {
       return encoding.toUint8Array(encoder);
     case tags.Ping:
     case tags.Pong:
+    case tags.ForwardedChangesResponse:
+      return encoding.toUint8Array(encoder);
+    case tags.ForwardedAnnouncePresenceResonse:
+      encoding.writeBigInt64(encoder, msg.txid);
+      return encoding.toUint8Array(encoder);
+    case tags.Err:
+      encoding.writeVarString(encoder, msg.err);
       return encoding.toUint8Array(encoder);
   }
 }

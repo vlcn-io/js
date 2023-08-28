@@ -7,7 +7,6 @@ import DB from "./DB.js";
 import ConnectionBroker from "./ConnectionBroker.js";
 import { Config } from "./config.js";
 import FSNotify from "./fs/FSNotify.js";
-export * from "./IWriteForwarder.js";
 export { IDBFactory } from "./DBFactory.js";
 import { getDbPath } from "./DB.js";
 export { IDB } from "./DB.js";

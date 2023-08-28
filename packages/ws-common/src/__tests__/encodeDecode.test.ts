@@ -148,3 +148,83 @@ test("encoded, decode pairing StartStreaming", () => {
     )
   );
 });
+
+test("encoded, decode pairing Changes", () => {
+  fc.assert(
+    fc.property(
+      fc.uint8Array({ minLength: 16, maxLength: 16 }),
+      fc.tuple(fc.bigIntN(64), fc.integer({ min: 0 })),
+      fc.array(
+        fc.tuple(
+          fc.string(),
+          fc.uint8Array({ minLength: 1, maxLength: 10 }),
+          fc.string(),
+          fc.oneof(
+            fc.string(),
+            fc.boolean(),
+            fc.integer(),
+            fc.double(),
+            fc.constant(null),
+            fc.bigInt({
+              min: BigInt(Number.MAX_SAFE_INTEGER) + 1n,
+              max: 9223372036854775807n,
+            }),
+            fc.uint8Array()
+          ),
+          fc.bigIntN(64),
+          fc.bigIntN(64),
+          fc.oneof(
+            fc.uint8Array({ minLength: 16, maxLength: 16 }),
+            fc.constant(null)
+          ),
+          fc.bigIntN(64)
+        )
+      ),
+      fc.string(),
+      fc.tuple(fc.bigIntN(64), fc.integer({ min: 0 })),
+      (sender, since, changes, room, newLastSeen) => {
+        const msg = {
+          _tag: tags.ForwardedChanges,
+          sender,
+          since,
+          changes,
+          room,
+          newLastSeen,
+        } as const;
+        const encoded = encode(msg);
+        const decoded = decode(encoded);
+        expect(decoded).toEqual(msg);
+      }
+    )
+  );
+});
+
+test("encoded, decode pairing ForwardedAnnouncePresence", () => {
+  fc.assert(
+    fc.property(
+      fc.uint8Array({ minLength: 16, maxLength: 16 }),
+      fc.array(
+        fc.tuple(
+          fc.uint8Array({ minLength: 16, maxLength: 16 }),
+          fc.tuple(fc.bigIntN(64), fc.integer({ min: 0 }))
+        )
+      ),
+      fc.string(),
+      fc.bigIntN(64),
+      fc.string(),
+      (sender, lastSeens, schemaName, schemaVersion, room) => {
+        const msg = {
+          _tag: tags.ForwardedAnnouncePresence,
+          sender,
+          lastSeens,
+          schemaName,
+          schemaVersion,
+          room,
+        } as const;
+        const encoded = encode(msg);
+        const decoded = decode(encoded);
+        expect(decoded).toEqual(msg);
+      }
+    )
+  );
+});
