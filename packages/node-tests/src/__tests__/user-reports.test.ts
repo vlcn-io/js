@@ -60,6 +60,7 @@ test("failed to increment?", () => {
       db_version: 2,
       site_id: null,
       cl: 1,
+      seq: 0,
     },
     {
       table: "b",
@@ -70,6 +71,7 @@ test("failed to increment?", () => {
       db_version: 3,
       site_id: null,
       cl: 1,
+      seq: 0,
     },
   ]);
 });

@@ -30,10 +30,6 @@ export class LiteFSDBFactory implements IDBFactory {
     schemaVersion: bigint
   ): Promise<IDB> {
     if (!this.#primaryConnection.isPrimary()) {
-      // If we are not primary then:
-      // 1. Create the DB on the primary
-      // 2. Get the TXID back
-      // 3. Wait for our DB to match that txid
       const response = await this.#primaryConnection.createDbOnPrimary(
         room,
         schemaName,
