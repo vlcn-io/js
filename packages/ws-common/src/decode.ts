@@ -3,15 +3,20 @@ import {
   AnnouncePresence,
   Change,
   Changes,
+  Err,
   ForwardedAnnouncePresence,
   ForwardedChanges,
+  ForwardedChangesResponse,
   Msg,
+  Ping,
+  Pong,
   RejectChanges,
   StartStreaming,
   TagValues,
   tags,
 } from "./msgTypes.js";
 import { BIGINT, BLOB, BOOL, NULL, NUMBER, STRING } from "./encode.js";
+import { F } from "vitest/dist/types-e3c9754d.js";
 
 export function decode(msg: Uint8Array): Msg {
   const decoder = decoding.createDecoder(msg);
@@ -86,9 +91,15 @@ export function decode(msg: Uint8Array): Msg {
       } satisfies ForwardedChanges;
     case tags.Ping:
     case tags.Pong:
+    case tags.ForwardedChangesResponse:
       return {
         _tag: tag,
-      };
+      } satisfies Ping | Pong | ForwardedChangesResponse;
+    case tags.Err:
+      return {
+        _tag: tags.Err,
+        err: decoding.readVarString(decoder),
+      } satisfies Err;
     default:
       tag as never;
   }

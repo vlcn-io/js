@@ -28,13 +28,10 @@ export class LiteFSDBFactory implements IDBFactory {
       // get txid back
       // await our file to catch up to that txid
       // return the db.
+      this.#primaryConnection.
     } else {
+      return new internal.DB(config, fsnotify, room, schemaName, schemaVersion);
     }
-    // Create a new internal db which we wrap with LiteFSDB.
-    // LiteFSDB just forwards all calls to the proxy if we are on the primary node.
-    // LiteFSDB redirects write requests to the primary if we're on a follower.
-    // internal.DB
-    throw new Error("unimplemented");
   }
 }
 
