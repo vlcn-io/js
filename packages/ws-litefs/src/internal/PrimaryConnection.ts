@@ -60,14 +60,16 @@ class PrimarySocket {
     this.#socket = new net.Socket();
 
     this.#socket.connect(port, this.#currentPrimaryHostname, this.#onConnected);
-    this.#socket.on("data", this.#onData);
+    this.#socket.on("data", this.#handleMessage);
     this.#socket.on("error", this.#onError);
     this.#socket.on("close", this.#onClose);
   }
 
   #onConnected = () => {};
 
-  #onData = () => {};
+  #handleMessage = (data: Buffer) => {
+    // ping pong processing to re-establish connection that was broken for unknown reasons
+  };
   #onError = () => {};
   #onClose = () => {};
 
