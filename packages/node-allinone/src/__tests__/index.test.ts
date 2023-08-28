@@ -16,7 +16,7 @@ export type Changeset = [
   any, // val,
   Version,
   Version,
-  SiteIDWire // site_id
+  SiteIDWire, // site_id
 ];
 
 // test that we wrapped correctly
@@ -83,7 +83,10 @@ test("failing example", () => {
   const siteid = db1.execA(`SELECT crsql_site_id()`)[0][0];
   db2.transaction(() => {
     for (const cs of changesets) {
-      db2.exec(`INSERT INTO crsql_changes VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, cs);
+      db2.exec(
+        `INSERT INTO crsql_changes VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        cs
+      );
     }
   });
 
@@ -178,10 +181,11 @@ test("failing two -- discord: https://discord.com/channels/989870439897653248/98
     123,
     1,
     1,
+    0,
   ] as const;
 
   db.exec(
-    `INSERT INTO crsql_changes ("cid", "pk", "site_id", "table", "val", "col_version", "db_version") VALUES (?,?,?,?,?,?,?)`,
+    `INSERT INTO crsql_changes ("cid", "pk", "site_id", "table", "val", "col_version", "db_version", "seq") VALUES (?,?,?,?,?,?,?,?)`,
     change
   );
 });
