@@ -1,4 +1,5 @@
 import { IDB } from "./DB.js";
+import { IDBFactory } from "./DBFactory.js";
 import { Config } from "./config.js";
 import FSNotify from "./fs/FSNotify.js";
 import logger from "./logger.js";
@@ -13,10 +14,16 @@ export default class DBCache {
   readonly #dbs = new Map<string, [number, Promise<IDB>]>();
   readonly #config;
   readonly #fsnotify;
+  readonly #dbFactory;
 
-  constructor(config: Config, fsnotify: FSNotify | null) {
+  constructor(
+    config: Config,
+    fsnotify: FSNotify | null,
+    dbFactory: IDBFactory
+  ) {
     this.#config = config;
     this.#fsnotify = fsnotify;
+    this.#dbFactory = dbFactory;
   }
 
   __tests_only_checkRef(roomId: string): number {
@@ -31,7 +38,7 @@ export default class DBCache {
     logger.info(`Get db from cache for room "${roomId}"`);
     let entry = this.#dbs.get(roomId);
     if (entry == null) {
-      const dbPromise = this.#config.dbFactory.createDB(
+      const dbPromise = this.#dbFactory.createDB(
         this.#config,
         this.#fsnotify,
         roomId,

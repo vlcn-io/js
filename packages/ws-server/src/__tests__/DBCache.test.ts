@@ -1,9 +1,10 @@
 import { test, expect } from "vitest";
 import DBCache from "../DBCache.js";
 import { config, schemaVersion } from "./testConfig.js";
+import DBFactory from "../DBFactory.js";
 
 test("same instance returned", async () => {
-  const cache = new DBCache(config, null);
+  const cache = new DBCache(config, null, new DBFactory());
   const db1 = await cache.getAndRef("some-db", "test.sql", schemaVersion);
   const dbShouldBe1 = await cache.getAndRef(
     "some-db",
@@ -15,7 +16,7 @@ test("same instance returned", async () => {
 });
 
 test("Multiple concurrent requests for the same db return a single db", async () => {
-  const cache = new DBCache(config, null);
+  const cache = new DBCache(config, null, new DBFactory());
   const db1 = cache.getAndRef("some-db", "test.sql", schemaVersion);
   const dbShouldBe1 = cache.getAndRef("some-db", "test.sql", schemaVersion);
   const dbAlsoBe1 = cache.getAndRef("some-db", "test.sql", schemaVersion);
@@ -26,7 +27,7 @@ test("Multiple concurrent requests for the same db return a single db", async ()
 });
 
 test("maps different rooms to different instances", async () => {
-  const cache = new DBCache(config, null);
+  const cache = new DBCache(config, null, new DBFactory());
   const db1 = await cache.getAndRef("some-db", "test.sql", schemaVersion);
   const db2 = await cache.getAndRef("some-db2", "test.sql", schemaVersion);
 
@@ -34,7 +35,7 @@ test("maps different rooms to different instances", async () => {
 });
 
 test("returning a db while someone is grabbing the db results in a correct ref count", async () => {
-  const cache = new DBCache(config, null);
+  const cache = new DBCache(config, null, new DBFactory());
   const db1 = await cache.getAndRef("some-db", "test.sql", schemaVersion);
 
   // no await such that the grab is in-progress and not complete till next micro task

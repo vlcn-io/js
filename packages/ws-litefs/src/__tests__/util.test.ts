@@ -1,5 +1,10 @@
 import { test, expect } from "vitest";
+import "./testLiteFSConfig.js";
+import { createTestConfig } from "./testServerConfig.js";
+import { internal } from "@vlcn.io/ws-server";
 
+// const fsnotify = new internal.FSNotify();
+// const config = createTestConfig();
 test("reading txid", () => {});
 
 test("wait until a given txid", () => {});

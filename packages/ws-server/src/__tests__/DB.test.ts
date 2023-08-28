@@ -10,7 +10,6 @@ test("db instantiation", () => {
     schemaFolder: "./testSchemas",
     dbFolder: null,
     pathPattern: /\/vlcn-ws/,
-    dbFactory: new DBFactory(),
   };
 
   const schemaContent = fs.readFileSync("./testSchemas/test.sql", "utf-8");
