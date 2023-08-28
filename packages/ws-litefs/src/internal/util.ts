@@ -1,7 +1,6 @@
 import { Config, internal } from "@vlcn.io/ws-server";
 import fs from "fs";
-
-export let primaryFilePath = "/var/lib/litefs/.primary";
+import { primaryFilePath } from "../config.js";
 
 export const util = {
   async readPrimaryFileIfExists(): Promise<string | null> {
@@ -38,10 +37,15 @@ export function waitUntil(
 ) {
   return new Promise<void>((resolve, reject) => {
     const removeListener = notifier.addListener(room, async () => {
-      const currentTxid = await util.getTxId(config, room);
-      if (currentTxid >= txid) {
+      try {
+        const currentTxid = await util.getTxId(config, room);
+        if (currentTxid >= txid) {
+          removeListener();
+          resolve();
+        }
+      } catch (e) {
         removeListener();
-        resolve();
+        reject(e);
       }
     });
   });
