@@ -74,13 +74,14 @@ export type StartStreaming = Readonly<{
   localOnly: boolean;
 }>;
 
-export type CreateDbOnPrimary = Omit<AnnouncePresence, "_tag"> &
-  Readonly<{
-    _tag: Tags["CreateDbOnPrimary"];
-    room: string;
-  }>;
+export type CreateDbOnPrimary = Readonly<{
+  _tag: Tags["CreateDbOnPrimary"];
+  room: string;
+  schemaName: string;
+  schemaVersion: bigint;
+}>;
 
-export type ApplyChangesOnPrimary = Omit<Changes, "_tag"> &
+export type ApplyChangesOnPrimary = Omit<Changes, "_tag" | "since"> &
   Readonly<{
     _tag: Tags["ApplyChangesOnPrimary"];
     room: string;

@@ -3,14 +3,17 @@ import chokidar from "chokidar";
 import net from "net";
 import { port } from "../LiteFSWriteService.js";
 import {
-  AnnouncePresence,
   Change,
   CreateDbOnPrimaryResponse,
   ApplyChangesOnPrimaryResponse,
   decode,
   encode,
   tags,
+  CreateDbOnPrimary,
+  ApplyChangesOnPrimary,
 } from "@vlcn.io/ws-common";
+
+let nextRequestId = 0;
 
 // A connection from a follower to the primary.
 // Follows the primary as it moves.
@@ -34,7 +37,10 @@ export class PrimaryConnection {
     this.#watcher.on("unlink", this.#primaryFileCreatedOrRemoved);
 
     if (this.#currentPrimary != null) {
-      this.#primarySocket = new PrimarySocket(this.#currentPrimary);
+      this.#primarySocket = new PrimarySocket(
+        this.#currentPrimary,
+        this.#onSocketPrematurelyClosed
+      );
     }
   }
 
@@ -47,7 +53,12 @@ export class PrimaryConnection {
     schemaName: string,
     schemaVersion: bigint
   ): Promise<CreateDbOnPrimaryResponse> {
-    throw new Error("unimplemented");
+    return this.#primarySocket!.sendCreateDb({
+      _tag: tags.CreateDbOnPrimary,
+      room,
+      schemaName,
+      schemaVersion,
+    });
   }
 
   applyChangesOnPrimary(
@@ -56,14 +67,49 @@ export class PrimaryConnection {
     siteId: Uint8Array,
     newLastSeen: readonly [bigint, number]
   ): Promise<ApplyChangesOnPrimaryResponse> {
-    throw new Error("unimplemented");
+    return this.#primarySocket!.sendApplyChanges({
+      _tag: tags.ApplyChangesOnPrimary,
+      room,
+      changes,
+      sender: siteId,
+      newLastSeen,
+    });
   }
 
   // TODO: test when we only watch a single file and not a dir.
-  #primaryFileCreatedOrRemoved = async (path: string) => {
+  #primaryFileCreatedOrRemoved = async (_: string) => {
     this.#currentPrimary = await util.readPrimaryFileIfExists();
+    if (this.#currentPrimary == null) {
+      if (this.#primarySocket != null) {
+        this.#primarySocket.close();
+      }
 
-    // destroy and re-create the socket
+      return;
+    }
+
+    if (this.#currentPrimary == this.#primarySocket?.currentPrimaryHostname) {
+      return;
+    }
+
+    if (this.#primarySocket != null) {
+      this.#primarySocket.close();
+    }
+
+    this.#primarySocket = new PrimarySocket(
+      this.#currentPrimary,
+      this.#onSocketPrematurelyClosed
+    );
+  };
+
+  #onSocketPrematurelyClosed = () => {
+    // recreate the socket
+    this.#primarySocket?.close();
+    if (this.#currentPrimary != null) {
+      this.#primarySocket = new PrimarySocket(
+        this.#currentPrimary,
+        this.#onSocketPrematurelyClosed
+      );
+    }
   };
 
   close() {
@@ -74,38 +120,107 @@ export class PrimaryConnection {
 
 class PrimarySocket {
   readonly #currentPrimaryHostname;
-  readonly #socket;
+  #socket;
   readonly #pingPongHandle;
+  readonly #onPrematurelyClosed;
   #lastPong;
+  // since we multiplex requests over a single socket, we need to keep track of
+  // which request is which.
+  readonly #createDbRequests = new Map<number, () => void>();
+  readonly #applyChangesRequests = new Map<number, () => void>();
+  #closed = false;
 
-  constructor(currentPrimaryHostname: string) {
+  constructor(currentPrimaryHostname: string, onPrematurelyClosed: () => void) {
     this.#currentPrimaryHostname = currentPrimaryHostname;
-    this.#socket = new net.Socket();
-
-    this.#socket.connect(port, this.#currentPrimaryHostname, this.#onConnected);
-    this.#socket.on("data", this.#handleMessage);
-    this.#socket.on("error", this.#onError);
-    this.#socket.on("close", this.#onClose);
+    this.#socket = this.#connect();
     this.#pingPongHandle = setInterval(this.#sendPing, 1000);
     this.#lastPong = Date.now();
+    this.#onPrematurelyClosed = onPrematurelyClosed;
   }
 
-  #onConnected = () => {};
+  sendCreateDb(msg: CreateDbOnPrimary): Promise<CreateDbOnPrimaryResponse> {
+    return new Promise((resolve, reject) => {
+      const requestId = nextRequestId++;
+      this.#createDbRequests.set(requestId, () => {
+        this.#createDbRequests.delete(requestId);
+        resolve({
+          _tag: tags.CreateDbOnPrimaryResponse,
+          txid: BigInt(0),
+        });
+      });
+      this.#socket.write(encode(msg), (e) => {
+        if (e) {
+          this.#createDbRequests.delete(requestId);
+          reject(e);
+        }
+      });
+    });
+  }
+
+  sendApplyChanges(
+    msg: ApplyChangesOnPrimary
+  ): Promise<ApplyChangesOnPrimaryResponse> {
+    return new Promise((resolve, reject) => {
+      const requestId = nextRequestId++;
+      this.#applyChangesRequests.set(requestId, () => {
+        this.#applyChangesRequests.delete(requestId);
+        resolve({
+          _tag: tags.ApplyChangesOnPrimaryResponse,
+        });
+      });
+      this.#socket.write(encode(msg), (e) => {
+        if (e) {
+          this.#applyChangesRequests.delete(requestId);
+          reject(e);
+        }
+      });
+    });
+  }
+
+  #connect() {
+    const socket = new net.Socket();
+
+    socket.connect(port, this.#currentPrimaryHostname);
+    socket.on("data", this.#handleMessage);
+    socket.on("error", this.#onError);
+    socket.on("close", this.#onClose);
+    this.#lastPong = Date.now();
+    return socket;
+  }
 
   #handleMessage = (data: Buffer) => {
     // ping pong processing to re-establish connection that was broken for unknown reasons
     const msg = decode(data);
     switch (msg._tag) {
       case tags.Pong:
+        this.#lastPong = Date.now();
+        return;
       case tags.CreateDbOnPrimaryResponse:
+
       case tags.Err:
       case tags.ApplyChangesOnPrimaryResponse:
+      default:
+        throw new Error(`Unexpected message type: ${msg._tag}`);
     }
   };
 
-  #onError = () => {};
-  #onClose = () => {};
+  #onError = () => {
+    if (!this.#closed) {
+      this.#onPrematurelyClosed();
+    }
+  };
+  #onClose = () => {
+    if (!this.#closed) {
+      this.#onPrematurelyClosed();
+    }
+  };
+
   #sendPing = () => {
+    if (Date.now() - this.#lastPong > 5000) {
+      this.#socket.destroy();
+      clearInterval(this.#pingPongHandle);
+      return;
+    }
     this.#socket.write(
       encode({
         _tag: tags.Ping,
@@ -123,6 +238,7 @@ class PrimarySocket {
   }
 
   close() {
+    this.#closed = true;
     this.#socket.destroy();
     clearInterval(this.#pingPongHandle);
   }
