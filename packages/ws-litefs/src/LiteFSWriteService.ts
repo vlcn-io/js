@@ -13,7 +13,7 @@ import {
 } from "@vlcn.io/ws-common";
 import DBCache from "@vlcn.io/ws-server/src/DBCache.js";
 import { util } from "./internal/util.js";
-import { port } from "./config.js";
+import { config as cfg } from "./config.js";
 
 /**
  * Represents a connection from the leader to a follower.
@@ -185,6 +185,7 @@ class EstablishedConnection {
 export function createLiteFSWriteService(config: Config, dbcache: DBCache) {
   const server = net.createServer();
   server.on("connection", (conn) => handleConnection(conn, config, dbcache));
+  const port = cfg.port;
   console.log(`Starting LiteFSWriteService on ${port}`);
   server.listen(port, () => {
     console.log(`LiteFSWriteService running on port ${port}`);

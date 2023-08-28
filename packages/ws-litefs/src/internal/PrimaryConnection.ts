@@ -7,7 +7,7 @@ import {
   tags,
 } from "@vlcn.io/ws-common";
 import { PrimarySocket } from "./PrimarySocket.js";
-import { primaryFilePath } from "../config.js";
+import { config } from "../config.js";
 
 let nextRequestId = 0;
 
@@ -21,7 +21,7 @@ export class PrimaryConnection {
 
   constructor(currentPrimary: string | null) {
     this.#currentPrimary = currentPrimary;
-    this.#watcher = chokidar.watch(primaryFilePath, {
+    this.#watcher = chokidar.watch(config.primaryFilePath, {
       followSymlinks: false,
       usePolling: false,
       interval: 100,
