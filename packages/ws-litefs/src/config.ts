@@ -1,9 +1,11 @@
 const port = 9000;
-const primaryFilePath = "/var/lib/litefs/.primary";
+const primaryFileDir = "/var/lib/litefs/";
+const primaryFile = ".primary";
 
 export type Config = {
   port: number;
-  primaryFilePath: string;
+  primaryFileDir: string;
+  primaryFile: string;
 };
 
 let assigned = false;
@@ -17,5 +19,6 @@ export function assign(cfg: Config) {
 
 export let config: Config = {
   port,
-  primaryFilePath,
+  primaryFileDir,
+  primaryFile,
 };

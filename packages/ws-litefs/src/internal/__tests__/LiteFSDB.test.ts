@@ -1,4 +1,5 @@
 import { test, expect } from "vitest";
+import { LiteFSDB } from "../LiteFSDB";
 
 test("Always delegates to proxy when primary", () => {});
 

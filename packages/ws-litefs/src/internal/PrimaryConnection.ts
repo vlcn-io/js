@@ -8,6 +8,7 @@ import {
 } from "@vlcn.io/ws-common";
 import { PrimarySocket } from "./PrimarySocket.js";
 import { config } from "../config.js";
+import path from "path";
 
 let nextRequestId = 0;
 
@@ -21,8 +22,7 @@ export class PrimaryConnection {
 
   constructor(currentPrimary: string | null) {
     this.#currentPrimary = currentPrimary;
-    console.log("Watching " + config.primaryFilePath);
-    this.#watcher = chokidar.watch(config.primaryFilePath, {
+    this.#watcher = chokidar.watch(config.primaryFileDir + ".primary", {
       followSymlinks: false,
       usePolling: false,
       interval: 100,
@@ -32,6 +32,8 @@ export class PrimaryConnection {
 
     this.#watcher.on("add", this.#primaryFileCreatedOrRemoved);
     this.#watcher.on("unlink", this.#primaryFileCreatedOrRemoved);
+    this.#watcher.on("addDir", this.#primaryFileCreatedOrRemoved);
+    this.#watcher.on("change", this.#primaryFileCreatedOrRemoved);
 
     if (this.#currentPrimary != null) {
       this.#primarySocket = new PrimarySocket(
@@ -76,7 +78,13 @@ export class PrimaryConnection {
   }
 
   // TODO: test when we only watch a single file and not a dir.
-  #primaryFileCreatedOrRemoved = async (_: string) => {
+  #primaryFileCreatedOrRemoved = async (file: string) => {
+    if (
+      path.normalize(file) !=
+      path.normalize(config.primaryFileDir + config.primaryFile)
+    ) {
+      return;
+    }
     this.#currentPrimary = await util.readPrimaryFileIfExists();
     if (this.#currentPrimary == null) {
       if (this.#primarySocket != null) {

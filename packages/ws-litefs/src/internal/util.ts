@@ -5,7 +5,9 @@ import { config } from "../config.js";
 export const util = {
   async readPrimaryFileIfExists(): Promise<string | null> {
     return fs.promises
-      .readFile(config.primaryFilePath, { encoding: "utf-8" })
+      .readFile(config.primaryFileDir + config.primaryFile, {
+        encoding: "utf-8",
+      })
       .then((content) => {
         return content.split("\n")[0];
       })
