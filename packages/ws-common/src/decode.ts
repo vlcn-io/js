@@ -14,6 +14,7 @@ import {
   StartStreaming,
   TagValues,
   tags,
+  CreateDbOnPrimaryResponse,
 } from "./msgTypes.js";
 import { BIGINT, BLOB, BOOL, NULL, NUMBER, STRING } from "./encode.js";
 
@@ -90,6 +91,12 @@ export function decode(msg: Uint8Array): Msg {
         _tag: tag,
         _reqid: decoding.readVarInt(decoder),
       } satisfies ApplyChangesOnPrimaryResponse;
+    case tags.CreateDbOnPrimaryResponse:
+      return {
+        _tag: tag,
+        _reqid: decoding.readVarInt(decoder),
+        txid: decoding.readBigInt64(decoder),
+      } satisfies CreateDbOnPrimaryResponse;
     case tags.Err:
       return {
         _tag: tags.Err,
