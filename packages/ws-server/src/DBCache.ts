@@ -38,6 +38,7 @@ export default class DBCache {
     logger.info(`Get db from cache for room "${roomId}"`);
     let entry = this.#dbs.get(roomId);
     if (entry == null) {
+      logger.info("calling db factory");
       const dbPromise = this.#dbFactory.createDB(
         this.#config,
         this.#fsnotify,

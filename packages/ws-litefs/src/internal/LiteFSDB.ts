@@ -1,6 +1,7 @@
 import { Change } from "@vlcn.io/ws-common";
 import { IDB } from "@vlcn.io/ws-server";
 import { PrimaryConnection } from "./PrimaryConnection.js";
+import logger from "../logger.js";
 
 export class LiteFSDB implements IDB {
   readonly #proxied;
@@ -36,7 +37,9 @@ export class LiteFSDB implements IDB {
     siteId: Uint8Array,
     newLastSeen: readonly [bigint, number]
   ): Promise<void> {
+    console.log("apply and set last seen");
     if (!this.#primaryConnection.isPrimary()) {
+      logger.info("Proxying changes to primary");
       await this.#primaryConnection.applyChangesOnPrimary(
         this.#room,
         changes,
@@ -44,6 +47,7 @@ export class LiteFSDB implements IDB {
         newLastSeen
       );
     } else {
+      logger.info("Not proxying changes to primary");
       this.#proxied.applyChangesetAndSetLastSeen(changes, siteId, newLastSeen);
     }
   }

@@ -14,6 +14,7 @@ import {
 import DBCache from "@vlcn.io/ws-server/src/DBCache.js";
 import { util } from "./internal/util.js";
 import { Config as LiteFSConfig } from "./config.js";
+import logger from "./logger.js";
 
 /**
  * Represents a connection from the leader to a follower.
@@ -34,6 +35,7 @@ class EstablishedConnection {
     config: Config,
     dbcache: InstanceType<typeof internal.DBCache>
   ) {
+    logger.info(`Created EstablishedConnection for LiteFSWriteService`);
     this.#conn = conn;
     this.#config = config;
     this.#dbcache = dbcache;
@@ -52,14 +54,14 @@ class EstablishedConnection {
     let ret: Msg | null = null;
     switch (msg._tag) {
       case tags.CreateDbOnPrimary:
-        ret = await this.#presenceAnnounced(msg.room, msg);
+        ret = await this.#createDb(msg.room, msg);
         break;
       case tags.ApplyChangesOnPrimary:
         ret = await this.#changesReceived(msg.room, msg, msg.newLastSeen);
         break;
       case tags.Ping:
         ret = this.#pingReceived();
-        return;
+        break;
       default:
         throw new Error(
           `Unexpected message type on forwarded write service: ${msg._tag}`
@@ -78,10 +80,11 @@ class EstablishedConnection {
     });
   };
 
-  async #presenceAnnounced(
+  async #createDb(
     room: string,
     msg: CreateDbOnPrimary
   ): Promise<CreateDbOnPrimaryResponse | Err> {
+    logger.info(`Create db for room "${room}" on primary`);
     this.#schemaNamesAndVersions.set(room, [msg.schemaName, msg.schemaVersion]);
     const dbEntry = this.#getDB(room);
     dbEntry[0] = Date.now();

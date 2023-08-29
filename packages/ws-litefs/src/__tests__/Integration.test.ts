@@ -1,22 +1,21 @@
-import { test, expect, vi } from "vitest";
+import { test, expect, vi, afterAll } from "vitest";
 import { createLiteFSWriteService } from "../LiteFSWriteService";
 
 import { Config as LiteFSConfig } from "../config";
 import { Config as ServerConfig } from "@vlcn.io/ws-server";
 import { internal } from "@vlcn.io/ws-server";
-import FSNotify from "@vlcn.io/ws-server/src/fs/FSNotify";
 import { LiteFSDBFactory, createLiteFSDBFactory } from "../LiteFSDBFactory";
 import fs from "fs";
 
 const primaryLiteFSConfig: LiteFSConfig = {
   port: 9000,
-  primaryFileDir: "./test_fs/dbs",
+  primaryFileDir: "./test_fs/",
   primaryFile: ".primary",
 };
 
 const secondaryLiteFSConfig: LiteFSConfig = {
-  port: 9001,
-  primaryFileDir: "./test_fs2/dbs",
+  port: 9000,
+  primaryFileDir: "./test_fs2/",
   primaryFile: ".primary",
 };
 
@@ -35,7 +34,6 @@ const secondaryServerConfig: ServerConfig = {
 };
 
 test("create primary and follower, create dbs and apply changes", async () => {
-  return;
   const primary = await createServer(
     primaryLiteFSConfig,
     primaryServerConfig,
@@ -66,17 +64,18 @@ test("create primary and follower, create dbs and apply changes", async () => {
   // stub out schemas for both
   fs.writeFileSync(
     primaryServerConfig.schemaFolder + "/test",
-    "CREATE TABLE foo (a);"
+    "CREATE TABLE foo (a primary key, b); SELECT crsql_as_crr('foo');"
   );
   fs.writeFileSync(
     secondaryServerConfig.schemaFolder + "/test",
-    "CREATE TABLE foo (a);"
+    "CREATE TABLE foo (a primary key, b); SELECT crsql_as_crr('foo');"
   );
 
-  const promise = secondary.dbcache.getAndRef(
+  console.log("getting db from secondary");
+  const dbCreatePromise = secondary.dbcache.getAndRef(
     "test",
     "test",
-    -6684781798511370605n
+    8398628125591832752n
   );
 
   // promise won't be resolved till we catch up the txid
@@ -84,19 +83,26 @@ test("create primary and follower, create dbs and apply changes", async () => {
     secondaryServerConfig.dbFolder + `/test-pos`,
     "0000000000000002/0"
   );
+  console.log("wrote test-pos");
 
-  const db = await promise;
+  const db = await dbCreatePromise;
+  console.log("awaited db create promise");
 
   // db should now exist!
   // check that the db file is there for the primary too
-  fs.existsSync(primaryServerConfig.dbFolder + "/test");
+  console.log("checking existence");
+  expect(fs.existsSync(primaryServerConfig.dbFolder + "/test")).toBe(true);
+  expect(fs.existsSync(secondaryServerConfig.dbFolder + "/test")).toBe(true);
 
   // now apply some changes
-  await db.applyChangesetAndSetLastSeen(
+  const applyChangesPromise = db.applyChangesetAndSetLastSeen(
     [["foo", new Uint8Array([1, 9, 1]), "b", 1, 1n, 1n, null, 1n, 0]],
     new Uint8Array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6]),
     [2n, 0]
   );
+
+  // these changes should _only_ be applied on the primary
+  // since we're forwarding there
 });
 
 async function createServer(
@@ -105,7 +111,7 @@ async function createServer(
   isPrimary: boolean
 ) {
   await prepareFilesystem(litefsConfig, serverConfig, isPrimary);
-  const fsnotify = new FSNotify(serverConfig);
+  const fsnotify = new internal.FSNotify(serverConfig);
   const dbfactory = await createLiteFSDBFactory(litefsConfig, fsnotify);
   const dbcache = new internal.DBCache(serverConfig, fsnotify, dbfactory);
   let litefsWriteService: ReturnType<typeof createLiteFSWriteService> | null =
@@ -135,3 +141,11 @@ async function prepareFilesystem(
     );
   }
 }
+
+afterAll(() => {
+  fs.rmSync("./test_fs/dbs", { recursive: true });
+  fs.rmSync("./test_fs/schemas", { recursive: true });
+  fs.rmSync("./test_fs2/dbs", { recursive: true });
+  fs.rmSync("./test_fs2/schemas", { recursive: true });
+  fs.rmSync("./test_fs2/.primary", { recursive: true });
+});
