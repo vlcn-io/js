@@ -8,16 +8,7 @@ export type Config = {
   primaryFile: string;
 };
 
-let assigned = false;
-export function assign(cfg: Config) {
-  if (assigned) {
-    throw new Error("Try to assign config twice");
-  }
-  assigned = true;
-  config = cfg;
-}
-
-export let config: Config = {
+export const defaultConfig: Config = {
   port,
   primaryFileDir,
   primaryFile,

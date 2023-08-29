@@ -1,6 +1,6 @@
-import "../../__tests__/testLiteFSConfig.js";
-import { test, expect, afterAll } from "vitest";
-import { createPrimaryConnection } from "../PrimaryConnection";
+import { litefsConfig } from "../../__tests__/testLiteFSConfig.js";
+import { test, expect } from "vitest";
+import { createPrimaryConnection } from "../PrimaryConnection.js";
 import fs from "fs";
 import net from "net";
 
@@ -29,7 +29,7 @@ test("Downgrades self to follower if the primary file is removed post-constructi
     fs.rmSync("./test_fs/.primary");
   } catch (e) {}
 
-  const c = await createPrimaryConnection();
+  const c = await createPrimaryConnection(litefsConfig);
   expect(c.isPrimary()).toBe(true);
 
   fs.writeFileSync("./test_fs/.primary", "test");
@@ -55,7 +55,7 @@ test("Swaps connection when primary changes", async () => {
   server.listen(9000, "localhost");
 
   fs.writeFileSync("./test_fs/.primary", "localhost");
-  const c = await createPrimaryConnection();
+  const c = await createPrimaryConnection(litefsConfig);
   await new Promise((resolve) => setTimeout(resolve, 100));
   expect(receivedConn).toBe(1);
   expect(receivedClose).toBe(0);
@@ -86,7 +86,7 @@ test("destroys connection when made primary", async () => {
   server.listen(9000, "localhost");
 
   fs.writeFileSync("./test_fs/.primary", "localhost");
-  const c = await createPrimaryConnection();
+  const c = await createPrimaryConnection(litefsConfig);
   await new Promise((resolve) => setTimeout(resolve, 100));
   expect(receivedConn).toBe(1);
   expect(receivedClose).toBe(0);
