@@ -20,6 +20,7 @@ export class PrimaryConnection {
   #closed = false;
   #currentPrimary: string | null = null;
   #primarySocket: PrimarySocket | null = null;
+  #primaryListeners = new Set<(e: "primary" | "secondary") => void>();
 
   constructor(litefsConfig: Config, currentPrimary: string | null) {
     this.#currentPrimary = currentPrimary;
@@ -27,8 +28,8 @@ export class PrimaryConnection {
     this.#watcher = chokidar.watch(litefsConfig.primaryFileDir + ".primary", {
       followSymlinks: false,
       usePolling: false,
-      interval: 100,
-      binaryInterval: 300,
+      interval: 10,
+      binaryInterval: 50,
       ignoreInitial: false,
     });
 
@@ -48,6 +49,47 @@ export class PrimaryConnection {
 
   isPrimary() {
     return this.#currentPrimary == null;
+  }
+
+  awaitPrimary() {
+    return new Promise<void>((resolve) => {
+      if (this.isPrimary()) {
+        resolve();
+        return;
+      }
+
+      const cb = (e: "primary" | "secondary") => {
+        if (e == "primary") {
+          resolve();
+          dispose();
+        }
+      };
+      const dispose = this.addPrimaryListener(cb);
+    });
+  }
+
+  awaitSecondary() {
+    return new Promise<void>((resolve) => {
+      if (!this.isPrimary()) {
+        resolve();
+        return;
+      }
+
+      const cb = (e: "primary" | "secondary") => {
+        if (e == "secondary") {
+          resolve();
+          dispose();
+        }
+      };
+      const dispose = this.addPrimaryListener(cb);
+    });
+  }
+
+  addPrimaryListener(cb: (e: "primary" | "secondary") => void) {
+    this.#primaryListeners.add(cb);
+    return () => {
+      this.#primaryListeners.delete(cb);
+    };
   }
 
   createDbOnPrimary(
@@ -88,8 +130,15 @@ export class PrimaryConnection {
     ) {
       return;
     }
+
     this.#currentPrimary = await util.readPrimaryFileIfExists(this.#config);
+
+    if (this.#currentPrimary == this.#primarySocket?.currentPrimaryHostname) {
+      return;
+    }
+
     if (this.#currentPrimary == null) {
+      this.#notifyPrimaryListeners("primary");
       if (this.#primarySocket != null) {
         this.#primarySocket.close();
       }
@@ -97,19 +146,22 @@ export class PrimaryConnection {
       return;
     }
 
-    if (this.#currentPrimary == this.#primarySocket?.currentPrimaryHostname) {
-      return;
-    }
-
     if (this.#primarySocket != null) {
       this.#primarySocket.close();
     }
 
+    this.#notifyPrimaryListeners("secondary");
     this.#primarySocket = new PrimarySocket(
       this.#config,
       this.#currentPrimary,
       this.#onSocketPrematurelyClosed
     );
+  };
+
+  #notifyPrimaryListeners = (e: "primary" | "secondary") => {
+    for (const cb of this.#primaryListeners) {
+      cb(e);
+    }
   };
 
   #onSocketPrematurelyClosed = () => {
