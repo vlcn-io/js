@@ -10,6 +10,7 @@ import {
   Err,
 } from "@vlcn.io/ws-common";
 import { Config } from "../config.js";
+import logger from "../logger.js";
 
 export class PrimarySocket {
   readonly #currentPrimaryHostname;
@@ -44,6 +45,7 @@ export class PrimarySocket {
   }
 
   sendCreateDb(msg: CreateDbOnPrimary): Promise<CreateDbOnPrimaryResponse> {
+    logger.info("Sending create db message over primary socket");
     return new Promise((resolve, reject) => {
       this.#createDbRequests.set(
         msg._reqid,
@@ -56,12 +58,14 @@ export class PrimarySocket {
           }
         }
       );
+      logger.info("writing to socket");
       this.#socket.write(encode(msg), (e) => {
         if (e) {
           this.#createDbRequests.delete(msg._reqid);
           reject(e);
         }
       });
+      logger.info("wrote to socket");
     });
   }
 
@@ -143,8 +147,9 @@ export class PrimarySocket {
     }
   };
 
-  #onError = () => {
+  #onError = (e: Error) => {
     if (!this.#closed) {
+      logger.error(e);
       this.#rejectPending();
       this.#onPrematurelyClosed();
     }

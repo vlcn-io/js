@@ -56,6 +56,7 @@ export function encode(msg: Msg): Uint8Array {
       encoding.writeBigInt64(encoder, msg.txid);
       return encoding.toUint8Array(encoder);
     case tags.Err:
+      encoding.writeVarInt(encoder, msg._reqid);
       encoding.writeVarString(encoder, msg.err);
       return encoding.toUint8Array(encoder);
   }

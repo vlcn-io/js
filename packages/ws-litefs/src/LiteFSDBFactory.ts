@@ -6,6 +6,8 @@ import {
 } from "./internal/PrimaryConnection.js";
 import { waitUntil } from "./internal/util.js";
 import { Config as LiteFSConfig } from "./config.js";
+import logger from "./logger.js";
+import { LiteFSDB } from "./internal/LiteFSDB.js";
 
 /**
  * A DBFactory on the follower or leader.
@@ -31,14 +33,25 @@ export class LiteFSDBFactory implements IDBFactory {
     schemaVersion: bigint
   ): Promise<IDB> {
     if (!this.#primaryConnection.isPrimary()) {
+      logger.info(`ask priamry to create db for room "${room}"`);
       const response = await this.#primaryConnection.createDbOnPrimary(
         room,
         schemaName,
         schemaVersion
       );
+      logger.info("got promise from primary");
       await waitUntil(config, room, response.txid, this.#fsnotify);
+      logger.info("waited for txid");
     }
-    return new internal.DB(config, fsnotify, room, schemaName, schemaVersion);
+    logger.info("creating internal db");
+    const proxied = new internal.DB(
+      config,
+      fsnotify,
+      room,
+      schemaName,
+      schemaVersion
+    );
+    return new LiteFSDB(room, proxied, this.#primaryConnection);
   }
 }
 
