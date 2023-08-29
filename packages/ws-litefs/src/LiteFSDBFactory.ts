@@ -5,6 +5,7 @@ import {
   createPrimaryConnection,
 } from "./internal/PrimaryConnection.js";
 import { waitUntil } from "./internal/util.js";
+import { Config as LiteFSConfig } from "./config.js";
 
 /**
  * A DBFactory on the follower or leader.
@@ -42,8 +43,9 @@ export class LiteFSDBFactory implements IDBFactory {
 }
 
 export async function createLiteFSDBFactory(
+  litefsConfig: LiteFSConfig,
   fsnotify: InstanceType<typeof internal.FSNotify>
 ) {
-  const primaryConnection = await createPrimaryConnection();
+  const primaryConnection = await createPrimaryConnection(litefsConfig);
   return new LiteFSDBFactory(primaryConnection, fsnotify);
 }

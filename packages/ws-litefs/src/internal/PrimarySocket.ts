@@ -9,7 +9,7 @@ import {
   ApplyChangesOnPrimary,
   Err,
 } from "@vlcn.io/ws-common";
-import { config } from "../config";
+import { Config } from "../config.js";
 
 export class PrimarySocket {
   readonly #currentPrimaryHostname;
@@ -28,13 +28,19 @@ export class PrimarySocket {
     (msg: ApplyChangesOnPrimaryResponse | Err) => void
   >();
   #closed = false;
+  readonly #config;
 
-  constructor(currentPrimaryHostname: string, onPrematurelyClosed: () => void) {
+  constructor(
+    litefsConfig: Config,
+    currentPrimaryHostname: string,
+    onPrematurelyClosed: () => void
+  ) {
     this.#currentPrimaryHostname = currentPrimaryHostname;
     this.#socket = this.#connect();
     this.#pingPongHandle = setInterval(this.#sendPing, 1000);
     this.#lastPong = Date.now();
     this.#onPrematurelyClosed = onPrematurelyClosed;
+    this.#config = litefsConfig;
   }
 
   sendCreateDb(msg: CreateDbOnPrimary): Promise<CreateDbOnPrimaryResponse> {
@@ -86,7 +92,7 @@ export class PrimarySocket {
   #connect() {
     const socket = new net.Socket();
 
-    socket.connect(config.port, this.#currentPrimaryHostname);
+    socket.connect(this.#config.port, this.#currentPrimaryHostname);
     socket.on("data", this.#handleMessage);
     socket.on("error", this.#onError);
     socket.on("close", this.#onClose);
