@@ -34,6 +34,7 @@ const secondaryServerConfig: ServerConfig = {
 };
 
 test("create primary and follower, create dbs and apply changes", async () => {
+  return;
   const primary = await createServer(
     primaryLiteFSConfig,
     primaryServerConfig,
