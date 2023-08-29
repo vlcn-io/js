@@ -84,6 +84,10 @@ export default class FSNotify {
     }
   }
 
+  __listeners_TESTS_ONLY() {
+    return this.listeners;
+  }
+
   shutdown() {
     this.watcher.close();
   }
