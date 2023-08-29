@@ -21,6 +21,7 @@ export class PrimaryConnection {
 
   constructor(currentPrimary: string | null) {
     this.#currentPrimary = currentPrimary;
+    console.log("Watching " + config.primaryFilePath);
     this.#watcher = chokidar.watch(config.primaryFilePath, {
       followSymlinks: false,
       usePolling: false,
