@@ -52,6 +52,21 @@ test("wait until a given txid when the txid is already met", async () => {
   fs.rmdirSync("./test_fs/dbs", { recursive: true });
 });
 
+test("when file does not exist until after we start awaiting it", async () => {
+  fs.mkdirSync("./test_fs/dbs", { recursive: true });
+  const notifier = new internal.FSNotify(config);
+  const promise = waitUntil(config, "test", 0x2df417n, notifier);
+  fs.writeFileSync(
+    "./test_fs/dbs/test-pos",
+    "00000000002df417/ce552e44f23fbbdd"
+  );
+  await promise;
+  // Just checking that we don't hang indefinitely on the promise above
+  // as it should be notified when txid meets the desired value
+  expect(true).toBe(true);
+  fs.rmdirSync("./test_fs/dbs", { recursive: true });
+});
+
 test("throwing inside waitUntil correctly cleans up listeners", () => {
   // we'll test this by writing an invalid txid
   fs.mkdirSync("./test_fs/dbs", { recursive: true });
