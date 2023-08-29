@@ -219,3 +219,42 @@ test("encoded, decode pairing CraeteDBOnPrimary", () => {
     )
   );
 });
+
+test("encode, decode pairing Ping", () => {
+  const msg = {
+    _tag: tags.Ping,
+  } as const;
+  const encoded = encode(msg);
+  const decoded = decode(encoded);
+  expect(decoded).toEqual(msg);
+});
+
+test("encode, decode pairing Pong", () => {
+  const msg = {
+    _tag: tags.Pong,
+  } as const;
+  const encoded = encode(msg);
+  const decoded = decode(encoded);
+  expect(decoded).toEqual(msg);
+});
+
+test("encode, decode pairing ApplyChangesOnPrimaryResponse", () => {
+  const msg = {
+    _tag: tags.ApplyChangesOnPrimaryResponse,
+    _reqid: 0,
+  } as const;
+  const encoded = encode(msg);
+  const decoded = decode(encoded);
+  expect(decoded).toEqual(msg);
+});
+
+test("encode, decode pairing CreateDbOnPrimaryResponse", () => {
+  const msg = {
+    _tag: tags.CreateDbOnPrimaryResponse,
+    _reqid: 0,
+    txid: 0n,
+  } as const;
+  const encoded = encode(msg);
+  const decoded = decode(encoded);
+  expect(decoded).toEqual(msg);
+});

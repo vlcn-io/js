@@ -32,11 +32,13 @@ export function encode(msg: Msg): Uint8Array {
       encoding.writeUint8(encoder, msg.localOnly ? 1 : 0);
       return encoding.toUint8Array(encoder);
     case tags.CreateDbOnPrimary:
+      encoding.writeVarInt(encoder, msg._reqid);
       encoding.writeVarString(encoder, msg.room);
       encoding.writeVarString(encoder, msg.schemaName);
       encoding.writeBigInt64(encoder, msg.schemaVersion);
       return encoding.toUint8Array(encoder);
     case tags.ApplyChangesOnPrimary:
+      encoding.writeVarInt(encoder, msg._reqid);
       encoding.writeUint8Array(encoder, msg.sender);
       writeChanges(encoder, msg.changes);
       encoding.writeVarString(encoder, msg.room);
@@ -45,9 +47,12 @@ export function encode(msg: Msg): Uint8Array {
       return encoding.toUint8Array(encoder);
     case tags.Ping:
     case tags.Pong:
+      return encoding.toUint8Array(encoder);
     case tags.ApplyChangesOnPrimaryResponse:
+      encoding.writeVarInt(encoder, msg._reqid);
       return encoding.toUint8Array(encoder);
     case tags.CreateDbOnPrimaryResponse:
+      encoding.writeVarInt(encoder, msg._reqid);
       encoding.writeBigInt64(encoder, msg.txid);
       return encoding.toUint8Array(encoder);
     case tags.Err:

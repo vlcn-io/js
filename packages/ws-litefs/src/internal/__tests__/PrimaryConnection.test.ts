@@ -17,7 +17,12 @@ test("Returns that it is the primary if the primary file is missing", async () =
   fs.rmSync("./test_fs/.primary");
 });
 
-test("Upgrades self to primary if the primary file exists at construction", () => {});
+test("Upgrades self to primary if the primary file exists at construction and is later removed", async () => {
+  fs.writeFileSync("./test_fs/.primary", "test");
+  const c = await createPrimaryConnection();
+  expect(c.isPrimary()).toBe(false);
+  fs.rmSync("./test_fs/.primary");
+});
 
 test("Upgrades self to primary if the primary file is created post-construction", () => {});
 
