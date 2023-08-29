@@ -11,7 +11,7 @@
   "scripts": {
     "build": "tsc --build",
     "watch": "tsc --build --watch",
-    "test": "vitest run --threads=false",
+    "test": "vitest run",
     "deep-clean": "rm -rf ./dist || true && rm tsconfig.tsbuildinfo || true"
   },
   "repository": {
