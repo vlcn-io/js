@@ -110,6 +110,9 @@ export class PrimaryConnection {
 
   #onSocketPrematurelyClosed = () => {
     // recreate the socket
+    if (this.#closed) {
+      return;
+    }
     this.#primarySocket?.close();
     if (this.#currentPrimary != null) {
       this.#primarySocket = new PrimarySocket(
