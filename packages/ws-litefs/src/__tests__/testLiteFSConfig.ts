@@ -2,5 +2,6 @@ import { assign } from "../config.js";
 
 assign({
   port: 9000,
-  primaryFilePath: "./test_fs/.primary",
+  primaryFileDir: "./test_fs/",
+  primaryFile: ".primary",
 });
