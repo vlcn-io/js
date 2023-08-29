@@ -36,11 +36,11 @@ export class PrimarySocket {
     onPrematurelyClosed: () => void
   ) {
     this.#currentPrimaryHostname = currentPrimaryHostname;
+    this.#config = litefsConfig;
     this.#socket = this.#connect();
     this.#pingPongHandle = setInterval(this.#sendPing, 1000);
     this.#lastPong = Date.now();
     this.#onPrematurelyClosed = onPrematurelyClosed;
-    this.#config = litefsConfig;
   }
 
   sendCreateDb(msg: CreateDbOnPrimary): Promise<CreateDbOnPrimaryResponse> {
