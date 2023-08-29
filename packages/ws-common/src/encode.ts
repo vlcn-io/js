@@ -114,6 +114,7 @@ function writeChanges(encoder: encoding.Encoder, changes: readonly Change[]) {
       encoding.writeUint8Array(encoder, siteid);
     }
     encoding.writeBigInt64(encoder, change[7]);
+    encoding.writeVarInt(encoder, change[8]);
   }
 }
 

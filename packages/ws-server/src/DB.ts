@@ -157,7 +157,7 @@ export default class DB implements IDB {
       .safeIntegers();
     this.#applyChangesStmt = db
       .prepare<[...Change]>(
-        `INSERT INTO crsql_changes ("table", "pk", "cid", "val", "col_version", "db_version", "site_id", "cl") VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+        `INSERT INTO crsql_changes ("table", "pk", "cid", "val", "col_version", "db_version", "site_id", "cl", "seq") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
       )
       .safeIntegers();
     this.#siteid = db
@@ -186,7 +186,8 @@ export default class DB implements IDB {
             c[5],
             // see note about `null` above.
             siteId,
-            c[7]
+            c[7],
+            c[8]
           );
         }
 

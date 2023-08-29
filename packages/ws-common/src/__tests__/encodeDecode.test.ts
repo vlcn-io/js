@@ -91,7 +91,8 @@ test("encoded, decode pairing Changes", () => {
             fc.uint8Array({ minLength: 16, maxLength: 16 }),
             fc.constant(null)
           ),
-          fc.bigIntN(64)
+          fc.bigIntN(64),
+          fc.integer({ min: 0 })
         )
       ),
       (sender, since, changes) => {
@@ -176,7 +177,8 @@ test("encoded, decode pairing ApplyChangesOnPrimary", () => {
             fc.uint8Array({ minLength: 16, maxLength: 16 }),
             fc.constant(null)
           ),
-          fc.bigIntN(64)
+          fc.bigIntN(64),
+          fc.integer({ min: 0 })
         )
       ),
       fc.string(),
