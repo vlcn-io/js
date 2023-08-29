@@ -186,7 +186,7 @@ export function createLiteFSWriteService(
   litefsConfig: LiteFSConfig,
   config: Config,
   dbcache: DBCache
-) {
+): net.Server {
   const server = net.createServer();
   server.on("connection", (conn) => handleConnection(conn, config, dbcache));
   const port = litefsConfig.port;
@@ -194,6 +194,8 @@ export function createLiteFSWriteService(
   server.listen(port, () => {
     console.log(`LiteFSWriteService running on port ${port}`);
   });
+
+  return server;
 }
 
 function handleConnection(conn: net.Socket, config: Config, dbcache: DBCache) {
