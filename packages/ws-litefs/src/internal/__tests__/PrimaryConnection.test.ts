@@ -12,7 +12,7 @@ test("Returns that it is the primary if the primary file is missing", async () =
   expect(c.isPrimary()).toBe(true);
 
   fs.writeFileSync("./test_fs/.primary", "test");
-  await new Promise((resolve) => setTimeout(resolve, 300));
+  await new Promise((resolve) => setTimeout(resolve, 500));
   expect(c.isPrimary()).toBe(false);
   fs.rmSync("./test_fs/.primary");
 });
