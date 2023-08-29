@@ -1,14 +1,12 @@
 import { Config, internal } from "@vlcn.io/ws-server";
 import fs from "fs";
 import { Config as LiteFSConfig } from "../config.js";
+import logger from "../logger.js";
 
 export const util = {
   async readPrimaryFileIfExists(
     litefsConfig: LiteFSConfig
   ): Promise<string | null> {
-    console.log(
-      "READING: " + litefsConfig.primaryFileDir + litefsConfig.primaryFile
-    );
     return fs.promises
       .readFile(litefsConfig.primaryFileDir + litefsConfig.primaryFile, {
         encoding: "utf-8",
@@ -51,6 +49,7 @@ export function waitUntil(
           resolve();
         }
       } catch (e) {
+        logger.error(e);
         removeListener();
         reject(e);
       }
