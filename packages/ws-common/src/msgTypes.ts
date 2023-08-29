@@ -34,6 +34,7 @@ export type TableName = string;
 export type Version = bigint;
 export type CausalLength = bigint;
 export type Val = any;
+export type Seq = number;
 
 export type Change = readonly [
   TableName,
@@ -44,6 +45,7 @@ export type Change = readonly [
   Version, // db version
   Uint8Array | null,
   CausalLength,
+  Seq,
 ];
 
 export type AnnouncePresence = Readonly<{
