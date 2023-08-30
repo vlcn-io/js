@@ -144,9 +144,11 @@ async function prepareFilesystem(
 }
 
 afterAll(() => {
-  fs.rmSync("./test_fs/dbs", { recursive: true });
-  fs.rmSync("./test_fs/schemas", { recursive: true });
-  fs.rmSync("./test_fs2/dbs", { recursive: true });
-  fs.rmSync("./test_fs2/schemas", { recursive: true });
-  fs.rmSync("./test_fs2/.primary", { recursive: true });
+  try {
+    fs.rmSync("./test_fs/dbs", { recursive: true });
+    fs.rmSync("./test_fs/schemas", { recursive: true });
+    fs.rmSync("./test_fs2/dbs", { recursive: true });
+    fs.rmSync("./test_fs2/schemas", { recursive: true });
+    fs.rmSync("./test_fs2/.primary", { recursive: true });
+  } catch (e) {}
 });
