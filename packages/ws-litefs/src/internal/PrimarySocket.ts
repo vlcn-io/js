@@ -148,8 +148,8 @@ export class PrimarySocket {
   };
 
   #onError = (e: Error) => {
+    logger.error(e);
     if (!this.#closed) {
-      logger.error(e);
       this.#rejectPending();
       this.#onPrematurelyClosed();
     }

@@ -28,10 +28,8 @@ test("forwards db create event to primary when follower", async () => {
     close: vi.fn(),
   };
 
-  const factory = new LiteFSDBFactory(
-    primaryConnection as any,
-    new FSNotify(config)
-  );
+  const notify = new FSNotify(config);
+  const factory = new LiteFSDBFactory(primaryConnection as any, notify);
 
   const promise = factory.createDB(
     config,
@@ -47,6 +45,7 @@ test("forwards db create event to primary when follower", async () => {
 
   fs.rmdirSync("./test_fs/dbs", { recursive: true });
   fs.rmdirSync("./test_fs/schemas", { recursive: true });
+  notify.shutdown();
 });
 
 test("awaits txid to catch up, after db creation, when follower", async () => {
@@ -65,10 +64,8 @@ test("awaits txid to catch up, after db creation, when follower", async () => {
     close: vi.fn(),
   };
 
-  const factory = new LiteFSDBFactory(
-    primaryConnection as any,
-    new FSNotify(config)
-  );
+  const notify = new FSNotify(config);
+  const factory = new LiteFSDBFactory(primaryConnection as any, notify);
 
   const promise = factory.createDB(
     config,
@@ -93,6 +90,7 @@ test("awaits txid to catch up, after db creation, when follower", async () => {
 
   fs.rmdirSync("./test_fs/dbs", { recursive: true });
   fs.rmdirSync("./test_fs/schemas", { recursive: true });
+  notify.shutdown();
 });
 
 test("No waiting for txid when primary", async () => {
@@ -107,10 +105,8 @@ test("No waiting for txid when primary", async () => {
     close: vi.fn(),
   };
 
-  const factory = new LiteFSDBFactory(
-    primaryConnection as any,
-    new FSNotify(config)
-  );
+  const notify = new FSNotify(config);
+  const factory = new LiteFSDBFactory(primaryConnection as any, notify);
 
   const promise = factory.createDB(
     config,
@@ -131,4 +127,5 @@ test("No waiting for txid when primary", async () => {
 
   fs.rmdirSync("./test_fs/dbs", { recursive: true });
   fs.rmdirSync("./test_fs/schemas", { recursive: true });
+  notify.shutdown();
 });
