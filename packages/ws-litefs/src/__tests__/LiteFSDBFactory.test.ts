@@ -1,9 +1,16 @@
-import { test, expect, vi } from "vitest";
+import { test, expect, vi, beforeAll } from "vitest";
 import { LiteFSDBFactory } from "../LiteFSDBFactory";
 import FSNotify from "@vlcn.io/ws-server/src/fs/FSNotify";
 import { config } from "./testServerConfig.js";
 import fs from "fs";
 import { tags } from "@vlcn.io/ws-common";
+
+beforeAll(() => {
+  try {
+    fs.rmSync("./test_fs/dbs", { recursive: true, force: true });
+    fs.rmSync("./test_fs/schemas", { recursive: true, force: true });
+  } catch (e) {}
+});
 
 test("forwards db create event to primary when follower", async () => {
   fs.mkdirSync("./test_fs/dbs", { recursive: true });

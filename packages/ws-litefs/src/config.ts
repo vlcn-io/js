@@ -1,3 +1,4 @@
+import path from "path";
 const port = 9000;
 const primaryFileDir = "/var/lib/litefs/";
 const primaryFile = ".primary";
@@ -13,3 +14,7 @@ export const defaultConfig: Config = {
   primaryFileDir,
   primaryFile,
 };
+
+export function litefsPrimaryPath(config: Config) {
+  return path.normalize(path.join(config.primaryFileDir, config.primaryFile));
+}

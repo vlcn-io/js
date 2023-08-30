@@ -8,7 +8,7 @@ import {
 } from "@vlcn.io/ws-common";
 import { PrimarySocket } from "./PrimarySocket.js";
 import path from "path";
-import { Config } from "../config.js";
+import { Config, litefsPrimaryPath } from "../config.js";
 
 let nextRequestId = 0;
 
@@ -25,7 +25,7 @@ export class PrimaryConnection {
   constructor(litefsConfig: Config, currentPrimary: string | null) {
     this.#currentPrimary = currentPrimary;
     this.#config = litefsConfig;
-    this.#watcher = chokidar.watch(litefsConfig.primaryFileDir + ".primary", {
+    this.#watcher = chokidar.watch(litefsPrimaryPath(litefsConfig), {
       followSymlinks: false,
       usePolling: false,
       interval: 10,
@@ -37,6 +37,10 @@ export class PrimaryConnection {
     this.#watcher.on("unlink", this.#primaryFileCreatedOrRemoved);
     this.#watcher.on("addDir", this.#primaryFileCreatedOrRemoved);
     this.#watcher.on("change", this.#primaryFileCreatedOrRemoved);
+
+    setTimeout(() => {
+      this.#primaryFileCreatedOrRemoved(litefsPrimaryPath(litefsConfig));
+    }, 0);
 
     if (this.#currentPrimary != null) {
       this.#primarySocket = new PrimarySocket(
