@@ -89,22 +89,32 @@ test("destroys connection when made primary", async () => {
   const server = net.createServer();
   let receivedConn = 0;
   let receivedClose = 0;
+  let resolveReceive: () => void;
+  const receivePromise = new Promise<void>((resolve) => {
+    resolveReceive = resolve;
+  });
+  let resolveClose: () => void;
+  const closePromise = new Promise<void>((resolve) => {
+    resolveClose = resolve;
+  });
   server.on("connection", (socket) => {
     receivedConn += 1;
+    resolveReceive();
     socket.on("close", () => {
       receivedClose += 1;
+      resolveClose();
     });
   });
   server.listen(9000, "localhost");
 
   fs.writeFileSync("./test_fs/.primary", "localhost");
   const c = await createPrimaryConnection(litefsConfig);
-  await new Promise((resolve) => setTimeout(resolve, 100));
+  await receivePromise;
   expect(receivedConn).toBe(1);
   expect(receivedClose).toBe(0);
   console.log("swapping");
   fs.rmSync("./test_fs/.primary");
-  await new Promise((resolve) => setTimeout(resolve, 100));
+  await closePromise;
   expect(receivedConn).toBe(1);
   expect(receivedClose).toBe(1);
   c.close();
