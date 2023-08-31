@@ -1,5 +1,12 @@
 # @vlcn.io/browser-tests
 
+## 0.13.0-next.5
+
+### Patch Changes
+
+- Updated dependencies
+  - @vlcn.io/crsqlite-wasm@0.15.0-next.5
+
 ## 0.13.0-next.4
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @vlcn.io/ws-client
 
+## 0.1.0-next.16
+
+### Patch Changes
+
+- litefs support
+- Updated dependencies
+  - @vlcn.io/ws-common@0.1.0-next.3
+
 ## 0.1.0-next.15
 
 ### Patch Changes

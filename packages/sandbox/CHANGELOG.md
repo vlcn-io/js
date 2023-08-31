@@ -1,5 +1,15 @@
 # sandbox
 
+## 0.6.0-next.7
+
+### Patch Changes
+
+- Updated dependencies
+  - @vlcn.io/crsqlite-wasm@0.15.0-next.5
+  - @vlcn.io/direct-connect-nodejs@0.6.0-next.3
+  - @vlcn.io/direct-connect-browser@0.5.0-next.5
+  - @vlcn.io/react@3.0.0-next.7
+
 ## 0.6.0-next.6
 
 ### Patch Changes

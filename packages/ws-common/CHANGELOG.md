@@ -1,5 +1,11 @@
 # @vlcn.io/ws-common
 
+## 0.1.0-next.3
+
+### Patch Changes
+
+- litefs support
+
 ## 0.1.0-next.2
 
 ### Patch Changes

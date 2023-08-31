@@ -1,5 +1,13 @@
 # @vlcn.io/react
 
+## 3.0.0-next.7
+
+### Patch Changes
+
+- Updated dependencies
+  - @vlcn.io/crsqlite-wasm@0.15.0-next.5
+  - @vlcn.io/ws-client@0.1.0-next.16
+
 ## 3.0.0-next.6
 
 ### Patch Changes
