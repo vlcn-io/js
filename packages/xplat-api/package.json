@@ -3,7 +3,8 @@
   "type": "module",
   "version": "0.14.0-next.2",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "module": "dist/xplat-api.js",
   "main": "dist/xplat-api.js",
