@@ -13,7 +13,7 @@ async function createServer(
 ) {
   await prepareFilesystem(litefsConfig, serverConfig, isPrimary);
   const fsnotify = new internal.FSNotify(serverConfig);
-  const dbfactory = await createLiteFSDBFactory(litefsConfig, fsnotify);
+  const dbfactory = await createLiteFSDBFactory(litefsConfig);
   const dbcache = new internal.DBCache(serverConfig, fsnotify, dbfactory);
   let litefsWriteService: ReturnType<typeof createLiteFSWriteService> | null =
     null;

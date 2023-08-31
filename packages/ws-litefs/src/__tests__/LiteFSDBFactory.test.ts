@@ -29,11 +29,11 @@ test("forwards db create event to primary when follower", async () => {
   };
 
   const notify = new FSNotify(config);
-  const factory = new LiteFSDBFactory(primaryConnection as any, notify);
+  const factory = new LiteFSDBFactory(primaryConnection as any);
 
   const promise = factory.createDB(
     config,
-    null,
+    notify,
     "test",
     "test",
     -6684781798511370605n
@@ -65,11 +65,11 @@ test("awaits txid to catch up, after db creation, when follower", async () => {
   };
 
   const notify = new FSNotify(config);
-  const factory = new LiteFSDBFactory(primaryConnection as any, notify);
+  const factory = new LiteFSDBFactory(primaryConnection as any);
 
   const promise = factory.createDB(
     config,
-    null,
+    notify,
     "test",
     "test",
     -6684781798511370605n
@@ -106,11 +106,11 @@ test("No waiting for txid when primary", async () => {
   };
 
   const notify = new FSNotify(config);
-  const factory = new LiteFSDBFactory(primaryConnection as any, notify);
+  const factory = new LiteFSDBFactory(primaryConnection as any);
 
   const promise = factory.createDB(
     config,
-    null,
+    notify,
     "test",
     "test",
     -6684781798511370605n

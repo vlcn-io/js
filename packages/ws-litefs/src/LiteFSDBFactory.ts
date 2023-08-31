@@ -16,13 +16,9 @@ import { LiteFSDB } from "./internal/LiteFSDB.js";
  */
 export class LiteFSDBFactory implements IDBFactory {
   readonly #primaryConnection;
-  readonly #fsnotify;
-  constructor(
-    primaryConnection: PrimaryConnection,
-    fsnotify: InstanceType<typeof internal.FSNotify>
-  ) {
+  constructor(primaryConnection: PrimaryConnection) {
+    logger.info("creating LiteFSDBFactory");
     this.#primaryConnection = primaryConnection;
-    this.#fsnotify = fsnotify;
   }
 
   async createDB(
@@ -32,6 +28,11 @@ export class LiteFSDBFactory implements IDBFactory {
     schemaName: string,
     schemaVersion: bigint
   ): Promise<IDB> {
+    if (fsnotify == null) {
+      throw new Error(
+        "LiteFS requires an FSNotify implementation. Set the db directory in your server config!"
+      );
+    }
     if (!this.#primaryConnection.isPrimary()) {
       logger.info(`ask priamry to create db for room "${room}"`);
       const response = await this.#primaryConnection.createDbOnPrimary(
@@ -39,11 +40,9 @@ export class LiteFSDBFactory implements IDBFactory {
         schemaName,
         schemaVersion
       );
-      logger.info("got promise from primary");
-      await waitUntil(config, room, response.txid, this.#fsnotify);
-      logger.info("waited for txid");
+      logger.info(`awaiting txid catchup creation for room "${room}"`);
+      await waitUntil(config, room, response.txid, fsnotify!);
     }
-    logger.info("creating internal db");
     const proxied = new internal.DB(
       config,
       fsnotify,
@@ -55,10 +54,7 @@ export class LiteFSDBFactory implements IDBFactory {
   }
 }
 
-export async function createLiteFSDBFactory(
-  litefsConfig: LiteFSConfig,
-  fsnotify: InstanceType<typeof internal.FSNotify>
-) {
+export async function createLiteFSDBFactory(litefsConfig: LiteFSConfig) {
   const primaryConnection = await createPrimaryConnection(litefsConfig);
-  return new LiteFSDBFactory(primaryConnection, fsnotify);
+  return new LiteFSDBFactory(primaryConnection);
 }
