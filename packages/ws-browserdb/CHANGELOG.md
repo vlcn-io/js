@@ -1,5 +1,15 @@
 # @vlcn.io/ws-browserdb
 
+## 0.1.0-next.6
+
+### Patch Changes
+
+- litefs support
+- Updated dependencies
+  - @vlcn.io/crsqlite-wasm@0.15.0-next.5
+  - @vlcn.io/ws-client@0.1.0-next.16
+  - @vlcn.io/ws-common@0.1.0-next.3
+
 ## 0.1.0-next.5
 
 ### Patch Changes

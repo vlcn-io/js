@@ -1,5 +1,17 @@
 # @vlcn.io/ws-demo
 
+## 1.0.0-next.7
+
+### Patch Changes
+
+- litefs support
+- Updated dependencies
+  - @vlcn.io/ws-server@0.1.0-next.15
+  - @vlcn.io/crsqlite-wasm@0.15.0-next.5
+  - @vlcn.io/ws-browserdb@0.1.0-next.6
+  - @vlcn.io/ws-client@0.1.0-next.16
+  - @vlcn.io/react@3.0.0-next.7
+
 ## 1.0.0-next.6
 
 ### Patch Changes

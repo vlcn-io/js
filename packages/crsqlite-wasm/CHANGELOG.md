@@ -1,5 +1,11 @@
 # @vlcn.io/wa-crsqlite
 
+## 0.15.0-next.5
+
+### Patch Changes
+
+- litefs support
+
 ## 0.15.0-next.4
 
 ### Patch Changes
