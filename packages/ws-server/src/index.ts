@@ -39,7 +39,7 @@ export function attachWebsocketServer(
     token: string | null,
     cb: (err: any) => void
   ) => void = noopAuth
-) {
+): DBCache {
   // warn on multiple instantiations?
   let fsnotify: FSNotify | null;
   if (config.dbFolder == null) {
@@ -87,6 +87,8 @@ export function attachWebsocketServer(
       room: options.room,
     });
   });
+
+  return dbCache;
 }
 
 function pullSecHeaders(request: IncomingMessage) {

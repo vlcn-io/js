@@ -187,15 +187,15 @@ class EstablishedConnection {
  */
 export function createLiteFSWriteService(
   litefsConfig: LiteFSConfig,
-  config: Config,
+  wsConfig: Config,
   dbcache: DBCache
 ): net.Server {
   const server = net.createServer();
-  server.on("connection", (conn) => handleConnection(conn, config, dbcache));
+  server.on("connection", (conn) => handleConnection(conn, wsConfig, dbcache));
   const port = litefsConfig.port;
-  console.log(`Starting LiteFSWriteService on ${port}`);
+  logger.info(`Starting LiteFSWriteService on ${port}`);
   server.listen(port, () => {
-    console.log(`LiteFSWriteService running on port ${port}`);
+    logger.info(`LiteFSWriteService running on port ${port}`);
   });
 
   return server;
