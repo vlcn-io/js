@@ -10,6 +10,7 @@ const primaryServerConfig: ServerConfig = {
   dbFolder: "./test_fs/dbs",
   schemaFolder: "./test_fs/schemas",
   pathPattern: /\/sync/,
+  appName: "localhost",
   notifyLatencyMs: 50,
 };
 
@@ -17,6 +18,7 @@ const secondaryServerConfig: ServerConfig = {
   dbFolder: "./test_fs2/dbs",
   schemaFolder: "./test_fs2/schemas",
   pathPattern: /\/sync/,
+  appName: "localhost",
   notifyLatencyMs: 50,
 };
 

@@ -12,7 +12,7 @@ import {
 import logger from "../logger.js";
 
 export class PrimarySocket {
-  readonly #currentPrimaryHostname;
+  readonly #currentPrimaryInstanceId;
   #socket;
   readonly #pingPongHandle;
   readonly #onPrematurelyClosed;
@@ -29,13 +29,16 @@ export class PrimarySocket {
   >();
   #closed = false;
   readonly #port;
+  readonly #appName;
 
   constructor(
     port: number,
-    currentPrimaryHostname: string,
+    appName: string | null,
+    currentPrimaryInstanceId: string,
     onPrematurelyClosed: () => void
   ) {
-    this.#currentPrimaryHostname = currentPrimaryHostname;
+    this.#appName = appName;
+    this.#currentPrimaryInstanceId = currentPrimaryInstanceId;
     this.#port = port;
     this.#socket = this.#connect();
     this.#pingPongHandle = setInterval(this.#sendPing, 1000);
@@ -95,7 +98,12 @@ export class PrimarySocket {
   #connect() {
     const socket = new net.Socket();
 
-    socket.connect(this.#port, this.#currentPrimaryHostname);
+    socket.connect(
+      this.#port,
+      this.#appName == null
+        ? this.#currentPrimaryInstanceId
+        : `${this.#currentPrimaryInstanceId}.vm.${this.#appName}.internal`
+    );
     socket.on("data", this.#handleMessage);
     socket.on("error", this.#onError);
     socket.on("close", this.#onClose);
@@ -198,8 +206,8 @@ export class PrimarySocket {
     this.#applyChangesRequests.clear();
   }
 
-  get currentPrimaryHostname() {
-    return this.#currentPrimaryHostname;
+  get currentPrimaryInstanceId() {
+    return this.#currentPrimaryInstanceId;
   }
 
   close() {
