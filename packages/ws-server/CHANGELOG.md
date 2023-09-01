@@ -1,5 +1,11 @@
 # @vlcn.io/ws-server
 
+## 0.1.0-next.17
+
+### Patch Changes
+
+- construct the internal hostnames correctly
+
 ## 0.1.0-next.16
 
 ### Patch Changes

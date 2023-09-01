@@ -1,5 +1,13 @@
 # @vlcn.io/ws-litefs
 
+## 0.1.0-next.5
+
+### Patch Changes
+
+- construct the internal hostnames correctly
+- Updated dependencies
+  - @vlcn.io/ws-server@0.1.0-next.17
+
 ## 0.1.0-next.4
 
 ### Patch Changes

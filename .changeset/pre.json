@@ -34,6 +34,7 @@
     "@vlcn.io/ws-litefs": "0.1.0-next.0"
   },
   "changesets": [
+    "big-carrots-tell",
     "big-icons-join",
     "clever-ligers-press",
     "eight-hounds-build",
