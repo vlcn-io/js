@@ -3,6 +3,7 @@ import SyncConnection, { createSyncConnection } from "./SyncConnection.js";
 import DBCache from "./DBCache.js";
 import { WebSocket } from "ws";
 import Transport from "./Trasnport.js";
+import logger from "./logger.js";
 
 export type Options = {
   ws: WebSocket;
@@ -54,6 +55,7 @@ export default class ConnectionBroker {
     switch (tag) {
       // Note: room could go in the `AnnouncePresence` message instead of the random headers.
       case tags.AnnouncePresence: {
+        logger.info(`AnnouncePresence for: ${this.#room}`);
         if (this.#syncConnection != null) {
           throw new Error(
             `A sync connection for ${

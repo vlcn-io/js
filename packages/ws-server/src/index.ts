@@ -66,6 +66,7 @@ export function attachWebsocketServer(
 
       wss.handleUpgrade(request, socket, head, (ws) => {
         if (config.pathPattern.test(request.url || "")) {
+          logger.info(`Upgraded to ws connection for ${request.url}`);
           wss.emit("connection", ws, request);
         }
       });

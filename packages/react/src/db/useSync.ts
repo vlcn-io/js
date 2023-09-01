@@ -6,27 +6,27 @@ export type Options = {
   dbname: string;
   endpoint: string;
   room: string;
-  workerUrl: string;
+  worker: Worker;
   authToken?: string;
 };
 
 export default function useSync({
-  workerUrl,
+  worker,
   dbname,
   room,
   endpoint,
   authToken,
 }: Options) {
   useEffect(() => {
-    const worker = new WorkerInterface(workerUrl);
+    const workerInterface = new WorkerInterface(worker);
 
-    worker.startSync(dbname, {
+    workerInterface.startSync(dbname, {
       room: room,
       url: endpoint,
       authToken: authToken,
     });
     return () => {
-      worker.stopSync(dbname);
+      workerInterface.stopSync(dbname);
     };
-  }, [dbname, room, endpoint, workerUrl]);
+  }, [dbname, room, endpoint, worker]);
 }
