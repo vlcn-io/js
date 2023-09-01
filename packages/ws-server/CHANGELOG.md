@@ -1,5 +1,11 @@
 # @vlcn.io/ws-server
 
+## 0.1.0-next.18
+
+### Patch Changes
+
+- litefs watch patterns
+
 ## 0.1.0-next.17
 
 ### Patch Changes
