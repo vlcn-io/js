@@ -1,5 +1,15 @@
 # @vlcn.io/direct-connect-browser
 
+## 0.5.0-next.6
+
+### Patch Changes
+
+- pass worker instance thru
+- Updated dependencies
+  - @vlcn.io/crsqlite-wasm@0.15.0-next.6
+  - @vlcn.io/xplat-api@0.14.0-next.3
+  - @vlcn.io/rx-tbl@0.14.0-next.3
+
 ## 0.5.0-next.5
 
 ### Patch Changes

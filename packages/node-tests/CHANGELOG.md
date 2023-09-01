@@ -1,5 +1,16 @@
 # @vlcn.io/nodeno-tests
 
+## 0.13.0-next.4
+
+### Patch Changes
+
+- pass worker instance thru
+- Updated dependencies
+  - @vlcn.io/crsqlite-allinone@0.14.0-next.4
+  - @vlcn.io/xplat-api@0.14.0-next.3
+  - @vlcn.io/rx-tbl@0.14.0-next.3
+  - @vlcn.io/xplat-tests@0.13.0-next.3
+
 ## 0.13.0-next.3
 
 ### Patch Changes

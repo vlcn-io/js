@@ -1,5 +1,11 @@
 # @vlcn.io/ws-common
 
+## 0.1.0-next.4
+
+### Patch Changes
+
+- pass worker instance thru
+
 ## 0.1.0-next.3
 
 ### Patch Changes
