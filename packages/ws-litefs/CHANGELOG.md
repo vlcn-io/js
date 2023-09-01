@@ -1,5 +1,11 @@
 # @vlcn.io/ws-litefs
 
+## 0.1.0-next.4
+
+### Patch Changes
+
+- delay reconnect
+
 ## 0.1.0-next.3
 
 ### Patch Changes
