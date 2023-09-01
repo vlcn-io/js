@@ -1,5 +1,11 @@
 # @vlcn.io/ws-litefs
 
+## 0.1.0-next.3
+
+### Patch Changes
+
+- change where litefs gets config
+
 ## 0.1.0-next.2
 
 ### Patch Changes
