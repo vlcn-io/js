@@ -52,6 +52,7 @@ export class PrimaryConnection {
     if (this.#currentPrimary != null) {
       this.#primarySocket = new PrimarySocket(
         port,
+        this.#config.appName || null,
         this.#currentPrimary,
         this.#onSocketPrematurelyClosed
       );
@@ -144,7 +145,7 @@ export class PrimaryConnection {
 
     this.#currentPrimary = await util.readPrimaryFileIfExists(this.#config);
 
-    if (this.#currentPrimary == this.#primarySocket?.currentPrimaryHostname) {
+    if (this.#currentPrimary == this.#primarySocket?.currentPrimaryInstanceId) {
       return;
     }
 
@@ -195,6 +196,7 @@ export class PrimaryConnection {
       }
       this.#primarySocket = new PrimarySocket(
         this.#port,
+        this.#config.appName || null,
         this.#currentPrimary,
         this.#onSocketPrematurelyClosed
       );
