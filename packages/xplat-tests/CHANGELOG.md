@@ -1,5 +1,14 @@
 # @vlcn.io/xplat-tests
 
+## 0.13.0-next.3
+
+### Patch Changes
+
+- Updated dependencies
+  - @vlcn.io/xplat-api@0.14.0-next.3
+  - @vlcn.io/rx-tbl@0.14.0-next.3
+  - @vlcn.io/sync-p2p@0.13.0-next.3
+
 ## 0.13.0-next.2
 
 ### Patch Changes

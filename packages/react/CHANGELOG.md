@@ -1,5 +1,16 @@
 # @vlcn.io/react
 
+## 3.0.0-next.8
+
+### Patch Changes
+
+- pass worker instance thru
+- Updated dependencies
+  - @vlcn.io/crsqlite-wasm@0.15.0-next.6
+  - @vlcn.io/ws-client@0.1.0-next.17
+  - @vlcn.io/xplat-api@0.14.0-next.3
+  - @vlcn.io/rx-tbl@0.14.0-next.3
+
 ## 3.0.0-next.7
 
 ### Patch Changes

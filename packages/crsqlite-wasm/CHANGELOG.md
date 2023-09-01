@@ -1,5 +1,13 @@
 # @vlcn.io/wa-crsqlite
 
+## 0.15.0-next.6
+
+### Patch Changes
+
+- pass worker instance thru
+- Updated dependencies
+  - @vlcn.io/xplat-api@0.14.0-next.3
+
 ## 0.15.0-next.5
 
 ### Patch Changes

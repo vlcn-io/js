@@ -1,5 +1,13 @@
 # @vlcn.io/ws-server
 
+## 0.1.0-next.16
+
+### Patch Changes
+
+- pass worker instance thru
+- Updated dependencies
+  - @vlcn.io/ws-common@0.1.0-next.4
+
 ## 0.1.0-next.15
 
 ### Patch Changes

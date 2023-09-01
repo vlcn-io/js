@@ -1,5 +1,13 @@
 # @vlcn.io/direct-connect-nodejs
 
+## 0.6.0-next.4
+
+### Patch Changes
+
+- pass worker instance thru
+- Updated dependencies
+  - @vlcn.io/xplat-api@0.14.0-next.3
+
 ## 0.6.0-next.3
 
 ### Patch Changes

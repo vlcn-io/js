@@ -1,5 +1,14 @@
 # @vlcn.io/browser-tests
 
+## 0.13.0-next.6
+
+### Patch Changes
+
+- pass worker instance thru
+- Updated dependencies
+  - @vlcn.io/crsqlite-wasm@0.15.0-next.6
+  - @vlcn.io/xplat-tests@0.13.0-next.3
+
 ## 0.13.0-next.5
 
 ### Patch Changes
