@@ -1,23 +1,10 @@
 import { test, expect, vi, afterAll } from "vitest";
 import { createLiteFSWriteService } from "../LiteFSWriteService";
 
-import { Config as LiteFSConfig } from "../config";
-import { Config as ServerConfig } from "@vlcn.io/ws-server";
+import { Config, Config as ServerConfig } from "@vlcn.io/ws-server";
 import { internal } from "@vlcn.io/ws-server";
 import { LiteFSDBFactory, createLiteFSDBFactory } from "../LiteFSDBFactory";
 import fs from "fs";
-
-const primaryLiteFSConfig: LiteFSConfig = {
-  port: 9000,
-  primaryFileDir: "./test_fs/",
-  primaryFile: ".primary",
-};
-
-const secondaryLiteFSConfig: LiteFSConfig = {
-  port: 9000,
-  primaryFileDir: "./test_fs2/",
-  primaryFile: ".primary",
-};
 
 const primaryServerConfig: ServerConfig = {
   dbFolder: "./test_fs/dbs",
@@ -35,16 +22,8 @@ const secondaryServerConfig: ServerConfig = {
 
 test("create primary and follower, create dbs and apply changes", async () => {
   return;
-  const primary = await createServer(
-    primaryLiteFSConfig,
-    primaryServerConfig,
-    true
-  );
-  const secondary = await createServer(
-    secondaryLiteFSConfig,
-    secondaryServerConfig,
-    false
-  );
+  const primary = await createServer(9000, primaryServerConfig, true);
+  const secondary = await createServer(9000, secondaryServerConfig, false);
 
   // Ask the secondary to create a DB
   // (stub out txid for primary db)
@@ -107,39 +86,32 @@ test("create primary and follower, create dbs and apply changes", async () => {
 });
 
 async function createServer(
-  litefsConfig: LiteFSConfig,
+  port: number,
   serverConfig: ServerConfig,
   isPrimary: boolean
 ) {
-  await prepareFilesystem(litefsConfig, serverConfig, isPrimary);
+  await prepareFilesystem(port, serverConfig, isPrimary);
   const fsnotify = new internal.FSNotify(serverConfig);
-  const dbfactory = await createLiteFSDBFactory(litefsConfig);
+  const dbfactory = await createLiteFSDBFactory(port, serverConfig);
   const dbcache = new internal.DBCache(serverConfig, fsnotify, dbfactory);
   let litefsWriteService: ReturnType<typeof createLiteFSWriteService> | null =
     null;
   if (isPrimary) {
-    litefsWriteService = createLiteFSWriteService(
-      litefsConfig,
-      serverConfig,
-      dbcache
-    );
+    litefsWriteService = createLiteFSWriteService(port, serverConfig, dbcache);
   }
 
   return { dbcache, litefsWriteService: litefsWriteService };
 }
 
 async function prepareFilesystem(
-  litefsConfig: LiteFSConfig,
+  port: number,
   serverConfig: ServerConfig,
   isPrimary: boolean
 ) {
   fs.mkdirSync(serverConfig.dbFolder!, { recursive: true });
   fs.mkdirSync(serverConfig.schemaFolder!, { recursive: true });
   if (!isPrimary) {
-    fs.writeFileSync(
-      litefsConfig.primaryFileDir + litefsConfig.primaryFile,
-      "localhost"
-    );
+    fs.writeFileSync(serverConfig.dbFolder + "/.primary", "localhost");
   }
 }
 

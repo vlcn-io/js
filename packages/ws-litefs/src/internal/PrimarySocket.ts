@@ -9,7 +9,6 @@ import {
   ApplyChangesOnPrimary,
   Err,
 } from "@vlcn.io/ws-common";
-import { Config } from "../config.js";
 import logger from "../logger.js";
 
 export class PrimarySocket {
@@ -29,15 +28,15 @@ export class PrimarySocket {
     (msg: ApplyChangesOnPrimaryResponse | Err) => void
   >();
   #closed = false;
-  readonly #config;
+  readonly #port;
 
   constructor(
-    litefsConfig: Config,
+    port: number,
     currentPrimaryHostname: string,
     onPrematurelyClosed: () => void
   ) {
     this.#currentPrimaryHostname = currentPrimaryHostname;
-    this.#config = litefsConfig;
+    this.#port = port;
     this.#socket = this.#connect();
     this.#pingPongHandle = setInterval(this.#sendPing, 1000);
     this.#lastPong = Date.now();
@@ -96,7 +95,7 @@ export class PrimarySocket {
   #connect() {
     const socket = new net.Socket();
 
-    socket.connect(this.#config.port, this.#currentPrimaryHostname);
+    socket.connect(this.#port, this.#currentPrimaryHostname);
     socket.on("data", this.#handleMessage);
     socket.on("error", this.#onError);
     socket.on("close", this.#onClose);

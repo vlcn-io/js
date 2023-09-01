@@ -5,7 +5,6 @@ import {
   createPrimaryConnection,
 } from "./internal/PrimaryConnection.js";
 import { waitUntil } from "./internal/util.js";
-import { Config as LiteFSConfig } from "./config.js";
 import logger from "./logger.js";
 import { LiteFSDB } from "./internal/LiteFSDB.js";
 
@@ -54,7 +53,7 @@ export class LiteFSDBFactory implements IDBFactory {
   }
 }
 
-export async function createLiteFSDBFactory(litefsConfig: LiteFSConfig) {
-  const primaryConnection = await createPrimaryConnection(litefsConfig);
+export async function createLiteFSDBFactory(port: number, config: Config) {
+  const primaryConnection = await createPrimaryConnection(port, config);
   return new LiteFSDBFactory(primaryConnection);
 }
