@@ -3,6 +3,7 @@ import chokidar from "chokidar";
 import path from "path";
 import { Config } from "../config.js";
 import { collect } from "./collapser.js";
+import logger from "../logger.js";
 
 /**
  * Notifies outbound streams of changes to the database file.
@@ -24,22 +25,28 @@ export default class FSNotify {
       );
     }
     // If we're OSX, only watch poke files.
-    // TODO: if we're LiteFS watch `-pos` files only.
-    console.log("Pat:", this.config.dbFolder + "/*");
-    this.watcher = chokidar.watch(this.config.dbFolder + path.sep + "*", {
+    let pat = this.config.dbFolder + path.sep;
+    if (config.notifyPat) {
+      pat += config.notifyPat;
+    } else {
+      pat += "*";
+    }
+    logger.info(`Watching ${pat} for changes`);
+    this.watcher = chokidar.watch(pat, {
       followSymlinks: false,
       usePolling: false,
-      interval: 100,
+      interval: 25,
       binaryInterval: 300,
       ignoreInitial: true,
     });
     this.fileChanged = collect(
-      config.notifyLatencyMs || 50,
+      config.notifyLatencyMs || 10,
       (paths: string[]) => {
         const dedupedDbids = new Set(
           paths.map((p) => util.fileEventNameToDbId(p))
         );
         for (const dbid of dedupedDbids) {
+          logger.debug(`Notifying ${dbid} of changes`);
           const listeners = this.listeners.get(dbid);
           if (listeners != null) {
             for (const listener of listeners) {
