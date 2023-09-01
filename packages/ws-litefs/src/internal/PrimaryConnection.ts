@@ -162,11 +162,7 @@ export class PrimaryConnection {
     }
 
     this.#notifyPrimaryListeners("secondary");
-    this.#primarySocket = new PrimarySocket(
-      this.#port,
-      this.#currentPrimary,
-      this.#onSocketPrematurelyClosed
-    );
+    this.#connect();
   };
 
   #notifyPrimaryListeners = (e: "primary" | "secondary") => {
@@ -175,6 +171,7 @@ export class PrimaryConnection {
     }
   };
 
+  #reconnecting = false;
   #onSocketPrematurelyClosed = () => {
     // recreate the socket
     if (this.#closed) {
@@ -182,13 +179,32 @@ export class PrimaryConnection {
     }
     this.#primarySocket?.close();
     if (this.#currentPrimary != null) {
+      this.#connect(1000);
+    }
+  };
+
+  #connect(delay: number = 0) {
+    if (this.#reconnecting) {
+      return;
+    }
+    this.#reconnecting = true;
+    const fn = () => {
+      this.#reconnecting = false;
+      if (this.#currentPrimary == null) {
+        return;
+      }
       this.#primarySocket = new PrimarySocket(
         this.#port,
         this.#currentPrimary,
         this.#onSocketPrematurelyClosed
       );
+    };
+    if (delay == 0) {
+      fn();
+    } else {
+      setTimeout(fn, delay);
     }
-  };
+  }
 
   close() {
     this.#closed = true;
