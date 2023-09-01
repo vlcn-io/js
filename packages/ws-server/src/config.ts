@@ -12,4 +12,5 @@ export type Config = Readonly<{
   pathPattern: RegExp;
   appName?: string;
   notifyLatencyMs?: number;
+  notifyPat?: string;
 }>;
