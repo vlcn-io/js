@@ -1,22 +1,29 @@
-import { litefsConfig } from "../../__tests__/testLiteFSConfig.js";
 import { test, expect } from "vitest";
 import { createPrimaryConnection } from "../PrimaryConnection.js";
 import fs from "fs";
 import net from "net";
+import { Config } from "@vlcn.io/ws-server";
+
+const testConfig: Config = {
+  dbFolder: "./test_fs/",
+  pathPattern: /\/sync/,
+  schemaFolder: "./test_fs/schemas",
+};
+const port = 9000;
 
 test("Returns that it is the primary if the primary file is missing on construction", async () => {
   try {
     fs.rmSync("./test_fs/.primary");
   } catch (e) {}
 
-  const c = await createPrimaryConnection(litefsConfig);
+  const c = await createPrimaryConnection(port, testConfig);
   expect(c.isPrimary()).toBe(true);
   c.close();
 });
 
 test("Upgrades self to primary if the primary file exists at construction and is later removed", async () => {
   fs.writeFileSync("./test_fs/.primary", "test");
-  const c = await createPrimaryConnection(litefsConfig);
+  const c = await createPrimaryConnection(port, testConfig);
   expect(c.isPrimary()).toBe(false);
   fs.rmSync("./test_fs/.primary");
   await c.awaitPrimary();
@@ -29,7 +36,7 @@ test("Downgrades self to follower if the primary file is removed post-constructi
     fs.rmSync("./test_fs/.primary");
   } catch (e) {}
 
-  const c = await createPrimaryConnection(litefsConfig);
+  const c = await createPrimaryConnection(port, testConfig);
   expect(c.isPrimary()).toBe(true);
 
   fs.writeFileSync("./test_fs/.primary", "test");
@@ -66,7 +73,7 @@ test("Swaps connection when primary changes", async () => {
   server.listen(9000, "localhost");
 
   fs.writeFileSync("./test_fs/.primary", "localhost");
-  const c = await createPrimaryConnection(litefsConfig);
+  const c = await createPrimaryConnection(port, testConfig);
   await receivePromise;
   expect(receivedConn).toBe(1);
   expect(receivedClose).toBe(0);
@@ -108,7 +115,7 @@ test("destroys connection when made primary", async () => {
   server.listen(9000, "localhost");
 
   fs.writeFileSync("./test_fs/.primary", "localhost");
-  const c = await createPrimaryConnection(litefsConfig);
+  const c = await createPrimaryConnection(port, testConfig);
   await receivePromise;
   expect(receivedConn).toBe(1);
   expect(receivedClose).toBe(0);

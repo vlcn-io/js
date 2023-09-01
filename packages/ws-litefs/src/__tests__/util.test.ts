@@ -1,9 +1,15 @@
 import { test, expect, afterAll } from "vitest";
-import { litefsConfig } from "./testLiteFSConfig.js";
 import { config } from "./testServerConfig.js";
-import { internal } from "@vlcn.io/ws-server";
+import { Config, internal } from "@vlcn.io/ws-server";
 import { util, waitUntil } from "../internal/util.js";
 import fs from "fs";
+
+const testConfig: Config = {
+  dbFolder: "./test_fs/",
+  pathPattern: /\/sync/,
+  schemaFolder: "./test_fs/schemas",
+};
+const port = 9000;
 
 test("reading txid", async () => {
   fs.mkdirSync("./test_fs/dbs", { recursive: true });
@@ -82,13 +88,13 @@ test("read the primary file when it does not exist", async () => {
     fs.unlinkSync("./test_fs/.primary");
   } catch (e) {}
 
-  const primary = await util.readPrimaryFileIfExists(litefsConfig);
+  const primary = await util.readPrimaryFileIfExists(testConfig);
   expect(primary).toBe(null);
 });
 
 test("read the primary file when it does exist", async () => {
   fs.writeFileSync("./test_fs/.primary", "test");
-  const primary = await util.readPrimaryFileIfExists(litefsConfig);
+  const primary = await util.readPrimaryFileIfExists(testConfig);
   expect(primary).toBe("test");
   // remove the .primary file
   fs.unlinkSync("./test_fs/.primary");

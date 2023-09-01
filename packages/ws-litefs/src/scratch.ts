@@ -1,59 +1,36 @@
 import { createLiteFSWriteService } from "./LiteFSWriteService.js";
 
-import { Config as LiteFSConfig } from "./config.js";
 import { Config as ServerConfig } from "@vlcn.io/ws-server";
 import { internal } from "@vlcn.io/ws-server";
 import { createLiteFSDBFactory } from "./LiteFSDBFactory.js";
 import fs from "fs";
 
-async function createServer(
-  litefsConfig: LiteFSConfig,
-  serverConfig: ServerConfig,
-  isPrimary: boolean
-) {
-  await prepareFilesystem(litefsConfig, serverConfig, isPrimary);
+const port = 9000;
+
+async function createServer(serverConfig: ServerConfig, isPrimary: boolean) {
+  await prepareFilesystem(serverConfig, isPrimary);
   const fsnotify = new internal.FSNotify(serverConfig);
-  const dbfactory = await createLiteFSDBFactory(litefsConfig);
+  const dbfactory = await createLiteFSDBFactory(port, serverConfig);
   const dbcache = new internal.DBCache(serverConfig, fsnotify, dbfactory);
   let litefsWriteService: ReturnType<typeof createLiteFSWriteService> | null =
     null;
   if (isPrimary) {
-    litefsWriteService = createLiteFSWriteService(
-      litefsConfig,
-      serverConfig,
-      dbcache
-    );
+    litefsWriteService = createLiteFSWriteService(port, serverConfig, dbcache);
   }
 
   return { dbcache, litefsWriteService: litefsWriteService };
 }
 
 async function prepareFilesystem(
-  litefsConfig: LiteFSConfig,
   serverConfig: ServerConfig,
   isPrimary: boolean
 ) {
   fs.mkdirSync(serverConfig.dbFolder!, { recursive: true });
   fs.mkdirSync(serverConfig.schemaFolder!, { recursive: true });
   if (!isPrimary) {
-    fs.writeFileSync(
-      litefsConfig.primaryFileDir + litefsConfig.primaryFile,
-      "localhost"
-    );
+    fs.writeFileSync(serverConfig.dbFolder + "/.primary", "localhost");
   }
 }
-
-const primaryLiteFSConfig: LiteFSConfig = {
-  port: 9000,
-  primaryFileDir: "./test_fs/",
-  primaryFile: ".primary",
-};
-
-const secondaryLiteFSConfig: LiteFSConfig = {
-  port: 9000,
-  primaryFileDir: "./test_fs2/",
-  primaryFile: ".primary",
-};
 
 const primaryServerConfig: ServerConfig = {
   dbFolder: "./test_fs/dbs",
@@ -70,16 +47,8 @@ const secondaryServerConfig: ServerConfig = {
 };
 
 async function run() {
-  const primary = await createServer(
-    primaryLiteFSConfig,
-    primaryServerConfig,
-    true
-  );
-  const secondary = await createServer(
-    secondaryLiteFSConfig,
-    secondaryServerConfig,
-    false
-  );
+  const primary = await createServer(primaryServerConfig, true);
+  const secondary = await createServer(secondaryServerConfig, false);
 
   // Ask the secondary to create a DB
   // (stub out txid for primary db)

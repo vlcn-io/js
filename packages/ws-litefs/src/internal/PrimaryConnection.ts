@@ -8,7 +8,8 @@ import {
 } from "@vlcn.io/ws-common";
 import { PrimarySocket } from "./PrimarySocket.js";
 import path from "path";
-import { Config, litefsPrimaryPath } from "../config.js";
+import { litefsPrimaryPath } from "../config.js";
+import { Config } from "@vlcn.io/ws-server";
 
 let nextRequestId = 0;
 
@@ -21,11 +22,17 @@ export class PrimaryConnection {
   #currentPrimary: string | null = null;
   #primarySocket: PrimarySocket | null = null;
   #primaryListeners = new Set<(e: "primary" | "secondary") => void>();
+  #port;
 
-  constructor(litefsConfig: Config, currentPrimary: string | null) {
+  constructor(
+    port: number,
+    serverConfig: Config,
+    currentPrimary: string | null
+  ) {
+    this.#port = port;
     this.#currentPrimary = currentPrimary;
-    this.#config = litefsConfig;
-    this.#watcher = chokidar.watch(litefsPrimaryPath(litefsConfig), {
+    this.#config = serverConfig;
+    this.#watcher = chokidar.watch(litefsPrimaryPath(serverConfig), {
       followSymlinks: false,
       usePolling: false,
       interval: 10,
@@ -39,12 +46,12 @@ export class PrimaryConnection {
     this.#watcher.on("change", this.#primaryFileCreatedOrRemoved);
 
     setTimeout(() => {
-      this.#primaryFileCreatedOrRemoved(litefsPrimaryPath(litefsConfig));
+      this.#primaryFileCreatedOrRemoved(litefsPrimaryPath(serverConfig));
     }, 0);
 
     if (this.#currentPrimary != null) {
       this.#primarySocket = new PrimarySocket(
-        litefsConfig,
+        port,
         this.#currentPrimary,
         this.#onSocketPrematurelyClosed
       );
@@ -130,7 +137,7 @@ export class PrimaryConnection {
   #primaryFileCreatedOrRemoved = async (file: string) => {
     if (
       path.normalize(file) !=
-      path.normalize(this.#config.primaryFileDir + this.#config.primaryFile)
+      path.normalize(this.#config.dbFolder + "/.primary")
     ) {
       return;
     }
@@ -156,7 +163,7 @@ export class PrimaryConnection {
 
     this.#notifyPrimaryListeners("secondary");
     this.#primarySocket = new PrimarySocket(
-      this.#config,
+      this.#port,
       this.#currentPrimary,
       this.#onSocketPrematurelyClosed
     );
@@ -176,7 +183,7 @@ export class PrimaryConnection {
     this.#primarySocket?.close();
     if (this.#currentPrimary != null) {
       this.#primarySocket = new PrimarySocket(
-        this.#config,
+        this.#port,
         this.#currentPrimary,
         this.#onSocketPrematurelyClosed
       );
@@ -190,7 +197,10 @@ export class PrimaryConnection {
   }
 }
 
-export async function createPrimaryConnection(litefsConfig: Config) {
-  const currentPrimary = await util.readPrimaryFileIfExists(litefsConfig);
-  return new PrimaryConnection(litefsConfig, currentPrimary);
+export async function createPrimaryConnection(
+  port: number,
+  serverConfig: Config
+) {
+  const currentPrimary = await util.readPrimaryFileIfExists(serverConfig);
+  return new PrimaryConnection(port, serverConfig, currentPrimary);
 }

@@ -13,7 +13,6 @@ import {
 } from "@vlcn.io/ws-common";
 import DBCache from "@vlcn.io/ws-server/src/DBCache.js";
 import { util } from "./internal/util.js";
-import { Config as LiteFSConfig } from "./config.js";
 import logger from "./logger.js";
 
 /**
@@ -186,13 +185,12 @@ class EstablishedConnection {
  * @param dbcache
  */
 export function createLiteFSWriteService(
-  litefsConfig: LiteFSConfig,
+  port: number,
   wsConfig: Config,
   dbcache: DBCache
 ): net.Server {
   const server = net.createServer();
   server.on("connection", (conn) => handleConnection(conn, wsConfig, dbcache));
-  const port = litefsConfig.port;
   logger.info(`Starting LiteFSWriteService on ${port}`);
   server.listen(port, () => {
     logger.info(`LiteFSWriteService running on port ${port}`);
