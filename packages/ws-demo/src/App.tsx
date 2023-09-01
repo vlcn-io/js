@@ -2,7 +2,7 @@ import { useCachedState, useDB, useQuery, useSync } from "@vlcn.io/react";
 import "./App.css";
 import randomWords from "./support/randomWords.js";
 import { DBAsync } from "@vlcn.io/xplat-api";
-import workerUrl from "./worker.js?url";
+import SyncWorker from "./worker.js?worker";
 
 type TestRecord = { id: string; name: string };
 const wordOptions = { exactly: 3, join: " " };
@@ -12,7 +12,7 @@ function App({ dbname }: { dbname: string }) {
     dbname,
     endpoint: "ws://localhost:8080/sync",
     room: dbname,
-    workerUrl,
+    worker: new SyncWorker(),
   });
   const ctx = useDB(dbname);
   const data = useQuery<TestRecord>(

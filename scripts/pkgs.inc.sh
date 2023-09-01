@@ -35,7 +35,7 @@ declare -a pkgslocal=(
   "@vlcn.io/ws-common:../js/packages/ws-common"
   "@vlcn.io/ws-server:../js/packages/ws-server"
   "@vlcn.io/ws-client:../js/packages/ws-client"
-  "@vlcn.io/ws-client:../js/packages/ws-litefs"
+  "@vlcn.io/ws-litefs:../js/packages/ws-litefs"
   "@vlcn.io/ws-browserdb:../js/packages/ws-browserdb"
   "@vlcn.io/typed-sql:../typed-sql/packages/typed-sql"
   "@vlcn.io/typed-sql-cli:../typed-sql/packages/cli"

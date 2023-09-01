@@ -6,11 +6,8 @@ export default class WorkerInterface {
   readonly #worker;
   readonly #syncs = new Set<DBID>();
 
-  constructor(workerUri: string) {
-    this.#worker = new Worker(workerUri, {
-      type: "module",
-      name: "ws-sync",
-    });
+  constructor(worker: Worker) {
+    this.#worker = worker;
   }
 
   startSync(dbid: DBID, transportOpts: TransporOptions) {
