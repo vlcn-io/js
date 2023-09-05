@@ -1,5 +1,13 @@
 # @vlcn.io/ws-server
 
+## 0.1.0-next.19
+
+### Patch Changes
+
+- add logging to debug litefs
+- Updated dependencies
+  - @vlcn.io/logger-provider@0.1.1-next.0
+
 ## 0.1.0-next.18
 
 ### Patch Changes

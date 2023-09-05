@@ -1,5 +1,11 @@
 # @vlcn.io/tsbuild-all
 
+## 0.13.0-next.3
+
+### Patch Changes
+
+- add logging to debug litefs
+
 ## 0.13.0-next.2
 
 ### Patch Changes
