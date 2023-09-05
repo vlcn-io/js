@@ -1,5 +1,11 @@
 # @vlcn.io/ws-server
 
+## 0.1.0-next.20
+
+### Patch Changes
+
+- allow users to configure polling
+
 ## 0.1.0-next.19
 
 ### Patch Changes
