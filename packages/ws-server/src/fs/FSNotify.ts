@@ -3,7 +3,7 @@ import chokidar from "chokidar";
 import path from "path";
 import { Config } from "../config.js";
 import { collect } from "./collapser.js";
-import logger from "../logger.js";
+import { logger } from "@vlcn.io/logger-provider";
 
 /**
  * Notifies outbound streams of changes to the database file.
@@ -46,7 +46,7 @@ export default class FSNotify {
           paths.map((p) => util.fileEventNameToDbId(p))
         );
         for (const dbid of dedupedDbids) {
-          logger.info(`Notifying ${dbid} of changes`);
+          logger.info(`Notifying of changes to ${dbid}`);
           const listeners = this.listeners.get(dbid);
           if (listeners != null) {
             for (const listener of listeners) {

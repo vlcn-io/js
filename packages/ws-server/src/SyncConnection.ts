@@ -8,7 +8,7 @@ import DBCache from "./DBCache.js";
 import OutboundStream from "./streams/OutboundStream.js";
 import InboundStream from "./streams/InboundStream.js";
 import Transport from "./Trasnport.js";
-import logger from "./logger.js";
+import { logger } from "@vlcn.io/logger-provider";
 import { IDB } from "./DB.js";
 
 /**

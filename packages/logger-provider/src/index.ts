@@ -1,13 +1,36 @@
 import winston from "winston";
 
-let logger: winston.Logger;
+let loggerInternal: winston.Logger;
 
-export default {
+const loggerProvider = {
   set logger(l: winston.Logger) {
-    logger = l;
+    loggerInternal = l;
   },
 
   get logger() {
-    return logger;
+    if (loggerInternal == null) {
+      console.warn("No logger set! Using default logger.");
+      loggerInternal = winston.createLogger({
+        level: "info",
+        format: winston.format.json(),
+        defaultMeta: { service: "ws-server" },
+        transports: [
+          //
+          // - Write all logs with importance level of `error` or less to `error.log`
+          // - Write all logs with importance level of `info` or less to `combined.log`
+          //
+          // new winston.transports.File({ filename: 'error.log', level: 'error' }),
+          // new winston.transports.File({ filename: 'combined.log' }),
+          new winston.transports.Console({
+            format: winston.format.simple(),
+          }),
+        ],
+      });
+    }
+    return loggerInternal;
   },
 };
+
+export const logger = loggerProvider.logger;
+
+export default loggerProvider;

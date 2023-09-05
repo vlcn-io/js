@@ -3,7 +3,7 @@ import SyncConnection, { createSyncConnection } from "./SyncConnection.js";
 import DBCache from "./DBCache.js";
 import { WebSocket } from "ws";
 import Transport from "./Trasnport.js";
-import logger from "./logger.js";
+import { logger } from "@vlcn.io/logger-provider";
 
 export type Options = {
   ws: WebSocket;

@@ -5,7 +5,7 @@ import {
   encode,
 } from "@vlcn.io/ws-common";
 import { WebSocket } from "ws";
-import logger from "./logger.js";
+import { logger } from "@vlcn.io/logger-provider";
 
 /**
  * Abstracts over the exact transport so we can swap out to any transport (http, websockets, tcp, etc) we want.

@@ -2,7 +2,7 @@ import { IDB } from "./DB.js";
 import { IDBFactory } from "./DBFactory.js";
 import { Config } from "./config.js";
 import FSNotify from "./fs/FSNotify.js";
-import logger from "./logger.js";
+import { logger } from "@vlcn.io/logger-provider";
 
 /**
  * Caches connections to active databases so we do not need to re-create the connection

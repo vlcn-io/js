@@ -6,7 +6,7 @@ import {
 } from "@vlcn.io/ws-common";
 import DB, { IDB } from "../DB.js";
 import Transport from "../Trasnport.js";
-import logger from "../logger.js";
+import { logger } from "@vlcn.io/logger-provider";
 
 /**
  * Listens to the local db and sends out a stream
