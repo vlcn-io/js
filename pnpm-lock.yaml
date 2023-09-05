@@ -247,6 +247,12 @@ importers:
         specifier: ^0.30.1
         version: 0.30.1
 
+  packages/logger-provider:
+    dependencies:
+      winston:
+        specifier: ^3.10.0
+        version: 3.10.0
+
   packages/node-allinone:
     dependencies:
       '@vlcn.io/crsqlite':
@@ -578,6 +584,9 @@ importers:
       '@vlcn.io/crsqlite':
         specifier: workspace:*
         version: link:../../../cr-sqlite/core
+      '@vlcn.io/logger-provider':
+        specifier: workspace:*
+        version: link:../logger-provider
       '@vlcn.io/ws-common':
         specifier: workspace:*
         version: link:../ws-common

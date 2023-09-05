@@ -1,6 +1,6 @@
 import { IncomingMessage } from "node:http";
 import { WebSocketServer, WebSocket } from "ws";
-import logger from "./logger.js";
+import { logger } from "@vlcn.io/logger-provider";
 import type { Server } from "http";
 import DBCache from "./DBCache.js";
 import DB, { IDB } from "./DB.js";
