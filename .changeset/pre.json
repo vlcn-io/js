@@ -31,7 +31,8 @@
     "@vlcn.io/typed-sql-cli": "0.2.6",
     "@vlcn.io/type-gen-ts-adapter": "0.2.6",
     "typed-sql-type-gen": "0.1.0",
-    "@vlcn.io/ws-litefs": "0.1.0-next.0"
+    "@vlcn.io/ws-litefs": "0.1.0-next.0",
+    "@vlcn.io/logger-provider": "0.1.0"
   },
   "changesets": [
     "big-carrots-tell",
@@ -39,6 +40,7 @@
     "clever-ligers-press",
     "eight-hounds-build",
     "gold-yaks-drum",
+    "popular-years-cover",
     "pretty-points-explain",
     "serious-squids-clean",
     "sharp-coats-push",
