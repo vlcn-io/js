@@ -46,7 +46,7 @@ export default class FSNotify {
           paths.map((p) => util.fileEventNameToDbId(p))
         );
         for (const dbid of dedupedDbids) {
-          logger.debug(`Notifying ${dbid} of changes`);
+          logger.info(`Notifying ${dbid} of changes`);
           const listeners = this.listeners.get(dbid);
           if (listeners != null) {
             for (const listener of listeners) {
