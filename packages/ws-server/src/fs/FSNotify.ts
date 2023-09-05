@@ -31,11 +31,14 @@ export default class FSNotify {
     } else {
       pat += "*";
     }
-    logger.info(`Watching ${pat} for changes`);
+    logger.info(
+      `Watching ${pat} for changes using polling: ${!!config.notifyPolling}`
+    );
+    // We could be smarter by not initiating polling until we've forwarded a write. For LiteFS anyhow.
     this.watcher = chokidar.watch(pat, {
       followSymlinks: false,
-      usePolling: false,
-      interval: 25,
+      usePolling: !!this.config.notifyPolling,
+      interval: 100,
       binaryInterval: 300,
       ignoreInitial: true,
     });

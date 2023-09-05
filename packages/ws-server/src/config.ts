@@ -13,4 +13,5 @@ export type Config = Readonly<{
   appName?: string;
   notifyLatencyMs?: number;
   notifyPat?: string;
+  notifyPolling?: boolean;
 }>;
