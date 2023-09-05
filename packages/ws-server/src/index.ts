@@ -89,6 +89,12 @@ export function attachWebsocketServer(
     });
   });
 
+  process.once("SIGINT", () => {
+    logger.info("SIGINT received, closing server");
+    wss.close();
+    return dbCache.destroy();
+  });
+
   return dbCache;
 }
 
