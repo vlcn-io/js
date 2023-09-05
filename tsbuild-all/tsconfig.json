@@ -22,6 +22,7 @@
     { "path": "../packages/ws-client" },
     { "path": "../packages/ws-browserdb" },
     { "path": "../packages/ws-litefs" },
+    { "path": "../packages/logger-provider" },
     { "path": "../packages/id" },
     { "path": "../../typed-sql/packages/typed-sql" },
     { "path": "../../typed-sql/packages/cli" },

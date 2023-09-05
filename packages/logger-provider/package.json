@@ -1,0 +1,26 @@
+{
+  "name": "@vlcn.io/logger-provider",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "module": "dist/index.js",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc --build",
+    "watch": "tsc --build --watch",
+    "test": "echo no tests for logger provider",
+    "deep-clean": "rm -rf ./dist || true && rm tsconfig.tsbuildinfo || true"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:vlcn-io/js.git",
+    "directory": "https://github.com/vlcn-io/js/tree/main/js/packages/logger-provider"
+  },
+  "dependencies": {
+    "winston": "^3.10.0"
+  },
+  "devDependencies": {}
+}

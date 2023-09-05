@@ -7,6 +7,7 @@ packages:
   - "../typed-sql/packages/type-gen-ts-adapter"
   - "packages/browser-tests"
   - "packages/crsqlite-wasm"
+  - "packages/logger-provider"
   - "packages/node-allinone"
   - "packages/node-tests"
   - "packages/ws-browserdb"
