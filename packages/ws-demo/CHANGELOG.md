@@ -1,5 +1,12 @@
 # @vlcn.io/ws-demo
 
+## 1.0.0-next.13
+
+### Patch Changes
+
+- Updated dependencies
+  - @vlcn.io/ws-server@0.1.0-next.21
+
 ## 1.0.0-next.12
 
 ### Patch Changes
