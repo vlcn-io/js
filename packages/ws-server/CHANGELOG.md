@@ -1,5 +1,11 @@
 # @vlcn.io/ws-server
 
+## 0.1.0-next.21
+
+### Patch Changes
+
+- custom polling for litefs -- https://community.fly.io/t/litefs-filesystem-notifications/15244
+
 ## 0.1.0-next.20
 
 ### Patch Changes
