@@ -35,6 +35,7 @@
     "@vlcn.io/logger-provider": "0.1.0"
   },
   "changesets": [
+    "afraid-camels-hear",
     "big-carrots-tell",
     "big-icons-join",
     "clever-ligers-press",
