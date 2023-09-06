@@ -1,5 +1,5 @@
 import { Config } from "@vlcn.io/ws-server";
-import logger from "./logger";
+import logger from "./logger.js";
 import fs from "fs";
 import path from "path";
 import { internal } from "@vlcn.io/ws-server";
