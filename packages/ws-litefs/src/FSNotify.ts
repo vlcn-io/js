@@ -10,8 +10,8 @@ import { internal } from "@vlcn.io/ws-server";
 export default class FSNotify {
   readonly #listeners = new Map<string, Set<() => void>>();
   #intervalHandle;
-  #lastCheck = 0;
   #pollRunning = false;
+  readonly #mtimes = new Map<string, number>();
 
   constructor(private readonly config: Config) {
     this.#intervalHandle = setInterval(() => {
@@ -41,9 +41,10 @@ export default class FSNotify {
       const changed = files.filter((f) => f.endsWith("-pos"));
       const changedSinceLastCheck = changed.filter((f) => {
         const stat = fs.statSync(path.join(dbfolder, f));
-        return stat.mtimeMs > this.#lastCheck;
+        const lastMtime = this.#mtimes.get(f) ?? 0;
+        this.#mtimes.set(f, stat.mtimeMs);
+        return stat.mtimeMs > lastMtime;
       });
-      this.#lastCheck = Date.now();
       if (changedSinceLastCheck.length > 0) {
         this.#notifyListeners(changedSinceLastCheck);
       }
