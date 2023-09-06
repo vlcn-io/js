@@ -1,5 +1,11 @@
 # @vlcn.io/ws-litefs
 
+## 0.1.0-next.10
+
+### Patch Changes
+
+- fix logger import
+
 ## 0.1.0-next.9
 
 ### Patch Changes
