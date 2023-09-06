@@ -12,12 +12,14 @@ import { getDbPath } from "./DB.js";
 import DBFactory from "./DBFactory.js";
 export { IDB } from "./DB.js";
 import { IDBFactory } from "./DBFactory.js";
+import util from "./fs/util.js";
 
 export const internal = {
   DBCache,
   DB,
   getDbPath,
   FSNotify,
+  fsUtil: util,
 };
 
 export * from "./config.js";
@@ -34,6 +36,7 @@ export function attachWebsocketServer(
   server: Server,
   config: Config,
   dbFactory: IDBFactory = new DBFactory(),
+  customFsNotify: FSNotify | null = null,
   authenticate: (
     req: IncomingMessage,
     token: string | null,
@@ -48,7 +51,7 @@ export function attachWebsocketServer(
     );
     fsnotify = null;
   } else {
-    fsnotify = new FSNotify(config);
+    fsnotify = customFsNotify ?? new FSNotify(config);
   }
   const dbCache = new DBCache(config, fsnotify, dbFactory);
   const wss = new WebSocketServer({ noServer: true });
