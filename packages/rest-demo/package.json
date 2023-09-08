@@ -14,6 +14,7 @@
     "@vlcn.io/react": "workspace:*",
     "@vlcn.io/rx-tbl": "workspace:*",
     "@vlcn.io/crsqlite": "workspace:*",
+    "@vlcn.io/ws-common": "workspace:*",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "react": "^18.2.0",
