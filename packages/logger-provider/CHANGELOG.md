@@ -1,5 +1,11 @@
 # @vlcn.io/logger-provider
 
+## 0.1.2
+
+### Patch Changes
+
+- deploy correct build
+
 ## 0.1.1
 
 ### Patch Changes

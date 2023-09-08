@@ -1,5 +1,17 @@
 # @vlcn.io/react
 
+## 3.0.1
+
+### Patch Changes
+
+- deploy correct build
+- Updated dependencies
+  - @vlcn.io/crsqlite-wasm@0.15.1
+  - @vlcn.io/rx-tbl@0.14.1
+  - @vlcn.io/ws-client@0.1.1
+  - @vlcn.io/xplat-api@0.14.1
+  - @vlcn.io/typed-sql@0.2.13
+
 ## 3.0.0
 
 ### Major Changes

@@ -1,5 +1,14 @@
 # @vlcn.io/ws-server
 
+## 0.1.1
+
+### Patch Changes
+
+- deploy correct build
+- Updated dependencies
+  - @vlcn.io/logger-provider@0.1.2
+  - @vlcn.io/ws-common@0.1.1
+
 ## 0.1.0
 
 ### Minor Changes

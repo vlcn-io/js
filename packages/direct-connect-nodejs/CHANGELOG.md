@@ -1,5 +1,14 @@
 # @vlcn.io/direct-connect-nodejs
 
+## 0.6.1
+
+### Patch Changes
+
+- deploy correct build
+- Updated dependencies
+  - @vlcn.io/direct-connect-common@0.6.1
+  - @vlcn.io/xplat-api@0.14.1
+
 ## 0.6.0
 
 ### Minor Changes

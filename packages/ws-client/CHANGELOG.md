@@ -1,5 +1,13 @@
 # @vlcn.io/ws-client
 
+## 0.1.1
+
+### Patch Changes
+
+- deploy correct build
+- Updated dependencies
+  - @vlcn.io/ws-common@0.1.1
+
 ## 0.1.0
 
 ### Minor Changes

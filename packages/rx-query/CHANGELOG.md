@@ -1,5 +1,13 @@
 # @vlcn.io/rx-query
 
+## 0.7.1
+
+### Patch Changes
+
+- deploy correct build
+- Updated dependencies
+  - @vlcn.io/xplat-api@0.14.1
+
 ## 0.7.0
 
 ### Minor Changes

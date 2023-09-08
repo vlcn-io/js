@@ -1,5 +1,15 @@
 # @vlcn.io/xplat-tests
 
+## 0.13.1
+
+### Patch Changes
+
+- deploy correct build
+- Updated dependencies
+  - @vlcn.io/sync-p2p@0.13.1
+  - @vlcn.io/rx-tbl@0.14.1
+  - @vlcn.io/xplat-api@0.14.1
+
 ## 0.13.0
 
 ### Minor Changes
