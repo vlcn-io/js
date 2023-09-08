@@ -29,3 +29,16 @@
 .read-the-docs {
   color: #888;
 }
+
+.push-pull {
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.pull-btn {
+  background: #f05419;
+}
+
+.push-btn {
+  background: green;
+}

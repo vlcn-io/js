@@ -10,11 +10,13 @@
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
+    "@vlcn.io/crsqlite": "workspace:*",
     "@vlcn.io/crsqlite-wasm": "workspace:*",
     "@vlcn.io/react": "workspace:*",
     "@vlcn.io/rx-tbl": "workspace:*",
-    "@vlcn.io/crsqlite": "workspace:*",
     "@vlcn.io/ws-common": "workspace:*",
+    "@vlcn.io/xplat-api": "workspace:*",
+    "better-sqlite3": "^8.3.0",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "react": "^18.2.0",

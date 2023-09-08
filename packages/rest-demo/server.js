@@ -60,6 +60,7 @@ server.listen(PORT, () =>
 ViteExpress.bind(app, server);
 
 class DBWrapper {
+  #db;
   constructor(db) {
     this.#db = db;
   }
@@ -89,7 +90,7 @@ class DBWrapper {
 // the cost of re-constructing it (initializing SQLite, loading the cr-sqlite extension) every request.
 // You should also prepare the statements once and cache them in that world.
 // That is how the websocket and direct-connect servers work.
-async function createDb(room, schemaName, schemaVersion) {
+async function createDb(room, requestedSchemaName, requestedVersion) {
   const dbpath = getDbPath(room);
   const db = new Database(dbpath);
   db.pragma("journal_mode = WAL");
