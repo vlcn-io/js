@@ -3,9 +3,11 @@ import { extensionPath } from "@vlcn.io/crsqlite";
 import express from "express";
 import ViteExpress from "vite-express";
 import * as http from "http";
-import { Change, cryb64 } from "@vlcn.io/ws-common";
+import { cryb64, encode, decode, tags, hexToBytes } from "@vlcn.io/ws-common";
 
 const PORT = parseInt(process.env.PORT || "8080");
+const DB_FOLDER = "./dbs";
+const SCHEMA_FOLDER = "./src/schemas";
 
 const app = express();
 const server = http.createServer(app);
@@ -17,30 +19,57 @@ const server = http.createServer(app);
  *
  * Here we auto-migrate to the requested schema. You can do whatever you'd like
  * on your end.
+ *
+ * To be completely stateless for each request, each request could include
+ * the schema version and name, and the server could check that it is compatible.
  */
 app.post("/initialize/:room", async () => {
   const room = req.params.room;
   const schemaVersion = req.query.schemaVersion;
   const schemaName = req.query.schemaName;
   const db = new DBWrapper(room);
-
-  await db.initialize(schemaName, schemaVersion);
-  db.close();
+  try {
+    await db.initialize(schemaName, schemaVersion);
+    res.send({ status: "OK" });
+  } finally {
+    db.close();
+  }
 });
 
 app.get("/changes/:room", async (req, res) => {
   const room = req.params.room;
-  const sinceVersion = req.query.sinceVersion;
-  const sinceSeq = req.query.sinceSeq;
+  const db = new DBWrapper(room);
+  try {
+    const requestorSiteId = hexToBytes(req.query.requestor);
+    const sinceVersion = BigInt(req.query.since);
 
-  const changes = await db.getChanges(sinceVersion, sinceSeq);
-  res.send(`Retrieving changes for room: ${room}`);
+    const changes = await db.getChanges(sinceVersion, requestorSiteId);
+    const encoded = encode({
+      _tag: tags.Changes,
+      changes,
+      sender: this.db.getId(),
+      since: [sinceVersion, 0],
+    });
+    res.setHeader("Content-Type", "application/octet-stream");
+    res.send(encoded);
+  } finally {
+    db.close();
+  }
 });
 
 app.post("/changes/:room", express.raw(), (req, res) => {
   const room = req.params.room;
-  const data = req.body;
-  res.send(`Binary data received for room: ${room}`);
+  const rawData = req.body;
+  const data = new Uint8Array(rawData.buffer);
+
+  const msg = decode(data);
+  const db = new DBWrapper(room);
+  try {
+    db.applyChanges(msg.changes);
+    res.send({ status: "OK" });
+  } finally {
+    db.close();
+  }
 });
 
 server.listen(PORT, () =>
@@ -83,20 +112,33 @@ class DBWrapper {
     })();
   }
 
+  getChanges(sinceVersion, requestorSiteId) {
+    db.prepare <
+      [bigint, Uint8Array] >
+      `SELECT "table", "pk", "cid", "val", "col_version", "db_version", NULL, "cl" FROM crsql_changes WHERE db_version > ? AND site_id IS NOT ?`
+        .raw(true)
+        .safeIntegers()
+        .all(sinceVersion, requestorSiteId);
+  }
+
+  getId() {
+    return db.prepare(`SELECT crsql_site_id()`).pluck().get();
+  }
+
+  applyChanges(changes) {}
+
   close() {
     this.#db.prepare(`SELECT crsql_finalize()`).run();
     this.#db.close();
   }
 }
 
-const dbFolder = "./dbs";
-const schemaFolder = "./src/schemas";
 function getDbPath(dbName) {
   if (hasPathParts(dbName)) {
     throw new Error(`${dbName} must not include '..', '/', or '\\'`);
   }
 
-  return path.join(config.dbFolder, dbName);
+  return path.join(DB_FOLDER, dbName);
 }
 
 function getSchemaPath(schemaName) {
@@ -104,7 +146,7 @@ function getSchemaPath(schemaName) {
     throw new Error(`${schemaName} must not include '..', '/', or '\\'`);
   }
 
-  return path.join(config.schemaFolder, schemaName);
+  return path.join(SCHEMA_FOLDER, schemaName);
 }
 
 function hasPathParts(s) {
