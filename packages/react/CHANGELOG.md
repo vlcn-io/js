@@ -1,5 +1,11 @@
 # @vlcn.io/react
 
+## 3.0.2
+
+### Patch Changes
+
+- rm temporarily problematic hooks
+
 ## 3.0.1
 
 ### Patch Changes
