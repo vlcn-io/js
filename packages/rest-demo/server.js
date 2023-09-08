@@ -114,7 +114,7 @@ class DBWrapper {
 
   getChanges(sinceVersion, requestorSiteId) {
     db.prepare(
-      `SELECT "table", "pk", "cid", "val", "col_version", "db_version", NULL, "cl", seq FROM crsql_changes WHERE db_version > ? AND site_id IS NOT ?`
+      `SELECT "table", "pk", "cid", "val", "col_version", "db_version", NULL, "cl", "seq" FROM crsql_changes WHERE db_version > ? AND site_id IS NOT ?`
     )
       .raw(true)
       .safeIntegers()
