@@ -9,12 +9,9 @@ import { useDB } from "@vlcn.io/react";
 type TestRecord = { id: string; name: string };
 const wordOptions = { exactly: 3, join: " " };
 
-function getEndpoints() {
+function getEndpoint() {
   const base = `${window.location.protocol}//${window.location.host}/`;
-  return {
-    initialize: base + "initialize",
-    return: base + "changes",
-  };
+  return base + "changes";
 }
 
 function App({ dbname }: { dbname: string }) {

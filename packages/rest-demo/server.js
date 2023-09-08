@@ -12,33 +12,12 @@ const SCHEMA_FOLDER = "./src/schemas";
 const app = express();
 const server = http.createServer(app);
 
-/**
- * Called before a client starts using a room.
- *
- * This ensures that the room exists on the server and has a compatible schema.
- *
- * Here we auto-migrate to the requested schema. You can do whatever you'd like
- * on your end.
- *
- * To be completely stateless for each request, each request could include
- * the schema version and name, and the server could check that it is compatible.
- */
-app.post("/initialize/:room", async () => {
-  const room = req.params.room;
-  const schemaVersion = req.query.schemaVersion;
-  const schemaName = req.query.schemaName;
-  const db = new DBWrapper(room);
-  try {
-    await db.initialize(schemaName, schemaVersion);
-    res.send({ status: "OK" });
-  } finally {
-    db.close();
-  }
-});
-
 app.get("/changes/:room", async (req, res) => {
-  const room = req.params.room;
-  const db = new DBWrapper(room);
+  const db = await createDb(
+    req.params.room,
+    req.query.schemaName,
+    req.query.schemaVersion
+  );
   try {
     const requestorSiteId = hexToBytes(req.query.requestor);
     const sinceVersion = BigInt(req.query.since);
@@ -57,13 +36,15 @@ app.get("/changes/:room", async (req, res) => {
   }
 });
 
-app.post("/changes/:room", express.raw(), (req, res) => {
-  const room = req.params.room;
-  const rawData = req.body;
-  const data = new Uint8Array(rawData.buffer);
+app.post("/changes/:room", express.raw(), async (req, res) => {
+  const data = new Uint8Array(req.body.buffer);
 
   const msg = decode(data);
-  const db = new DBWrapper(room);
+  const db = await createDb(
+    req.params.room,
+    req.query.schemaName,
+    req.query.schemaVersion
+  );
   try {
     db.applyChanges(msg.changes);
     res.send({ status: "OK" });
@@ -78,38 +59,9 @@ server.listen(PORT, () =>
 
 ViteExpress.bind(app, server);
 
-// In an ideal world, you should cache the DB instance so you do not need to pay
-// the cost of re-constructing it (initializing SQLite, loading the cr-sqlite extension) every request.
-// You should also prepare the statements once and cache them in that world.
-// That is how the websocket and direct-connect servers work.
 class DBWrapper {
-  constructor(room) {
-    const dbpath = getDbPath(room);
-    const db = new Database(dbpath);
-    db.pragma("journal_mode = WAL");
-    db.pragma("synchronous = NORMAL");
-    db.loadExtension(extensionPath);
+  constructor(db) {
     this.#db = db;
-  }
-
-  async initialize(requestedSchemaName, requestedVersion) {
-    const content = await fs.promises.readFile(
-      getSchemaPath(requestedSchemaName),
-      "utf-8"
-    );
-    const residentVersion = cryb64(content);
-    if (residentVersion != requestedVersion) {
-      throw new Error(
-        `Server has schema version ${residentVersion} but client requested ${requestedVersion}`
-      );
-    }
-
-    db.transaction(() => {
-      db.prepare(`SELECT crsql_automigrate(?)`).run(content);
-      db.prepare(
-        `INSERT OR REPLACE INTO crsql_master (key, value) VALUES (?, ?)`
-      ).run("schema_version", requestedVersion);
-    })();
   }
 
   getChanges(sinceVersion, requestorSiteId) {
@@ -128,9 +80,74 @@ class DBWrapper {
   applyChanges(changes) {}
 
   close() {
-    this.#db.prepare(`SELECT crsql_finalize()`).run();
-    this.#db.close();
+    closeDb(this.#db);
   }
+}
+
+// NOTE:
+// In an ideal world, you should cache the DB instance so you do not need to pay
+// the cost of re-constructing it (initializing SQLite, loading the cr-sqlite extension) every request.
+// You should also prepare the statements once and cache them in that world.
+// That is how the websocket and direct-connect servers work.
+async function createDb(room, schemaName, schemaVersion) {
+  const dbpath = getDbPath(room);
+  const db = new Database(dbpath);
+  db.pragma("journal_mode = WAL");
+  db.pragma("synchronous = NORMAL");
+  db.loadExtension(extensionPath);
+
+  // NOTE:
+  // This set of code "auto migrates" the database to the requested schema version.
+  // You can eject this code and handle migration manually if you prefer
+  // as auto-migration has it limitations.
+  const schemaVersion = db
+    .prepare(`SELECT key, value FROM crsql_master WHERE key = ?`)
+    .get("schema_version");
+  const schemaName = db
+    .prepare(`SELECT key, value FROM crsql_master WHERE key = ?`)
+    .get("schema_name");
+
+  if (schemaName != null && schemaName != requestedSchemaName) {
+    // we will not allow reformatting a db to a new schema
+    closeDb(db);
+    throw new Error(
+      `Server has schema ${schemaName} but client requested ${requestedSchemaName}`
+    );
+  }
+
+  if (schemaName == requestedSchemaName && requestedVersion == schemaVersion) {
+    return new DBWrapper(db);
+  }
+
+  const content = await fs.promises.readFile(
+    getSchemaPath(requestedSchemaName),
+    "utf-8"
+  );
+  const residentVersion = cryb64(content);
+  if (residentVersion != requestedVersion) {
+    closeDb(db);
+    throw new Error(
+      `Server has schema version ${residentVersion} but client requested ${requestedVersion}`
+    );
+  }
+
+  // upgrade the server to the requested version which is on disk
+  db.transaction(() => {
+    db.prepare(`SELECT crsql_automigrate(?)`).run(content);
+    db.prepare(
+      `INSERT OR REPLACE INTO crsql_master (key, value) VALUES (?, ?)`
+    ).run("schema_version", requestedVersion);
+    db.prepare(
+      `INSERT OR REPLACE INTO crsql_master (key, value) VALUES (?, ?)`
+    ).run("schema_name", requestedSchemaName);
+  })();
+
+  return new DBWrapper(db);
+}
+
+function closeDb(db) {
+  db.prepare(`SELECT crsql_finalize()`).run();
+  db.close();
 }
 
 function getDbPath(dbName) {
