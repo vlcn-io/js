@@ -74,7 +74,8 @@ class WrappedDB implements DB {
           // TODO: see the `null` note on the server side impl.
           // We'll need to change this for production grade sync primitives.
           siteId,
-          c[7]
+          c[7],
+          c[8]
         );
       }
       await this.#updatePeerTrackerStmt.run(tx, siteId, 0, end[0], end[1]);
@@ -148,7 +149,7 @@ export function createDbProvider(
           `SELECT "table", "pk", "cid", "val", "col_version", "db_version", NULL, "cl", seq FROM crsql_changes WHERE db_version > ? AND site_id IS NOT ?`
         ),
         db.prepare(
-          `INSERT INTO crsql_changes ("table", "pk", "cid", "val", "col_version", "db_version", "site_id", "cl") VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+          `INSERT INTO crsql_changes ("table", "pk", "cid", "val", "col_version", "db_version", "site_id", "cl", "seq") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
         ),
         db.prepare(
           `INSERT INTO "crsql_tracked_peers" ("site_id", "event", "version", "seq", "tag") VALUES (?, ?, ?, ?, 0) ON CONFLICT DO UPDATE SET

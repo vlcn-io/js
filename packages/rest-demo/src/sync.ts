@@ -1,4 +1,5 @@
 import { DBAsync, StmtAsync, firstPick } from "@vlcn.io/xplat-api";
+import { encode, decode, tags, bytesToHex } from "@vlcn.io/ws-common";
 
 type Args = Readonly<{
   db: DBAsync;
@@ -13,9 +14,15 @@ type Args = Readonly<{
 
 export class Syncer {
   readonly #args: Args;
+  readonly #syncEndpoint;
 
   constructor(args: Args) {
     this.#args = args;
+    this.#syncEndpoint = `${this.#args.endpoint}/${
+      this.#args.room
+    }?schemaName=${this.#args.schemaName}&schemaVersion=${
+      this.#args.schemaVersion
+    }`;
   }
 
   async pushChanges() {
@@ -25,10 +32,101 @@ export class Syncer {
         `last-sent-to-${this.#args.endpoint}-${this.#args.room}`
       ) ?? "0"
     );
-    // post changes to the server
+    // gather our changes to send to the server
+    const changes = await this.#args.pullChangesetStmt.all(
+      null,
+      lastSentVersion
+    );
+    if (changes.length == 0) {
+      return;
+    }
+
+    for (const c of changes) {
+      c[4] = BigInt(c[4]);
+      c[5] = BigInt(c[5]);
+      c[7] = BigInt(c[7]);
+    }
+
+    const encoded = encode({
+      _tag: tags.Changes,
+      changes,
+      sender: this.#args.siteId,
+      since: [lastSentVersion, 0],
+    });
+
+    console.log(`Sending ${changes.length} changes since ${lastSentVersion}`);
+
+    const response = await fetch(this.#syncEndpoint, {
+      method: "POST",
+      body: encoded,
+      headers: {
+        "Content-Type": "application/octet-stream",
+      },
+    });
+    // Record that we've sent up to the given db version to the server
+    // so next sync will be a delta.
+    if (response.ok) {
+      localStorage.setItem(
+        `last-sent-to-${this.#args.endpoint}-${this.#args.room}`,
+        changes[changes.length - 1][5].toString(10)
+      );
+    }
   }
 
-  async pullChanges() {}
+  async pullChanges() {
+    const lastSeenVersion = BigInt(
+      localStorage.getItem(
+        `last-seen-from-${this.#args.endpoint}-${this.#args.room}`
+      ) ?? "0"
+    );
+    const endpoint =
+      this.#syncEndpoint +
+      `&requestor=${bytesToHex(
+        this.#args.siteId
+      )}&since=${lastSeenVersion.toString(10)}`;
+
+    const response = await fetch(endpoint);
+    if (!response.ok) {
+      throw new Error(`Failed to pull changes: ${response.status}`);
+    }
+    const msg = decode(new Uint8Array(await response.arrayBuffer()));
+    if (msg._tag !== tags.Changes) {
+      throw new Error(`Expected changes, got ${msg._tag}`);
+    }
+
+    if (msg.changes.length == 0) {
+      return;
+    }
+
+    await this.#args.db.tx(async (tx) => {
+      for (const c of msg.changes) {
+        await this.#args.applyChangesetStmt.run(
+          tx,
+          c[0],
+          c[1],
+          c[2],
+          c[3],
+          c[4],
+          c[5],
+          msg.sender,
+          c[7],
+          c[8]
+        );
+      }
+    });
+
+    // Record that we've seen up to the given db version from the server
+    // so next sync will be a delta.
+    localStorage.setItem(
+      `last-seen-from-${this.#args.endpoint}-${this.#args.room}`,
+      msg.changes[msg.changes.length - 1][5].toString(10)
+    );
+  }
+
+  destroy() {
+    this.#args.applyChangesetStmt.finalize(null);
+    this.#args.pullChangesetStmt.finalize(null);
+  }
 }
 
 export default async function createSyncer(

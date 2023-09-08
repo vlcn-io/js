@@ -22,6 +22,10 @@ app.get("/changes/:room", async (req, res) => {
     const requestorSiteId = hexToBytes(req.query.requestor);
     const sinceVersion = BigInt(req.query.since);
 
+    console.log(
+      `Asked for changes since: ${sinceVersion} requestor: ${requestorSiteId}`
+    );
+
     const changes = await db.getChanges(sinceVersion, requestorSiteId);
     const encoded = encode({
       _tag: tags.Changes,
@@ -30,6 +34,8 @@ app.get("/changes/:room", async (req, res) => {
       since: [sinceVersion, 0],
     });
     res.setHeader("Content-Type", "application/octet-stream");
+
+    console.log(`returning ${changes.length} changes`);
     res.send(encoded);
   } finally {
     db.close();
@@ -40,13 +46,18 @@ app.post("/changes/:room", express.raw(), async (req, res) => {
   const data = new Uint8Array(req.body.buffer);
 
   const msg = decode(data);
+  console.log(
+    `Received ${msg.changes.length} changes from ${msg.sender} for ${req.params.room}.
+    Schema ${req.query.schemaName} version ${req.query.schemaVersion}`
+  );
+
   const db = await createDb(
     req.params.room,
     req.query.schemaName,
     req.query.schemaVersion
   );
   try {
-    db.applyChanges(msg.changes);
+    db.applyChanges(msg);
     res.send({ status: "OK" });
   } finally {
     db.close();
@@ -66,9 +77,10 @@ class DBWrapper {
   }
 
   getChanges(sinceVersion, requestorSiteId) {
-    db.prepare(
-      `SELECT "table", "pk", "cid", "val", "col_version", "db_version", NULL, "cl", "seq" FROM crsql_changes WHERE db_version > ? AND site_id IS NOT ?`
-    )
+    this.#db
+      .prepare(
+        `SELECT "table", "pk", "cid", "val", "col_version", "db_version", NULL, "cl", "seq" FROM crsql_changes WHERE db_version > ? AND site_id IS NOT ?`
+      )
       .raw(true)
       .safeIntegers()
       .all(sinceVersion, requestorSiteId);
@@ -78,7 +90,18 @@ class DBWrapper {
     return db.prepare(`SELECT crsql_site_id()`).pluck().get();
   }
 
-  applyChanges(changes) {}
+  applyChanges(msg) {
+    const stmt = this.#db.prepare(
+      `INSERT INTO crsql_changes
+        ("table", "pk", "cid", "val", "col_version", "db_version", "site_id", "cl", "seq")
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    );
+    this.#db.transaction((msg) => {
+      for (const c of msg.changes) {
+        stmt.run(c[0], c[1], c[2], c[3], c[4], c[5], msg.sender, c[7], c[8]);
+      }
+    })(msg);
+  }
 
   close() {
     closeDb(this.#db);

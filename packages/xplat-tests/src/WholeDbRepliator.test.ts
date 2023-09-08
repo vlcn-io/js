@@ -258,7 +258,7 @@ export const tests = {
     // TODO: check when version exceeds max and gets flipped to a string -- must be stored as int.
     // pk got encoded as decimal? wtf?
     const changeset: readonly Changeset[] = [
-      ["foo", new Uint8Array([1, 9, 1]), "b", "foobar", 1, 1, uuidv4(), 1],
+      ["foo", new Uint8Array([1, 9, 1]), "b", "foobar", 1, 1, uuidv4(), 1, 0],
     ];
 
     await changesReceived!(changeSender, changeset);
@@ -300,7 +300,7 @@ export const tests = {
     // TODO: check when version exceeds max and gets flipped to a string -- must be stored as int.
     // pk got encoded as decimal? wtf?
     const changeset: readonly Changeset[] = [
-      ["foo", new Uint8Array([1, 9, 1]), "b", "foobar", 1, 1, uuidv4(), 1],
+      ["foo", new Uint8Array([1, 9, 1]), "b", "foobar", 1, 1, uuidv4(), 1, 0],
     ];
 
     await changesReceived!(changeSender, changeset);
@@ -337,6 +337,7 @@ export const tests = {
           1,
           changeSender,
           1,
+          0,
         ],
       ];
 
