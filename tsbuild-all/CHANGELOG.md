@@ -1,5 +1,17 @@
 # @vlcn.io/tsbuild-all
 
+## 0.13.0
+
+### Minor Changes
+
+- 56df096: re-insertion, api naming consistencies, metadata size reduction, websocket server, websocket client, websocket demo
+
+### Patch Changes
+
+- b3f0b2d: add logging to debug litefs
+- 08f13fb: react strict mode fiex, migrator fixes, typed-sql basic support, ws replication, db provider hooks
+- f327068: rebuild
+
 ## 0.13.0-next.3
 
 ### Patch Changes

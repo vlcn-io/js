@@ -1,5 +1,32 @@
 # @vlcn.io/ws-litefs
 
+## 0.1.0
+
+### Patch Changes
+
+- ea6051d: mtime per file
+- 323b498: construct the internal hostnames correctly
+- 4022bd6: litefs support
+- cca4219: change where litefs gets config
+- 87aa29a: custom polling for litefs -- https://community.fly.io/t/litefs-filesystem-notifications/15244
+- 8c8cb7e: pass worker instance thru
+- c2eb7d4: litefs watch patterns
+- 8034d08: fix logger import
+- 36c0e63: delay reconnect
+- Updated dependencies [323b498]
+- Updated dependencies [56df096]
+- Updated dependencies [4022bd6]
+- Updated dependencies [87aa29a]
+- Updated dependencies [b3f0b2d]
+- Updated dependencies [08f13fb]
+- Updated dependencies [8c8cb7e]
+- Updated dependencies [7cbb842]
+- Updated dependencies [c2eb7d4]
+- Updated dependencies [f327068]
+  - @vlcn.io/ws-server@0.1.0
+  - @vlcn.io/ws-common@0.1.0
+  - @vlcn.io/crsqlite@0.16.0
+
 ## 0.1.0-next.11
 
 ### Patch Changes
