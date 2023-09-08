@@ -5,17 +5,14 @@ import vlcnLogo from "./assets/vlcn.png";
 import "./App.css";
 import randomWords from "./support/randomWords.js";
 import { useDB } from "@vlcn.io/react";
+import { useSyncer } from "./Syncer.js";
 
 type TestRecord = { id: string; name: string };
 const wordOptions = { exactly: 3, join: " " };
 
-function getEndpoint() {
-  const base = `${window.location.protocol}//${window.location.host}/`;
-  return base + "changes";
-}
-
-function App({ dbname }: { dbname: string }) {
-  const ctx = useDB(dbname);
+function App({ room }: { room: string }) {
+  const ctx = useDB(room);
+  const syncer = useSyncer(ctx.db, room);
   const data = useQuery<TestRecord>(
     ctx,
     "SELECT * FROM test ORDER BY id DESC"
@@ -32,8 +29,8 @@ function App({ dbname }: { dbname: string }) {
     ctx.db.exec("DELETE FROM test;");
   };
 
-  const pushChanges = () => {};
-  const pullChanges = () => {};
+  const pushChanges = () => syncer?.pushChanges();
+  const pullChanges = () => syncer?.pullChanges();
 
   return (
     <>
