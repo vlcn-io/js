@@ -388,6 +388,9 @@ importers:
       '@vlcn.io/ws-common':
         specifier: workspace:*
         version: link:../ws-common
+      better-sqlite3:
+        specifier: ^8.3.0
+        version: 8.3.0
       cors:
         specifier: ^2.8.5
         version: 2.8.5

@@ -32,6 +32,9 @@ function App({ dbname }: { dbname: string }) {
     ctx.db.exec("DELETE FROM test;");
   };
 
+  const pushChanges = () => {};
+  const pullChanges = () => {};
+
   return (
     <>
       <div>
@@ -47,10 +50,12 @@ function App({ dbname }: { dbname: string }) {
       </div>
       <h1>Vite + React + Vulcan</h1>
       <div className="card">
-        <button onClick={addData} style={{ marginRight: "1em" }}>
-          Add Data
-        </button>
-        <button onClick={dropData}>Drop Data</button>
+        <div>
+          <button onClick={addData} style={{ marginRight: "1em" }}>
+            Add Data
+          </button>
+          <button onClick={dropData}>Drop Data</button>
+        </div>
         <table>
           <thead>
             <tr>
@@ -69,6 +74,18 @@ function App({ dbname }: { dbname: string }) {
             ))}
           </tbody>
         </table>
+        <div className="push-pull">
+          <button
+            onClick={pushChanges}
+            style={{ marginRight: "1em" }}
+            className="push-btn"
+          >
+            Push Changes
+          </button>
+          <button onClick={pullChanges} className="pull-btn">
+            Pull Changes
+          </button>
+        </div>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
