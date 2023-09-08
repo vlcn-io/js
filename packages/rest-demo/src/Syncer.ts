@@ -173,7 +173,12 @@ export default async function createSyncer(
   });
 }
 
-const endpoint = `${window.location.protocol}//${window.location.host}/changes`;
+const endpoint = (() => {
+  if (window.location.hostname === "localhost") {
+    return "https://localhost:8080/changes";
+  }
+  return `${window.location.protocol}//${window.location.host}/changes`;
+})();
 // TODO: users should stick the syncer into context rather than re-creating it everywhere they
 // want to use it.
 export function useSyncer(db: DBAsync, room: string) {

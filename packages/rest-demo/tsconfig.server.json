@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "./",
+    "outDir": "./dist-server",
     "rootDir": "./",
     "allowSyntheticDefaultImports": true,
     "sourceMap": false,
@@ -9,11 +9,12 @@
     "target": "esnext",
     "skipLibCheck": true,
     "moduleResolution": "Node",
+    "baseUrl": "./server/",
     "declaration": false,
     "allowJs": true,
     "declarationMap": false,
     "strict": true
   },
-  "include": ["./server.ts"],
+  "include": ["./server"],
   "exclude": []
 }
