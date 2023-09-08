@@ -1,5 +1,17 @@
 # @vlcn.io/ws-browserdb
 
+## 0.1.1
+
+### Patch Changes
+
+- deploy correct build
+- Updated dependencies
+  - @vlcn.io/crsqlite-wasm@0.15.1
+  - @vlcn.io/rx-tbl@0.14.1
+  - @vlcn.io/ws-client@0.1.1
+  - @vlcn.io/ws-common@0.1.1
+  - @vlcn.io/xplat-api@0.14.1
+
 ## 0.1.0
 
 ### Minor Changes

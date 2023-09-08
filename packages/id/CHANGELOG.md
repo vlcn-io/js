@@ -1,5 +1,11 @@
 # @vlcn.io/id
 
+## 0.0.3
+
+### Patch Changes
+
+- deploy correct build
+
 ## 0.0.2
 
 ### Patch Changes

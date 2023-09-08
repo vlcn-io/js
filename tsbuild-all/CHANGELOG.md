@@ -1,5 +1,11 @@
 # @vlcn.io/tsbuild-all
 
+## 0.13.1
+
+### Patch Changes
+
+- deploy correct build
+
 ## 0.13.0
 
 ### Minor Changes
