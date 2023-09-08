@@ -82,7 +82,8 @@ export type Changeset = [
   Version,
   Version,
   SiteIDWire, // site_id
-  CausalLength
+  CausalLength,
+  number, // seq
 ];
 
 const api = {
@@ -244,7 +245,7 @@ export class WholeDbReplicator {
       let maxVersion = 0n;
       log("inserting changesets in tx", changesets);
       const stmt = await tx.prepare(
-        'INSERT INTO crsql_changes ("table", "pk", "cid", "val", "col_version", "db_version", "site_id", "cl") VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+        'INSERT INTO crsql_changes ("table", "pk", "cid", "val", "col_version", "db_version", "site_id", "cl", "seq") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
       );
       // TODO: may want to chunk
       try {
@@ -284,7 +285,7 @@ export class WholeDbReplicator {
   private changesRequested = async (from: SiteIDWire, since: bigint) => {
     const fromAsBlob = uuidParse(from);
     const changes: Changeset[] = await this.db.execA<Changeset>(
-      `SELECT "table", "pk", "cid", "val", "col_version", "db_version", COALESCE("site_id", crsql_site_id()), "cl" FROM crsql_changes WHERE site_id IS NOT ? AND db_version > ?`,
+      `SELECT "table", "pk", "cid", "val", "col_version", "db_version", COALESCE("site_id", crsql_site_id()), "cl", "seq" FROM crsql_changes WHERE site_id IS NOT ? AND db_version > ?`,
       [fromAsBlob, since]
     );
 
