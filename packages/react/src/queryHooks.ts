@@ -32,34 +32,34 @@ const allUpdateTypes = [
   UPDATE_TYPE.DELETE,
 ];
 
-export function usePointQuery<R, M = R>(
-  ctx: CtxAsync,
-  _rowid_: RowID<R>,
-  query: string,
-  bindings?: any[],
-  postProcess?: (rows: R[]) => M
-): QueryData<M> {
-  return useQuery(
-    ctx,
-    query,
-    bindings,
-    postProcess,
-    [UPDATE_TYPE.UPDATE, UPDATE_TYPE.DELETE],
-    _rowid_
-  );
-}
+// export function usePointQuery<R, M = R>(
+//   ctx: CtxAsync,
+//   _rowid_: RowID<R>,
+//   query: string,
+//   bindings?: any[],
+//   postProcess?: (rows: R[]) => M
+// ): QueryData<M> {
+//   return useQuery(
+//     ctx,
+//     query,
+//     bindings,
+//     postProcess,
+//     [UPDATE_TYPE.UPDATE, UPDATE_TYPE.DELETE],
+//     _rowid_
+//   );
+// }
 
-export function useRangeQuery<R, M = R[]>(
-  ctx: CtxAsync,
-  query: string,
-  bindings?: any[],
-  postProcess?: (rows: R[]) => M
-) {
-  return useQuery(ctx, query, bindings, postProcess, [
-    UPDATE_TYPE.INSERT,
-    UPDATE_TYPE.DELETE,
-  ]);
-}
+// export function useRangeQuery<R, M = R[]>(
+//   ctx: CtxAsync,
+//   query: string,
+//   bindings?: any[],
+//   postProcess?: (rows: R[]) => M
+// ) {
+//   return useQuery(ctx, query, bindings, postProcess, [
+//     UPDATE_TYPE.INSERT,
+//     UPDATE_TYPE.DELETE,
+//   ]);
+// }
 
 export function useQuery<R, M = R[]>(
   ctx: CtxAsync,
@@ -123,33 +123,33 @@ export function useQuery2<R, M = R[]>(
 }
 
 // TODO: finish rx cache so we don't need the user to differentiate btwn point queries and not
-export function usePointQuery2<R>(
-  ctx: CtxAsync,
-  _rowid_: RowID<R>,
-  query: Query<R>,
-  bindings?: any[]
-): QueryData<R | undefined> {
-  return useQuery(
-    ctx,
-    query,
-    bindings,
-    first<R>,
-    [UPDATE_TYPE.UPDATE, UPDATE_TYPE.DELETE],
-    _rowid_
-  );
-}
+// export function usePointQuery2<R>(
+//   ctx: CtxAsync,
+//   _rowid_: RowID<R>,
+//   query: Query<R>,
+//   bindings?: any[]
+// ): QueryData<R | undefined> {
+//   return useQuery(
+//     ctx,
+//     query,
+//     bindings,
+//     first<R>,
+//     [UPDATE_TYPE.UPDATE, UPDATE_TYPE.DELETE],
+//     _rowid_
+//   );
+// }
 
-export function useRangeQuery2<R, M = R[]>(
-  ctx: CtxAsync,
-  query: Query<R>,
-  bindings?: any[],
-  postProcess?: (rows: R[]) => M
-) {
-  return useQuery(ctx, query, bindings, postProcess, [
-    UPDATE_TYPE.INSERT,
-    UPDATE_TYPE.DELETE,
-  ]);
-}
+// export function useRangeQuery2<R, M = R[]>(
+//   ctx: CtxAsync,
+//   query: Query<R>,
+//   bindings?: any[],
+//   postProcess?: (rows: R[]) => M
+// ) {
+//   return useQuery(ctx, query, bindings, postProcess, [
+//     UPDATE_TYPE.INSERT,
+//     UPDATE_TYPE.DELETE,
+//   ]);
+// }
 
 let pendingQuery: number | null = null;
 let queryTxHolder: number | null = null;
