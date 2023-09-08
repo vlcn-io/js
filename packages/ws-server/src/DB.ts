@@ -151,7 +151,7 @@ export default class DB implements IDB {
     // that reduces data size but will require this to only be used in hub and spoke topologies.
     this.#getChangesStmt = db
       .prepare<[bigint, Uint8Array]>(
-        `SELECT "table", "pk", "cid", "val", "col_version", "db_version", NULL, "cl" FROM crsql_changes WHERE db_version > ? AND site_id IS NOT ?`
+        `SELECT "table", "pk", "cid", "val", "col_version", "db_version", NULL, "cl", seq FROM crsql_changes WHERE db_version > ? AND site_id IS NOT ?`
       )
       .raw(true)
       .safeIntegers();

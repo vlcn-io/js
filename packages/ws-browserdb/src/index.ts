@@ -145,7 +145,7 @@ export function createDbProvider(
     const [pullChangesetStmt, applyChangesetStmt, updatePeerTrackerStmt] =
       await Promise.all([
         db.prepare(
-          `SELECT "table", "pk", "cid", "val", "col_version", "db_version", NULL, "cl" FROM crsql_changes WHERE db_version > ? AND site_id IS NOT ?`
+          `SELECT "table", "pk", "cid", "val", "col_version", "db_version", NULL, "cl", seq FROM crsql_changes WHERE db_version > ? AND site_id IS NOT ?`
         ),
         db.prepare(
           `INSERT INTO crsql_changes ("table", "pk", "cid", "val", "col_version", "db_version", "site_id", "cl") VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
