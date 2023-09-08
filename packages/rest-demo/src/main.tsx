@@ -31,7 +31,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         content: schemaContent,
       }}
     >
-      <App dbname={room} />
+      <App room={room} />
     </DBProvider>
   </React.StrictMode>
 );

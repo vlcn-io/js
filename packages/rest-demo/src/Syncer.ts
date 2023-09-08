@@ -1,5 +1,6 @@
 import { DBAsync, StmtAsync, firstPick } from "@vlcn.io/xplat-api";
 import { encode, decode, tags, bytesToHex } from "@vlcn.io/ws-common";
+import { useState, useEffect } from "react";
 
 type Args = Readonly<{
   db: DBAsync;
@@ -12,7 +13,7 @@ type Args = Readonly<{
   siteId: Uint8Array;
 }>;
 
-export class Syncer {
+class Syncer {
   readonly #args: Args;
   readonly #syncEndpoint;
 
@@ -170,4 +171,29 @@ export default async function createSyncer(
     applyChangesetStmt,
     siteId,
   });
+}
+
+const endpoint = `${window.location.protocol}//${window.location.host}/changes`;
+// TODO: users should stick the syncer into context rather than re-creating it everywhere they
+// want to use it.
+export function useSyncer(db: DBAsync, room: string) {
+  const [syncer, setSyncer] = useState<Syncer | null>(null);
+  useEffect(() => {
+    let mounted = true;
+    const syncer = createSyncer(db, endpoint, room);
+
+    syncer.then((s) => {
+      if (!mounted) {
+        return;
+      }
+      setSyncer(s);
+    });
+
+    return () => {
+      mounted = false;
+      syncer.then((s) => s.destroy());
+    };
+  }, [db, room]);
+
+  return syncer;
 }
