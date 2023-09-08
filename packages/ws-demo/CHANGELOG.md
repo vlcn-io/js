@@ -1,5 +1,43 @@
 # @vlcn.io/ws-demo
 
+## 1.0.0
+
+### Major Changes
+
+- 56df096: react hooks now use websocket sync, sync and db provider split
+
+### Minor Changes
+
+- 56df096: re-insertion, api naming consistencies, metadata size reduction, websocket server, websocket client, websocket demo
+
+### Patch Changes
+
+- 4022bd6: litefs support
+- 08f13fb: react strict mode fiex, migrator fixes, typed-sql basic support, ws replication, db provider hooks
+- 8c8cb7e: pass worker instance thru
+- f327068: rebuild
+- Updated dependencies [323b498]
+- Updated dependencies [bbb2c7f]
+- Updated dependencies [56df096]
+- Updated dependencies [4022bd6]
+- Updated dependencies [87aa29a]
+- Updated dependencies [b3f0b2d]
+- Updated dependencies [08f13fb]
+- Updated dependencies [8c8cb7e]
+- Updated dependencies [8b519bc]
+- Updated dependencies [7cbb842]
+- Updated dependencies [6deb949]
+- Updated dependencies [c2eb7d4]
+- Updated dependencies [f327068]
+- Updated dependencies [56df096]
+  - @vlcn.io/ws-server@0.1.0
+  - @vlcn.io/crsqlite-wasm@0.15.0
+  - @vlcn.io/react@3.0.0
+  - @vlcn.io/ws-browserdb@0.1.0
+  - @vlcn.io/ws-client@0.1.0
+  - @vlcn.io/rx-tbl@0.14.0
+  - @vlcn.io/xplat-api@0.14.0
+
 ## 1.0.0-next.13
 
 ### Patch Changes

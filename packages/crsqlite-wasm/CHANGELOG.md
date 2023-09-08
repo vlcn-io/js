@@ -1,5 +1,26 @@
 # @vlcn.io/wa-crsqlite
 
+## 0.15.0
+
+### Minor Changes
+
+- 56df096: re-insertion, api naming consistencies, metadata size reduction, websocket server, websocket client, websocket demo
+
+### Patch Changes
+
+- bbb2c7f: fixes for react strict mode
+- 4022bd6: litefs support
+- 08f13fb: react strict mode fiex, migrator fixes, typed-sql basic support, ws replication, db provider hooks
+- 8c8cb7e: pass worker instance thru
+- 8b519bc: rebuild
+- f327068: rebuild
+- Updated dependencies [56df096]
+- Updated dependencies [08f13fb]
+- Updated dependencies [8c8cb7e]
+- Updated dependencies [f327068]
+  - @vlcn.io/wa-sqlite@0.22.0
+  - @vlcn.io/xplat-api@0.14.0
+
 ## 0.15.0-next.6
 
 ### Patch Changes
