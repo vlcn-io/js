@@ -1,5 +1,13 @@
 # @vlcn.io/ws-litefs
 
+## 0.1.2-next.0
+
+### Patch Changes
+
+- Updated dependencies
+  - @vlcn.io/ws-common@0.1.2-next.0
+  - @vlcn.io/ws-server@0.1.2-next.0
+
 ## 0.1.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @vlcn.io/react
 
+## 3.0.3-next.0
+
+### Patch Changes
+
+- @vlcn.io/ws-client@0.1.2-next.0
+
 ## 3.0.2
 
 ### Patch Changes
