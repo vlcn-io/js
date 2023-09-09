@@ -28,5 +28,4 @@ packages:
   - "packages/sandbox"
   - "packages/sandbox-node"
   - "packages/id"
-  - "packages/rest-demo"
   - "tsbuild-all"
