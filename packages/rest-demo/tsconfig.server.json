@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "./dist-server",
-    "rootDir": "./",
+    "rootDir": "./server",
     "allowSyntheticDefaultImports": true,
     "sourceMap": false,
     "strictNullChecks": true,
