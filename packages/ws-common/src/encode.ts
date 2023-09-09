@@ -19,12 +19,12 @@ export function encode(msg: Msg): Uint8Array {
       return encoding.toUint8Array(encoder);
     case tags.RejectChanges:
       encoding.writeUint8Array(encoder, msg.whose);
-      encoding.writeBigInt64(encoder, msg.since[0]);
-      encoding.writeVarInt(encoder, msg.since[1]);
+      encoding.writeBigInt64(encoder, BigInt(msg.since[0]));
+      encoding.writeVarInt(encoder, Number(msg.since[1]));
       return encoding.toUint8Array(encoder);
     case tags.StartStreaming:
-      encoding.writeBigInt64(encoder, msg.since[0]);
-      encoding.writeVarInt(encoder, msg.since[1]);
+      encoding.writeBigInt64(encoder, BigInt(msg.since[0]));
+      encoding.writeVarInt(encoder, Number(msg.since[1]));
       encoding.writeVarUint(encoder, msg.excludeSites.length);
       for (const exclude of msg.excludeSites) {
         encoding.writeUint8Array(encoder, exclude);
@@ -42,8 +42,8 @@ export function encode(msg: Msg): Uint8Array {
       encoding.writeUint8Array(encoder, msg.sender);
       writeChanges(encoder, msg.changes);
       encoding.writeVarString(encoder, msg.room);
-      encoding.writeBigInt64(encoder, msg.newLastSeen[0]);
-      encoding.writeVarInt(encoder, msg.newLastSeen[1]);
+      encoding.writeBigInt64(encoder, BigInt(msg.newLastSeen[0]));
+      encoding.writeVarInt(encoder, Number(msg.newLastSeen[1]));
       return encoding.toUint8Array(encoder);
     case tags.Ping:
     case tags.Pong:
@@ -72,8 +72,8 @@ function writeAnnouncePresenceSansTag(
   for (const lastSeen of msg.lastSeens) {
     encoding.writeUint8Array(encoder, lastSeen[0]);
     // TODO: lib0 needs to support varbigints. This wastes a ton of space.
-    encoding.writeBigInt64(encoder, lastSeen[1][0]);
-    encoding.writeVarInt(encoder, lastSeen[1][1]);
+    encoding.writeBigInt64(encoder, BigInt(lastSeen[1][0]));
+    encoding.writeVarInt(encoder, Number(lastSeen[1][1]));
   }
   encoding.writeVarString(encoder, msg.schemaName);
   encoding.writeBigInt64(encoder, msg.schemaVersion);
@@ -84,8 +84,8 @@ function writeChangesMsgSansTag(
   msg: Omit<Changes, "_tag">
 ) {
   encoding.writeUint8Array(encoder, msg.sender);
-  encoding.writeBigInt64(encoder, msg.since[0]);
-  encoding.writeVarInt(encoder, msg.since[1]);
+  encoding.writeBigInt64(encoder, BigInt(msg.since[0]));
+  encoding.writeVarInt(encoder, Number(msg.since[1]));
   writeChanges(encoder, msg.changes);
 }
 
@@ -105,8 +105,9 @@ function writeChanges(encoder: encoding.Encoder, changes: readonly Change[]) {
     encoding.writeVarString(encoder, change[2]);
     writeValue(encoder, change[3]);
     // TODO: huge space wasters that we need to fix lib0 for
-    encoding.writeBigInt64(encoder, change[4]);
-    encoding.writeBigInt64(encoder, change[5]);
+    // bigints should be variable length encoded
+    encoding.writeBigInt64(encoder, BigInt(change[4]));
+    encoding.writeBigInt64(encoder, BigInt(change[5]));
     const siteid = change[6];
     if (siteid == null) {
       encoding.writeUint8(encoder, NULL);
@@ -114,8 +115,8 @@ function writeChanges(encoder: encoding.Encoder, changes: readonly Change[]) {
       encoding.writeUint8(encoder, BLOB);
       encoding.writeUint8Array(encoder, siteid);
     }
-    encoding.writeBigInt64(encoder, change[7]);
-    encoding.writeVarInt(encoder, change[8]);
+    encoding.writeBigInt64(encoder, BigInt(change[7]));
+    encoding.writeVarInt(encoder, Number(change[8]));
   }
 }
 

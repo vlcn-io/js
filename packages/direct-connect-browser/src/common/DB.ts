@@ -39,14 +39,7 @@ export class DB {
   async pullChangeset(seq: Seq): Promise<Changeset[]> {
     // pull changes since we last sent the server changes,
     // excluding what the server has sent us
-    const ret = await this.pullChangesetStmt.all(null, BigInt(seq[0]));
-    // make sure we actually got bigints back
-    // if they're smaller than bigints they'll be returned as numbers
-    for (const c of ret) {
-      c[4] = BigInt(c[4]);
-      c[5] = BigInt(c[5]);
-    }
-    return ret;
+    return await this.pullChangesetStmt.all(null, seq[0]);
   }
 
   async seqIdFor(
@@ -94,7 +87,7 @@ export class DB {
       tx,
       this.remoteDbidBytes,
       event,
-      BigInt(seqEnd[0]),
+      seqEnd[0],
       seqEnd[1]
     );
   }
