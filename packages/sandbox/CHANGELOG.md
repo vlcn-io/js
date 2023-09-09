@@ -1,5 +1,11 @@
 # sandbox
 
+## 0.6.3-next.0
+
+### Patch Changes
+
+- @vlcn.io/react@3.0.3-next.0
+
 ## 0.6.2
 
 ### Patch Changes
