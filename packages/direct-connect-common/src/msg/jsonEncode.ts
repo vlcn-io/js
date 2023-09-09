@@ -112,6 +112,7 @@ function encodeChanges(changes: readonly Change[]): readonly any[] {
       c[4].toString(),
       c[5].toString(),
       c[6].toString(),
+      c[7],
     ];
   });
 }
