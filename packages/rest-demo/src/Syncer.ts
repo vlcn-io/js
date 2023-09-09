@@ -39,6 +39,7 @@ class Syncer {
       lastSentVersion
     );
     if (changes.length == 0) {
+      console.log("No changes to send");
       return;
     }
 

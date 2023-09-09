@@ -1,6 +1,5 @@
 import Fastify from "fastify";
 import { encode, decode, tags, hexToBytes } from "@vlcn.io/ws-common";
-import { spawn } from "child_process";
 import { createDb } from "./DBWrapper.js";
 import cors from "@fastify/cors";
 import path from "path";
@@ -28,7 +27,7 @@ app.addContentTypeParser(
     }
   }
 );
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV === "production") {
   await app.register(fastifyStatic, {
     root: path.join(__dirname, "dist"),
   });
@@ -105,16 +104,5 @@ app.post<{
     }
   },
 });
-
-if (process.env.NODE_ENV !== "production") {
-  const child = spawn("pnpm", ["vite"]);
-  child.stdout.on("data", (data) => {
-    console.log(`stdout: ${data}`);
-  });
-
-  child.stderr.on("data", (data) => {
-    console.error(`stderr: ${data}`);
-  });
-}
 
 await app.listen({ port: PORT });

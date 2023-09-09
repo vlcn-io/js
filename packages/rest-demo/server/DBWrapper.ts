@@ -13,13 +13,18 @@ class DBWrapper {
   }
 
   getChanges(sinceVersion: bigint, requestorSiteId: Uint8Array): Change[] {
-    return this.#db
+    const ret = this.#db
       .prepare(
         `SELECT "table", "pk", "cid", "val", "col_version", "db_version", NULL, "cl", "seq" FROM crsql_changes WHERE db_version > ? AND site_id IS NOT ?`
       )
       .raw(true)
       .safeIntegers()
-      .all(sinceVersion, requestorSiteId) as Change[];
+      .all(sinceVersion, requestorSiteId) as any;
+
+    for (const c of ret) {
+      c[8] = Number(c[8]);
+    }
+    return ret as Change[];
   }
 
   getId(): Uint8Array {
@@ -68,11 +73,11 @@ export async function createDb(
   // You can eject this code and handle migration manually if you prefer
   // as auto-migration has it limitations.
   const schemaVersion = db
-    .prepare(`SELECT key, value FROM crsql_master WHERE key = ?`)
+    .prepare(`SELECT value FROM crsql_master WHERE key = ?`)
     .pluck()
     .get("schema_version");
   const schemaName = db
-    .prepare(`SELECT key, value FROM crsql_master WHERE key = ?`)
+    .prepare(`SELECT value FROM crsql_master WHERE key = ?`)
     .pluck()
     .get("schema_name");
 
