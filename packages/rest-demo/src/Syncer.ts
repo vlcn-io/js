@@ -43,12 +43,6 @@ class Syncer {
       return;
     }
 
-    for (const c of changes) {
-      c[4] = BigInt(c[4]);
-      c[5] = BigInt(c[5]);
-      c[7] = BigInt(c[7]);
-    }
-
     const encoded = encode({
       _tag: tags.Changes,
       changes,
@@ -112,6 +106,7 @@ class Syncer {
           c[3],
           c[4],
           c[5],
+          // record who send us the change
           msg.sender,
           c[7],
           c[8]
@@ -157,7 +152,7 @@ export default async function createSyncer(
   );
   const [pullChangesetStmt, applyChangesetStmt] = await Promise.all([
     db.prepare(
-      `SELECT "table", "pk", "cid", "val", "col_version", "db_version", NULL, "cl", "seq" FROM crsql_changes WHERE db_version > ? AND site_id IS NULL`
+      `SELECT "table", "pk", "cid", "val", "col_version", "db_version", "site_id", "cl", "seq" FROM crsql_changes WHERE db_version > ? AND site_id IS NULL`
     ),
     db.prepare(
       `INSERT INTO crsql_changes ("table", "pk", "cid", "val", "col_version", "db_version", "site_id", "cl", "seq") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
