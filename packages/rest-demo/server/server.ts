@@ -2,24 +2,32 @@ import Fastify from "fastify";
 import { encode, decode, tags, hexToBytes } from "@vlcn.io/ws-common";
 import { spawn } from "child_process";
 import { createDb } from "./DBWrapper.js";
-import rawbody from "fastify-raw-body";
 import cors from "@fastify/cors";
 import path from "path";
 import fastifyStatic from "@fastify/static";
+import * as url from "url";
+const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 
 const PORT = parseInt(process.env.PORT || "8080");
 
 const app = Fastify({
   logger: true,
 });
-await app.register(rawbody, {
-  field: "rawBody", // change the default request.rawBody property name
-  global: false, // add the rawBody to every request. **Default true**
-  encoding: false, // set it to false to set rawBody as a Buffer **Default utf8**
-  runFirst: true, // get the body before any preParsing hook change/uncompress it. **Default false**
-  routes: [], // array of routes, **`global`** will be ignored, wildcard routes not supported
-});
 await app.register(cors);
+app.addContentTypeParser(
+  "application/octet-stream",
+  { parseAs: "buffer" },
+  (_req, body, done) => {
+    try {
+      done(null, {
+        raw: body,
+      });
+    } catch (error: any) {
+      error.statusCode = 400;
+      done(error, undefined);
+    }
+  }
+);
 if (process.env.NODE_ENV !== "production") {
   await app.register(fastifyStatic, {
     root: path.join(__dirname, "dist"),
@@ -72,7 +80,7 @@ app.post<{
     rawBody: true,
   },
   handler: async (req, res) => {
-    const data = new Uint8Array(req.rawBody as ArrayBuffer);
+    const data = new Uint8Array((req.body as any).raw);
     console.log(data);
 
     const msg = decode(data);
