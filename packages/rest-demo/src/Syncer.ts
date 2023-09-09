@@ -175,7 +175,7 @@ export default async function createSyncer(
 
 const endpoint = (() => {
   if (window.location.hostname === "localhost") {
-    return "https://localhost:8080/changes";
+    return "http://localhost:8080/changes";
   }
   return `${window.location.protocol}//${window.location.host}/changes`;
 })();
