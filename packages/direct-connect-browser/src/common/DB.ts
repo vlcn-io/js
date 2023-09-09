@@ -107,7 +107,7 @@ export default async function getDB(wasmUri: string | undefined, dbid: DBID) {
   const [pullChangesetStmt, applyChangesetStmt, updatePeerTrackerStmt] =
     await Promise.all([
       db.prepare(
-        `SELECT "table", "pk", "cid", "val", "col_version", "db_version", "cl" FROM crsql_changes WHERE db_version > ? AND site_id IS NULL`
+        `SELECT "table", "pk", "cid", "val", "col_version", "db_version", "cl", "seq" FROM crsql_changes WHERE db_version > ? AND site_id IS NULL`
       ),
       db.prepare(
         `INSERT INTO crsql_changes ("table", "pk", "cid", "val", "col_version", "db_version", "site_id", "cl", "seq") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`

@@ -41,7 +41,8 @@ test("encoded, decode pairing ApplyChangesMsg", () => {
           ),
           fc.bigIntN(64),
           fc.bigIntN(64),
-          fc.bigIntN(64)
+          fc.bigIntN(64),
+          fc.integer({ min: 0 })
         )
       ),
       (toDbid, fromDbid, schemaVersion, seqStart, seqEnd, changes) => {
@@ -146,7 +147,8 @@ test("StreamingChangesMsg", () => {
           ),
           fc.bigIntN(64),
           fc.bigIntN(64),
-          fc.bigIntN(64)
+          fc.bigIntN(64),
+          fc.integer({ min: 0 })
         )
       ),
       (seqStart, seqEnd, changes) => {

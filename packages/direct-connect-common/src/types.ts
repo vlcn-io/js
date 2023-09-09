@@ -43,7 +43,8 @@ export type Change = readonly [
   // who always knows site ids in client-server setup.
   // server masks site ids of clients. This masking
   // is disallowed in p2p topologies.
-  CausalLength
+  CausalLength,
+  number, // seq
 ];
 
 export type Msg =

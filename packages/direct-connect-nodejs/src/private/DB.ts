@@ -75,7 +75,8 @@ export default class DB {
             cs[4],
             cs[5],
             from,
-            cs[6]
+            cs[6],
+            cs[7]
           );
         }
         return [maxVersion, 0] as [bigint, number];

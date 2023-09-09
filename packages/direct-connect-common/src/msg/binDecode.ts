@@ -147,5 +147,6 @@ function readChanges(decoder: decoding.Decoder) {
     decoding.readBigInt64(decoder),
     decoding.readBigInt64(decoder),
     decoding.readBigInt64(decoder),
+    decoding.readVarInt(decoder),
   ]) as Change[];
 }
