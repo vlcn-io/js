@@ -69,9 +69,11 @@ export async function createDb(
   // as auto-migration has it limitations.
   const schemaVersion = db
     .prepare(`SELECT key, value FROM crsql_master WHERE key = ?`)
+    .pluck()
     .get("schema_version");
   const schemaName = db
     .prepare(`SELECT key, value FROM crsql_master WHERE key = ?`)
+    .pluck()
     .get("schema_name");
 
   if (schemaName != null && schemaName != requestedSchemaName) {
