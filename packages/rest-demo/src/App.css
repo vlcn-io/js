@@ -42,3 +42,11 @@
 .push-btn {
   background: green;
 }
+
+.push-pull-msg {
+  border: 1px solid black;
+  margin-top: 20px;
+  border-radius: 5px;
+  padding: 12px;
+  text-align: center;
+}

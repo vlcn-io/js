@@ -73,6 +73,8 @@ class Syncer {
         changes[changes.length - 1][5].toString(10)
       );
     }
+
+    return changes.length;
   }
 
   async pullChanges() {
@@ -123,6 +125,8 @@ class Syncer {
       `last-seen-from-${this.#args.endpoint}-${this.#args.room}`,
       msg.changes[msg.changes.length - 1][5].toString(10)
     );
+
+    return msg.changes.length;
   }
 
   destroy() {

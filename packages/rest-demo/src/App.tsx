@@ -6,6 +6,11 @@ import "./App.css";
 import randomWords from "./support/randomWords.js";
 import { useDB } from "@vlcn.io/react";
 import { useSyncer } from "./Syncer.js";
+import { useState } from "react";
+import TimeAgo from "javascript-time-ago";
+import ReactTimeAgo from "react-time-ago";
+import en from "javascript-time-ago/locale/en.json";
+TimeAgo.addDefaultLocale(en);
 
 type TestRecord = { id: string; name: string };
 const wordOptions = { exactly: 3, join: " " };
@@ -29,8 +34,26 @@ function App({ room }: { room: string }) {
     ctx.db.exec("DELETE FROM test;");
   };
 
-  const pushChanges = () => syncer?.pushChanges();
-  const pullChanges = () => syncer?.pullChanges();
+  const [pushPullMsg, setPushPullMsg] = useState("");
+  const [pushPullTime, setPushPullTime] = useState<Date | null>(null);
+  const pushChanges = async () => {
+    setPushPullTime(new Date());
+    try {
+      const num = (await syncer?.pushChanges()) || 0;
+      setPushPullMsg(`Pushed ${num} changes`);
+    } catch (e: any) {
+      setPushPullMsg(`Err pushing: ${e.message}`);
+    }
+  };
+  const pullChanges = async () => {
+    setPushPullTime(new Date());
+    try {
+      const num = (await syncer?.pullChanges()) || 0;
+      setPushPullMsg(`Pulled ${num} changes`);
+    } catch (e: any) {
+      setPushPullMsg(`Err pulling: ${e.message}`);
+    }
+  };
 
   return (
     <>
@@ -72,16 +95,28 @@ function App({ room }: { room: string }) {
           </tbody>
         </table>
         <div className="push-pull">
-          <button
-            onClick={pushChanges}
-            style={{ marginRight: "1em" }}
-            className="push-btn"
-          >
-            Push Changes
-          </button>
-          <button onClick={pullChanges} className="pull-btn">
-            Pull Changes
-          </button>
+          <div>
+            <button
+              onClick={pushChanges}
+              style={{ marginRight: "1em" }}
+              className="push-btn"
+            >
+              Push Changes
+            </button>
+            <button onClick={pullChanges} className="pull-btn">
+              Pull Changes
+            </button>
+          </div>
+          <div className="push-pull-msg">
+            {pushPullMsg}{" "}
+            {pushPullTime ? (
+              <ReactTimeAgo
+                date={pushPullTime}
+                locale="en-US"
+                timeStyle="round"
+              />
+            ) : null}
+          </div>
         </div>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
