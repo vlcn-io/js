@@ -28,7 +28,8 @@ test("encoded, decode pairing ApplyChangesMsg", () => {
           ),
           fc.bigIntN(64),
           fc.bigIntN(64),
-          fc.bigIntN(64)
+          fc.bigIntN(64),
+          fc.integer({ min: 0 })
         )
       ),
       (toDbid, fromDbid, schemaVersion, seqStart, seqEnd, changes) => {
@@ -55,7 +56,7 @@ test("null", () => {
     _tag: tags.streamingChanges,
     seqStart: [0n, 0],
     seqEnd: [0n, 0],
-    changes: [["", Uint8Array.from([0]), "", null, 0n, 0n, 1n]],
+    changes: [["", Uint8Array.from([0]), "", null, 0n, 0n, 1n, 0]],
   } as const;
   const s = new JsonSerializer();
 
@@ -147,7 +148,8 @@ test("StreamingChangesMsg", () => {
           ),
           fc.bigIntN(64),
           fc.bigIntN(64),
-          fc.bigIntN(64)
+          fc.bigIntN(64),
+          fc.integer({ min: 0 })
         )
       ),
       (seqStart, seqEnd, changes) => {
