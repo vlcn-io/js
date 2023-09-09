@@ -24,8 +24,10 @@
     "fastify-plugin": "^4.5.1",
     "fastify-raw-body": "^4.2.2",
     "fluent-json-schema": "^4.1.1",
+    "javascript-time-ago": "^2.5.9",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-time-ago": "^7.2.1"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.4",
