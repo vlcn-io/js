@@ -1,44 +1,71 @@
 # @vlcn.io/ws-server
 
-PartyKit provides an abstraction over `Websockets` and allows people connected to the same room to sync their state.
+# Basic Setup
 
-This is a reference implementation of using PartyKit to sync `cr-sqlite` databases.
+WebSocket sync server. Setups is pretty straightforward and involves:
 
-Current implementation:
+1. Defining a config
+2. Attaching the websocket server to your http server
 
-- Each room corresponds to an entire shared database. All people who connect to the same room will end up sharing the same database.
-- Rooms do not store persist any state themselves and rather just relay sync messages between connected peers.
+## Define Config
 
-## Sketch
+```ts
+const wsConfig = {
+  // Folder where database files should be placed
+  dbFolder: "./dbs",
+  // Folder that contains `.sql` schema files to apply to databases
+  schemaFolder: "./src/schemas",
+  // The path(s) that the websocket server should listen to
+  pathPattern: /\/sync/,
+};
+```
 
-- Poke protocol
-- On connect, poke that changes are available from `client_id:db_version`
-- All connected ppl also tell new person that they have changes available
-- Just do it as streaming? With many connections?
-- Broadcast to connected peers
-- Connected peers can ask for those changes or not
-- On local change, poke that changes are available
-- etc. etc.
-- local dbs track `last_seen` from remotes and ask for changes since then.
-- local dbs discard out of order changes if those happen.
+## Attach to Server
 
----
+```ts
+import * as http from "http";
+const app = express(); // or fastify or nest or whatever
+const server = http.createServer(app);
 
-Essentially p2p with a broker.
+const wsConfig = {
+  dbFolder: "./dbs",
+  schemaFolder: "./src/schemas",
+  pathPattern: /\/sync/,
+};
 
-So just create it as a generic streaming p2p? With generic transport?
+// Attach here:
+attachWebsocketServer(server, wsConfig);
 
-Not poke but stream establish?
+server.listen(PORT, () =>
+  console.log("info", `listening on http://localhost:${PORT}!`)
+);
+```
 
-1. Connect
-2. Broadcast peer's presence to everyone
-3. Everyone replies with when they last saw peer
-4. Server stores this
-5. Server sends lowest version to client
-6. Client sends changes up to server via outbound stream
-7. Server splits this
-8. Server sends relevant pieces to clients
-9. Server bumps up lowest version
-10. If client got out-of-order, client re-asks for older data
-11. server bumps down
-12. resets stream with problematic node
+# LiteFS Setup
+
+> Note: LiteFS support is not production ready. It currently does not handle 
+> LiteFS primary node failover.
+
+If you want to replicate your DB on the backend via [LiteFS](https://fly.io/docs/litefs/) you can specify a few additional configuration options.
+
+```ts
+const wsConfig = {
+  dbFolder: "./dbs",
+  schemaFolder: "./src/schemas",
+  pathPattern: /\/sync/,
+  // appName is REQUIRED for LiteFS setups
+  appName: process.env.FLY_APP_NAME
+};
+
+const WRITE_FORWARD_PORT = 9000;
+const dbFactory = await createLiteFSDBFactory(WRITE_FORWARD_PORT, wsConfig);
+dbCache = attachWebsocketServer(
+  server,
+  wsConfig,
+  dbFactory,
+  new FSNotify(wsConfig)
+);
+
+// Set up a service to receive forwarded writes
+createLiteFSWriteService(WRITE_FORWARD_PORT, wsConfig, dbCache);
+```
