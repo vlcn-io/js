@@ -13,7 +13,7 @@ import TX from "./TX.js";
 
 export class DB implements DBAsync {
   public readonly __mutex = topLevelMutex;
-  private stmtFinalizer = new Map<number, WeakRef<Stmt>>();
+  private stmtFinalizer = new Map<number, Stmt>();
   // private stmtFinalizationRegistry = new FinalizationRegistry(
   //   (base: number) => {
   //     const ref = this.stmtFinalizer.get(base);
@@ -169,11 +169,8 @@ export class DB implements DBAsync {
    * Close the database and finalize any prepared statements that were not freed for the given DB.
    */
   async close(): Promise<any> {
-    for (const ref of this.stmtFinalizer.values()) {
-      const stmt = ref.deref();
-      if (stmt) {
-        await stmt.finalize(this);
-      }
+    for (const stmt of this.stmtFinalizer.values()) {
+      await stmt.finalize(this);
     }
     return this.exec("SELECT crsql_finalize()").then(() => {
       this.#closed = true;

@@ -12,7 +12,7 @@ export default class Stmt implements StmtAsync {
   private bindings: any[] = [];
   constructor(
     private originDB: TX,
-    stmtFinalizer: Map<number, WeakRef<Stmt>>,
+    private stmtFinalizer: Map<number, Stmt>,
     // stmtFinalizationRegistry: FinalizationRegistry<number>,
     private cache: Map<string, Promise<any>>,
     private api: SQLiteAPI,
@@ -20,7 +20,7 @@ export default class Stmt implements StmtAsync {
     private str: number,
     private sql: string
   ) {
-    stmtFinalizer.set(base, new WeakRef(this));
+    stmtFinalizer.set(base, this);
     // stmtFinalizationRegistry.register(this, base);
   }
 
@@ -154,6 +154,7 @@ export default class Stmt implements StmtAsync {
         if (this.finalized) return;
         this.finalized = true;
         this.api.str_finish(this.str);
+        this.stmtFinalizer.delete(this.base);
         return this.api.finalize(this.base);
       },
       tx?.__mutex || this.originDB.__mutex
