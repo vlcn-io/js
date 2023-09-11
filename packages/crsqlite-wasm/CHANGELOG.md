@@ -1,5 +1,11 @@
 # @vlcn.io/wa-crsqlite
 
+## 0.15.2-next.0
+
+### Patch Changes
+
+- ensure statements are finalized when closing db, allow automigrating fractindex tables, fractindex w/o list columns fix
+
 ## 0.15.1
 
 ### Patch Changes

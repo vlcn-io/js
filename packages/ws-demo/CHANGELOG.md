@@ -1,5 +1,15 @@
 # @vlcn.io/ws-demo
 
+## 1.0.3-next.2
+
+### Patch Changes
+
+- Updated dependencies
+  - @vlcn.io/crsqlite-wasm@0.15.2-next.0
+  - @vlcn.io/react@3.0.3-next.2
+  - @vlcn.io/ws-server@0.1.2-next.1
+  - @vlcn.io/ws-browserdb@0.1.2-next.2
+
 ## 1.0.3-next.1
 
 ### Patch Changes

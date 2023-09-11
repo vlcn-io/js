@@ -1,5 +1,13 @@
 # @vlcn.io/react
 
+## 3.0.3-next.2
+
+### Patch Changes
+
+- ensure statements are finalized when closing db, allow automigrating fractindex tables, fractindex w/o list columns fix
+- Updated dependencies
+  - @vlcn.io/crsqlite-wasm@0.15.2-next.0
+
 ## 3.0.3-next.1
 
 ### Patch Changes
