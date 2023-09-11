@@ -1,5 +1,6 @@
 declare -a pkgs=(
   "@vlcn.io/create"
+  "@vlcn.io/crsqlite"
   "@vlcn.io/crsqlite-wasm"
   "@vlcn.io/crsqlite-allinone"
   "@vlcn.io/sync-p2p"
@@ -22,6 +23,7 @@ declare -a pkgs=(
 # two packages have directory names mismatched with package names hence this array.
 declare -a pkgslocal=(
   "@vlcn.io/create:../js/packages/create"
+  "@vlcn.io/crsqlite:../cr-sqlite/core"
   "@vlcn.io/crsqlite-wasm:../js/packages/crsqlite-wasm"
   "@vlcn.io/crsqlite-allinone:../js/packages/node-allinone"
   "@vlcn.io/sync-p2p:../js/packages/p2p"
