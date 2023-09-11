@@ -53,6 +53,7 @@ class SyncedDB implements ISyncedDB {
   stop() {
     this.#outboundStream.stop();
     this.#transport.close();
+    this.#db.close(true);
     return true;
   }
 }
@@ -92,11 +93,11 @@ export async function createAndStartSyncedDB_Exclusive(
     if (stopRequested) {
       return;
     }
-    startSync(config, dbname, transportOptions, (db: ISyncedDB) => {
+    startSync(config, dbname, transportOptions, (aDb: ISyncedDB) => {
       if (stopRequested) {
         return false;
       }
-      db = db;
+      db = aDb;
       return true;
     });
     return hold;

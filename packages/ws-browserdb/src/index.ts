@@ -117,6 +117,7 @@ class WrappedDB implements DB {
   }
 
   close(closeWrappedDB: boolean): void {
+    console.log("closing wrapped db");
     this.#pullChangesetStmt.finalize(null);
     this.#applyChangesetStmt.finalize(null);
     this.#updatePeerTrackerStmt.finalize(null);
