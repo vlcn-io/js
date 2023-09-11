@@ -10,11 +10,13 @@ import { createContext } from "./DBContext.js";
 export default function DBProvider({
   dbname,
   schema,
-  children,
+  fallback,
+  Render,
 }: {
   dbname: string;
   schema: Schema;
-  children: react.ReactNode;
+  fallback?: react.ReactNode;
+  Render: react.FunctionComponent;
 }) {
   const contextRef = useRef(createContext());
   const [dbRef, setDbRef] = useState<CtxAsync | null>(null);
@@ -32,11 +34,11 @@ export default function DBProvider({
     };
   }, [dbname, schema, contextRef.current.useDb]);
   if (dbRef === null || dbFactory.getHook(dbname) == null) {
-    return <div>Creating DB {dbname}</div>;
+    return <>{fallback}</> ?? <div>Creating DB {dbname}</div>;
   }
   return (
     <DbAvailable ctx={dbRef} DBContext={contextRef.current.DBContext}>
-      {children}
+      <Render />
     </DbAvailable>
   );
 }
