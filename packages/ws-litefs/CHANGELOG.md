@@ -1,5 +1,13 @@
 # @vlcn.io/ws-litefs
 
+## 0.1.2-next.1
+
+### Patch Changes
+
+- Updated dependencies
+  - @vlcn.io/crsqlite@0.15.1-next.0
+  - @vlcn.io/ws-server@0.1.2-next.1
+
 ## 0.1.2-next.0
 
 ### Patch Changes
