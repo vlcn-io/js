@@ -34,6 +34,7 @@
     "@vlcn.io/typed-sql": "0.2.13"
   },
   "changesets": [
-    "rare-berries-study"
+    "rare-berries-study",
+    "weak-planes-taste"
   ]
 }

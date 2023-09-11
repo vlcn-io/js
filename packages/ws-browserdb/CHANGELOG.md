@@ -1,5 +1,13 @@
 # @vlcn.io/ws-browserdb
 
+## 0.1.2-next.1
+
+### Patch Changes
+
+- DBProvider does not render content till db is present, fix bug shutting down websocket client on db change
+- Updated dependencies
+  - @vlcn.io/ws-client@0.1.2-next.1
+
 ## 0.1.2-next.0
 
 ### Patch Changes

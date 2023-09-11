@@ -1,5 +1,12 @@
 # sandbox
 
+## 0.6.3-next.1
+
+### Patch Changes
+
+- Updated dependencies
+  - @vlcn.io/react@3.0.3-next.1
+
 ## 0.6.3-next.0
 
 ### Patch Changes
