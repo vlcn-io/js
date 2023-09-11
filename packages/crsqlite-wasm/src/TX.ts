@@ -13,7 +13,7 @@ export default class TX implements TXAsync {
     public db: number,
     public readonly __mutex: Mutex,
     public readonly assertOpen: () => void,
-    public readonly stmtFinalizer: Map<number, WeakRef<Stmt>>
+    public readonly stmtFinalizer: Map<number, Stmt>
   ) {}
 
   execMany(sql: string[]): Promise<void> {

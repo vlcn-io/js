@@ -18,11 +18,11 @@ export default function DBProvider({
   fallback?: react.ReactNode;
   Render: react.FunctionComponent;
 }) {
-  const contextRef = useRef(createContext());
+  const [contextRef, _setContextRef] = useState(createContext);
   const [dbRef, setDbRef] = useState<CtxAsync | null>(null);
   useEffect(() => {
     let closed = false;
-    dbFactory.get(dbname, schema, contextRef.current.useDb).then((db) => {
+    dbFactory.get(dbname, schema, contextRef.useDb).then((db) => {
       if (!closed) {
         setDbRef(db);
       }
@@ -32,12 +32,12 @@ export default function DBProvider({
       setDbRef(null);
       dbFactory.closeAndRemove(dbname);
     };
-  }, [dbname, schema, contextRef.current.useDb]);
+  }, [dbname, schema, contextRef.useDb]);
   if (dbRef === null || dbFactory.getHook(dbname) == null) {
     return <>{fallback}</> ?? <div>Creating DB {dbname}</div>;
   }
   return (
-    <DbAvailable ctx={dbRef} DBContext={contextRef.current.DBContext}>
+    <DbAvailable ctx={dbRef} DBContext={contextRef.DBContext}>
       <Render />
     </DbAvailable>
   );
