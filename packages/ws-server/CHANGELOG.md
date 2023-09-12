@@ -1,5 +1,15 @@
 # @vlcn.io/ws-server
 
+## 0.1.2
+
+### Patch Changes
+
+- 83adae8: adds seq column in network layer, coerces values to correct types in serializer
+- Updated dependencies [83adae8]
+- Updated dependencies [c113d8c]
+  - @vlcn.io/ws-common@0.1.2
+  - @vlcn.io/crsqlite@0.15.1
+
 ## 0.1.2-next.1
 
 ### Patch Changes
