@@ -8,9 +8,13 @@ Scaffolding a new project -- https://github.com/vlcn-io/vite-starter/tree/main
 
 Example apps:
 
+- [Vite Starter over WebSocket](https://github.com/vlcn-io/vite-starter)
+- [Manual REST sync Example](https://github.com/vlcn-io/example-rest)
 - https://github.com/vlcn-io/live-examples
 - [Observable Notebook](https://observablehq.com/@tantaman/cr-sqlite-basic-setup)
 - [WIP Local-First Presentation Editor](https://github.com/tantaman/strut)
+
+[Video overview](https://www.youtube.com/watch?v=T1ES9x8DKR4)
 
 ## Browser
 
