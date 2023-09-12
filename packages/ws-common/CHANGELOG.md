@@ -1,5 +1,11 @@
 # @vlcn.io/ws-common
 
+## 0.1.2
+
+### Patch Changes
+
+- 83adae8: adds seq column in network layer, coerces values to correct types in serializer
+
 ## 0.1.2-next.0
 
 ### Patch Changes

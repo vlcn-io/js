@@ -1,5 +1,12 @@
 # @vlcn.io/direct-connect-browser
 
+## 0.5.2
+
+### Patch Changes
+
+- Updated dependencies [c113d8c]
+  - @vlcn.io/crsqlite-wasm@0.15.2
+
 ## 0.5.2-next.0
 
 ### Patch Changes

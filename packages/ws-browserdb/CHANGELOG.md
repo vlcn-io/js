@@ -1,5 +1,18 @@
 # @vlcn.io/ws-browserdb
 
+## 0.1.2
+
+### Patch Changes
+
+- 83adae8: adds seq column in network layer, coerces values to correct types in serializer
+- 678127a: DBProvider does not render content till db is present, fix bug shutting down websocket client on db change
+- Updated dependencies [83adae8]
+- Updated dependencies [c113d8c]
+- Updated dependencies [678127a]
+  - @vlcn.io/ws-common@0.1.2
+  - @vlcn.io/crsqlite-wasm@0.15.2
+  - @vlcn.io/ws-client@0.1.2
+
 ## 0.1.2-next.2
 
 ### Patch Changes
