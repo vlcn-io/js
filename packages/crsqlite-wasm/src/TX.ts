@@ -160,16 +160,15 @@ export default class TX implements TXAsync {
         this.api.finalize(prepared.stmt!);
         prepared.stmt = null;
       }
+    } catch (error) {
+      console.error(`Failed running ${sql}`, error);
+      throw error;
     } finally {
       if (prepared?.stmt) {
         this.api.finalize(prepared.stmt);
       }
       this.api.str_finish(str);
     }
-    // catch (error) {
-    //   console.error(`Failed running ${sql}`, error);
-    //   throw error;
-    // }
 
     // we'll only return results for first stmt
     // if (results.length > 1) {

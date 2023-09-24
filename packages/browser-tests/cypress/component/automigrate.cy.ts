@@ -8,12 +8,12 @@ describe("automigrate.cy.ts", () => {
   it("handles column addition", async () => {
     const db = await crsqlite.open();
     const schema = /*sql*/ `
-      CREATE TABLE IF NOT EXISTS test (id PRIMARY KEY, name TEXT);
+      CREATE TABLE IF NOT EXISTS test (id PRIMARY KEY not null, name TEXT);
       SELECT crsql_as_crr('test');
     `;
     await db.exec(schema);
     const updatedSchema = /*sql*/ `
-      CREATE TABLE IF NOT EXISTS test (id PRIMARY KEY, name TEXT, time INTEGER);
+      CREATE TABLE IF NOT EXISTS test (id PRIMARY KEY not null, name TEXT, time INTEGER);
       SELECT crsql_as_crr('test');
     `;
     await db.exec(
