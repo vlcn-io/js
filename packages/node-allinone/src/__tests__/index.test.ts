@@ -24,8 +24,8 @@ test("failing example", () => {
   const db1 = sqlite.open(":memory:");
 
   db1.execMany([
-    `CREATE TABLE IF NOT EXISTS todo_list ("name" primary key, "creation_time");`,
-    `CREATE TABLE IF NOT EXISTS todo ("id" primary key, "list", "text", "complete");`,
+    `CREATE TABLE IF NOT EXISTS todo_list ("name" primary key not null, "creation_time");`,
+    `CREATE TABLE IF NOT EXISTS todo ("id" primary key not null, "list", "text", "complete");`,
   ]);
   db1.execMany([
     `SELECT crsql_as_crr('todo_list');`,
@@ -74,8 +74,8 @@ test("failing example", () => {
 
   const db2 = sqlite.open(":memory:");
   db2.execMany([
-    `CREATE TABLE IF NOT EXISTS todo_list ("name" primary key, "creation_time");`,
-    `CREATE TABLE IF NOT EXISTS todo ("id" primary key, "list", "text", "complete");`,
+    `CREATE TABLE IF NOT EXISTS todo_list ("name" primary key not null, "creation_time");`,
+    `CREATE TABLE IF NOT EXISTS todo ("id" primary key not null, "list", "text", "complete");`,
     `SELECT crsql_as_crr('todo_list');`,
     `SELECT crsql_as_crr('todo');`,
   ]);
@@ -160,7 +160,7 @@ test("failing two -- discord: https://discord.com/channels/989870439897653248/98
 
     `CREATE TABLE IF NOT EXISTS "crsql_site_id" (site_id);`,
     `INSERT INTO crsql_site_id VALUES(X'dc215665ff164407b63f423a469b7cb9');`,
-    `CREATE TABLE IF NOT EXISTS "todos" ("id" text primary key, "title" text, "text" text, "completed" boolean);`,
+    `CREATE TABLE IF NOT EXISTS "todos" ("id" text primary key not null, "title" text, "text" text, "completed" boolean);`,
     `INSERT INTO todos VALUES('xc2yf7z5qb','123','132',0);`,
     `CREATE TABLE IF NOT EXISTS "todos__crsql_clock" ("id","col_name" NOT NULL,"col_version" NOT NULL, "db_version" NOT NULL,"site_id","seq" NOT NULL,PRIMARY KEY ("id", "__crsql_col_name")    );`,
 
@@ -230,7 +230,7 @@ test("using sync api as async GH #104", () => {
 
   const initSql = [
     `CREATE TABLE IF NOT EXISTS myTable (
-      id BLOB PRIMARY KEY,
+      id BLOB PRIMARY KEY not null,
       a,
       b,
       c,

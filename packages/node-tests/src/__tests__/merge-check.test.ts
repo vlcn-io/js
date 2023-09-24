@@ -10,7 +10,7 @@ function setupDb() {
   const db = crsqlite.open();
 
   db.exec(
-    `CREATE TABLE ${table} ("id" primary key, "listId", "completed", "text")`
+    `CREATE TABLE ${table} ("id" primary key not null, "listId", "completed", "text")`
   );
   db.exec(`SELECT crsql_as_crr('${table}')`);
 

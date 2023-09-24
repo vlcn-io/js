@@ -8,7 +8,7 @@ type DB = DBAsync;
 
 async function createSimpleSchema(db: DB) {
   await db.execMany([
-    "CREATE TABLE foo (a primary key, b);",
+    "CREATE TABLE foo (a primary key not null, b);",
     "SELECT crsql_as_crr('foo');",
   ]);
   return (await db.execA<[Uint8Array]>("SELECT crsql_site_id()"))[0][0];
@@ -145,7 +145,7 @@ export const tests = {
     const db = await dbProvider();
     const r = await wdbr.install(await createSimpleSchema(db), db, dummyPoke);
 
-    await db.exec("CREATE TABLE bar (a primary key, b)");
+    await db.exec("CREATE TABLE bar (a primary key not null, b)");
     await db.exec("SELECT crsql_as_crr('bar');");
     await r.schemaChanged();
     assert(
@@ -165,7 +165,7 @@ export const tests = {
     assert: (p: boolean) => void
   ) => {
     const db = await dbProvider();
-    await db.exec("CREATE TABLE bar (a primary key, b)");
+    await db.exec("CREATE TABLE bar (a primary key not null, b)");
     const r = await wdbr.install(await getSite(db), db, dummyPoke);
 
     assert(

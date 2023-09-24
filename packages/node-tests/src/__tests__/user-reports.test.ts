@@ -7,7 +7,7 @@ import SQLite from "better-sqlite3";
 // https://discord.com/channels/989870439897653248/989870440585494530/1081084118680485938
 test("pk only table", () => {
   const db = crsqlite.open();
-  db.exec(`CREATE TABLE IF NOT EXISTS data (id NUMBER PRIMARY KEY)`);
+  db.exec(`CREATE TABLE IF NOT EXISTS data (id NUMBER PRIMARY KEY not null)`);
   db.exec(`SELECT crsql_as_crr('data')`);
   db.exec(`INSERT INTO data VALUES (42) ON CONFLICT DO NOTHING`);
   expect(
@@ -37,8 +37,8 @@ test("failed to increment?", () => {
   const initial = "NULL"; // "0";
 
   database.exec(`
-    CREATE TABLE a(id PRIMARY KEY, data);
-    CREATE TABLE b(id PRIMARY KEY, data);
+    CREATE TABLE a(id PRIMARY KEY not null, data);
+    CREATE TABLE b(id PRIMARY KEY not null, data);
 
     SELECT crsql_as_crr('a');
     SELECT crsql_as_crr('b');
