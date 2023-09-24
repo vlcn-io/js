@@ -19,12 +19,6 @@ jobs:
           submodules: recursive
           path: ./js
           repository: vlcn-io/js
-      - name: Checkout cr-sqlite repo
-        uses: actions/checkout@v3
-        with:
-          submodules: recursive
-          path: ./cr-sqlite
-          repository: vlcn-io/cr-sqlite
       - name: Checkout typed-sql
         uses: actions/checkout@v3
         with:
