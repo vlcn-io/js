@@ -12,7 +12,7 @@ beforeAll(() => {
     "ns",
     "test.sql",
     1n,
-    `CREATE TABLE foo (a  not null, b);
+    `CREATE TABLE foo (a primary key not null, b);
       SELECT crsql_as_crr('foo');`,
     true
   );
