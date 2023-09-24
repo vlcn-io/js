@@ -9,7 +9,7 @@ db.execMany([
 
   `CREATE TABLE IF NOT EXISTS "crsql_site_id" (site_id);`,
   `INSERT INTO crsql_site_id VALUES(X'dc215665ff164407b63f423a469b7cb9');`,
-  `CREATE TABLE IF NOT EXISTS "todos" ("id" text primary key, "title" text, "text" text, "completed" boolean);`,
+  `CREATE TABLE IF NOT EXISTS "todos" ("id" text primary key not null, "title" text, "text" text, "completed" boolean);`,
   `INSERT INTO todos VALUES('xc2yf7z5qb','123','132',0);`,
   `CREATE TABLE IF NOT EXISTS "todos__crsql_clock" ("id","__crsql_col_name" NOT NULL,"__crsql_version" NOT NULL,"__crsql_site_id",PRIMARY KEY ("id", "__crsql_col_name")    );`,
 

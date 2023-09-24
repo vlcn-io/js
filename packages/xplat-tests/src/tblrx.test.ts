@@ -4,7 +4,7 @@ import tblrx from "@vlcn.io/rx-tbl";
 
 function createSimpleSchema(db: DB) {
   return db.execMany([
-    "CREATE TABLE foo (a primary key, b);",
+    "CREATE TABLE foo (a primary key not null, b);",
     "SELECT crsql_as_crr('foo');",
   ]);
 }

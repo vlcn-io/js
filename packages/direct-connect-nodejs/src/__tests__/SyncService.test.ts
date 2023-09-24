@@ -159,7 +159,7 @@ test("creating a database", () => {
     _tag: tags.uploadSchema,
     name: "test",
     version: 1n,
-    content: "CREATE TABLE IF NOT EXISTS foo (a primary key, b);",
+    content: "CREATE TABLE IF NOT EXISTS foo (a primary key not null, b);",
     activate: true,
   });
 
@@ -216,7 +216,7 @@ test("creating a database", () => {
     _tag: tags.uploadSchema,
     name: "test",
     version: 2n,
-    content: "CREATE TABLE IF NOT EXISTS foo (a primary key, b, c);",
+    content: "CREATE TABLE IF NOT EXISTS foo (a primary key not null, b, c);",
     activate: false,
   });
 
@@ -260,7 +260,7 @@ test("apply changes", () => {
     name: "test",
     version: 1n,
     content: `
-    CREATE TABLE IF NOT EXISTS foo (a primary key, b);
+    CREATE TABLE IF NOT EXISTS foo (a primary key not null, b);
     SELECT crsql_as_crr('foo');
     `,
     activate: true,
@@ -329,7 +329,7 @@ test("get changes", () => {
     name: "test",
     version: 1n,
     content: `
-    CREATE TABLE IF NOT EXISTS foo (a primary key, b);
+    CREATE TABLE IF NOT EXISTS foo (a primary key not null, b);
     SELECT crsql_as_crr('foo');
     `,
     activate: true,

@@ -4,7 +4,7 @@ import wasmUrl from "@vlcn.io/crsqlite-wasm/crsqlite.wasm?url";
 const sqlite = await initWasm(() => wasmUrl);
 const db = await sqlite.open(":memory:");
 
-await db.exec("CREATE TABLE foo (a primary key, b);");
+await db.exec("CREATE TABLE foo (a primary key not null, b);");
 
 db.onUpdate(() => {
   console.log("received update callback!");

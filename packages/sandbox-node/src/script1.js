@@ -13,7 +13,7 @@ db.loadExtension(extensionPath);
 db.exec(`DROP TABLE IF EXISTS items;`);
 db.exec(`DROP TABLE IF EXISTS items__crsql_clock;`);
 db.exec(`CREATE TABLE IF NOT EXISTS items (
-  "id" TEXT PRIMARY KEY,
+  "id" TEXT PRIMARY KEY not null,
   "data" TEXT
 );`);
 db.exec(`SELECT crsql_as_crr('items');`);

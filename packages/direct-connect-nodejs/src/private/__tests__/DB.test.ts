@@ -12,7 +12,7 @@ beforeAll(() => {
     "ns",
     "test.sql",
     1n,
-    `CREATE TABLE foo (a primary key, b);
+    `CREATE TABLE foo (a  not null, b);
       SELECT crsql_as_crr('foo');`,
     true
   );
@@ -93,7 +93,7 @@ test("db can migrate to a new schema", async () => {
     "ns",
     "test.sql",
     1n,
-    `CREATE TABLE foo (a primary key, b);
+    `CREATE TABLE foo (a primary key not null, b);
       SELECT crsql_as_crr('foo');`,
     true
   );
@@ -109,7 +109,7 @@ test("db can migrate to a new schema", async () => {
     "test.sql",
     2n,
     `CREATE TABLE IF NOT EXISTS foo (
-      a primary key,
+      a primary key not null,
       b,
       c
     );
