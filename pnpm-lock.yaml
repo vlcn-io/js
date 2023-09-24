@@ -12,8 +12,6 @@ importers:
         specifier: ^2.26.1
         version: 2.26.1
 
-  ../cr-sqlite/core: {}
-
   ../typed-sql/packages/cli:
     dependencies:
       '@vlcn.io/type-gen-ts-adapter':
@@ -59,6 +57,8 @@ importers:
       vitest:
         specifier: ^0.33.0
         version: 0.33.0
+
+  deps/cr-sqlite/core: {}
 
   deps/wa-sqlite:
     devDependencies:
@@ -198,7 +198,7 @@ importers:
     dependencies:
       '@vlcn.io/crsqlite':
         specifier: workspace:*
-        version: link:../../../cr-sqlite/core
+        version: link:../../deps/cr-sqlite/core
       '@vlcn.io/direct-connect-common':
         specifier: workspace:*
         version: link:../direct-connect-common
@@ -257,7 +257,7 @@ importers:
     dependencies:
       '@vlcn.io/crsqlite':
         specifier: workspace:*
-        version: link:../../../cr-sqlite/core
+        version: link:../../deps/cr-sqlite/core
       '@vlcn.io/xplat-api':
         specifier: workspace:*
         version: link:../xplat-api
@@ -282,7 +282,7 @@ importers:
     dependencies:
       '@vlcn.io/crsqlite':
         specifier: workspace:*
-        version: link:../../../cr-sqlite/core
+        version: link:../../deps/cr-sqlite/core
       '@vlcn.io/crsqlite-allinone':
         specifier: workspace:*
         version: link:../node-allinone
@@ -451,7 +451,7 @@ importers:
     devDependencies:
       '@vlcn.io/crsqlite':
         specifier: workspace:*
-        version: link:../../../cr-sqlite/core
+        version: link:../../deps/cr-sqlite/core
       vite:
         specifier: ^4.2.2
         version: 4.2.2(@types/node@18.16.1)
@@ -549,7 +549,7 @@ importers:
     dependencies:
       '@vlcn.io/crsqlite':
         specifier: workspace:*
-        version: link:../../../cr-sqlite/core
+        version: link:../../deps/cr-sqlite/core
       '@vlcn.io/ws-common':
         specifier: workspace:*
         version: link:../ws-common
@@ -583,7 +583,7 @@ importers:
     dependencies:
       '@vlcn.io/crsqlite':
         specifier: workspace:*
-        version: link:../../../cr-sqlite/core
+        version: link:../../deps/cr-sqlite/core
       '@vlcn.io/logger-provider':
         specifier: workspace:*
         version: link:../logger-provider

@@ -1,5 +1,5 @@
 packages:
-  - "../cr-sqlite/core"
+  - "deps/cr-sqlite/core"
   - "deps/wa-sqlite"
   - "../typed-sql/packages/cli"
   - "../typed-sql/packages/typed-sql"
