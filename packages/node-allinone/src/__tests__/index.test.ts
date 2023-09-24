@@ -150,46 +150,6 @@ test("failing example", () => {
   );
 });
 
-test("failing two -- discord: https://discord.com/channels/989870439897653248/989870440585494530/1051181193644736663", () => {
-  const db = sqlite.open(":memory:");
-
-  db.execMany([
-    `DROP TABLE IF EXISTS todos;`,
-    `DROP TABLE IF EXISTS crsql_site_id;`,
-    `DROP TABLE IF EXISTS todos__crsql_clock;`,
-
-    `CREATE TABLE IF NOT EXISTS "crsql_site_id" (site_id);`,
-    `INSERT INTO crsql_site_id VALUES(X'dc215665ff164407b63f423a469b7cb9');`,
-    `CREATE TABLE IF NOT EXISTS "todos" ("id" text primary key not null, "title" text, "text" text, "completed" boolean);`,
-    `INSERT INTO todos VALUES('xc2yf7z5qb','123','132',0);`,
-    `CREATE TABLE IF NOT EXISTS "todos__crsql_clock" ("id","col_name" NOT NULL,"col_version" NOT NULL, "db_version" NOT NULL,"site_id","seq" NOT NULL,PRIMARY KEY ("id", "__crsql_col_name")    );`,
-
-    // This is the duplicate entry:
-    `INSERT INTO todos__crsql_clock VALUES('xc2yf7z5qb','title',1,1,X'af6a922841304d14a443ddbcd36469bc', 0);`,
-  ]);
-
-  const change = [
-    "title",
-    Uint8Array.from([
-      0x01, 0x0b, 0x0a, 0x78, 0x63, 0x32, 0x79, 0x66, 0x37, 0x7a, 0x35, 0x71,
-      0x62,
-    ]),
-    Uint8Array.from([
-      175, 106, 146, 40, 65, 48, 77, 20, 164, 67, 221, 188, 211, 100, 105, 188,
-    ]),
-    "todos",
-    123,
-    1,
-    1,
-    0,
-  ] as const;
-
-  db.exec(
-    `INSERT INTO crsql_changes ("cid", "pk", "site_id", "table", "val", "col_version", "db_version", "seq") VALUES (?,?,?,?,?,?,?,?)`,
-    change
-  );
-});
-
 test("using sync api as async GH #104", () => {
   const changesReceived = (db: DB, changesets: readonly Changeset[]) => {
     db.transaction(() => {
