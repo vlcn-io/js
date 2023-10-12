@@ -96,16 +96,17 @@ export default class TX implements TXAsync {
 
   tx(cb: (tx: TXAsync) => Promise<void>): Promise<void> {
     this.assertOpen();
+    const id = crypto.randomUUID().replaceAll("-", "")
     return serializeTx(
       async (tx: TXAsync) => {
-        await tx.exec("SAVEPOINT crsql_transaction");
+        await tx.exec("SAVEPOINT " + id);
         try {
           await cb(tx);
         } catch (e) {
-          await tx.exec("ROLLBACK");
+          await tx.exec("ROLLBACK TO " + id);
           throw e;
         }
-        await tx.exec("RELEASE crsql_transaction");
+        await tx.exec("RELEASE " + id);
       },
       this.__mutex,
       this
