@@ -104,10 +104,10 @@ export default class TX implements TXAsync {
           await cb(tx);
         } catch (e) {
           await tx.exec("ROLLBACK TO " + id);
-          throw e;
-        } finally {
           await tx.exec("RELEASE " + id);
+          throw e;
         }
+        await tx.exec("RELEASE " + id);
       },
       this.__mutex,
       this
