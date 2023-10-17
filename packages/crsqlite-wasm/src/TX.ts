@@ -96,7 +96,7 @@ export default class TX implements TXAsync {
 
   tx(cb: (tx: TXAsync) => Promise<void>): Promise<void> {
     this.assertOpen();
-    const id = crypto.randomUUID().replaceAll("-", "")
+    const id = 'crsql' + crypto.randomUUID().replaceAll("-", "")
     return serializeTx(
       async (tx: TXAsync) => {
         await tx.exec("SAVEPOINT " + id);
