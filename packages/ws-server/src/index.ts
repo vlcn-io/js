@@ -106,10 +106,14 @@ function pullSecHeaders(request: IncomingMessage) {
   if (proto == null) {
     throw new Error("Expected sec-websocket-protocol header");
   }
-  const entries = proto?.split(",");
+  return parseSecHeader(proto);
+}
+
+export function parseSecHeader(proto: string) {
+  const entries = atob(proto).split(",");
   const options: { [key: string]: string } = {};
   for (const entry of entries) {
-    const [key, value] = atob(entry).split("=");
+    const [key, value] = entry.split("=");
     options[key] = value;
   }
   return options;
