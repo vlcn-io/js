@@ -24,7 +24,7 @@
     "@vlcn.io/crsqlite": "workspace:*",
     "@vlcn.io/ws-common": "workspace:*",
     "@vlcn.io/logger-provider": "workspace:*",
-    "better-sqlite3": "^8.3.0",
+    "better-sqlite3": "^9.1.1",
     "chokidar": "^3.5.3",
     "throttle-debounce": "^5.0.0",
     "winston": "^3.10.0",
