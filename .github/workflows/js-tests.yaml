@@ -37,7 +37,7 @@ jobs:
 
       - name: Install wabt and gmake (osx)
         if: runner.os == 'macOS'
-        run: brew install wabt; brew install make
+        run: brew install wabt; brew install make; printf '%s\n%s\n' "/usr/local/opt/make/libexec/gnubin" "$(cat $GITHUB_PATH)" > $GITHUB_PATH
 
       - name: Install wasm-pack
         run: cargo install wasm-pack
