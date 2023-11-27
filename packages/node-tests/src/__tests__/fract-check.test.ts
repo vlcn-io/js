@@ -5,7 +5,9 @@ import fc from "fast-check";
 function setupDb() {
   const db = crsqlite.open();
 
-  db.exec(`CREATE TABLE todo (id primary key, list_id, ordering, content)`);
+  db.exec(
+    `CREATE TABLE todo (id primary key not null, list_id, ordering, content)`
+  );
   db.exec(`SELECT crsql_as_crr('todo')`);
   db.exec(`SELECT crsql_fract_as_ordered('todo', 'ordering', 'list_id')`);
 

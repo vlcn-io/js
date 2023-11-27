@@ -50,6 +50,7 @@ test("failed to increment?", () => {
     INSERT INTO a VALUES (10, 123);
     UPDATE b SET data = 10 WHERE data IS ${initial};
   `);
+  const siteId = database.prepare(`SELECT crsql_site_id()`).pluck().get();
   expect(database.prepare(`SELECT * FROM crsql_changes`).all()).toEqual([
     {
       table: "a",
@@ -58,7 +59,7 @@ test("failed to increment?", () => {
       val: 123,
       col_version: 1,
       db_version: 2,
-      site_id: null,
+      site_id: siteId,
       cl: 1,
       seq: 0,
     },
@@ -69,7 +70,7 @@ test("failed to increment?", () => {
       val: 10,
       col_version: 2,
       db_version: 3,
-      site_id: null,
+      site_id: siteId,
       cl: 1,
       seq: 0,
     },
