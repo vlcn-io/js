@@ -1,5 +1,11 @@
 # @vlcn.io/xplat-api
 
+## 0.15.0-next.0
+
+### Minor Changes
+
+- v0.16.0-next
+
 ## 0.14.1
 
 ### Patch Changes

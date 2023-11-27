@@ -1,5 +1,11 @@
 # @vlcn.io/direct-connect-common
 
+## 0.7.0-next.0
+
+### Minor Changes
+
+- v0.16.0-next
+
 ## 0.6.1
 
 ### Patch Changes

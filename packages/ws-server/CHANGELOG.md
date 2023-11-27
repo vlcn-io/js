@@ -1,5 +1,18 @@
 # @vlcn.io/ws-server
 
+## 0.2.0-next.0
+
+### Minor Changes
+
+- v0.16.0-next
+
+### Patch Changes
+
+- Updated dependencies
+  - @vlcn.io/crsqlite@0.16.0-next.0
+  - @vlcn.io/logger-provider@0.2.0-next.0
+  - @vlcn.io/ws-common@0.2.0-next.0
+
 ## 0.1.2
 
 ### Patch Changes

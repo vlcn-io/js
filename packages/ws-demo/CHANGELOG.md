@@ -1,5 +1,22 @@
 # @vlcn.io/ws-demo
 
+## 1.1.0-next.0
+
+### Minor Changes
+
+- v0.16.0-next
+
+### Patch Changes
+
+- Updated dependencies
+  - @vlcn.io/crsqlite-wasm@0.16.0-next.0
+  - @vlcn.io/react@3.1.0-next.0
+  - @vlcn.io/rx-tbl@0.15.0-next.0
+  - @vlcn.io/ws-browserdb@0.2.0-next.0
+  - @vlcn.io/ws-client@0.2.0-next.0
+  - @vlcn.io/ws-server@0.2.0-next.0
+  - @vlcn.io/xplat-api@0.15.0-next.0
+
 ## 1.0.3
 
 ### Patch Changes

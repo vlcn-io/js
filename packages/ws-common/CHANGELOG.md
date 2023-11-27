@@ -1,5 +1,11 @@
 # @vlcn.io/ws-common
 
+## 0.2.0-next.0
+
+### Minor Changes
+
+- v0.16.0-next
+
 ## 0.1.2
 
 ### Patch Changes

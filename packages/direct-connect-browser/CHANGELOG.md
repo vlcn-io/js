@@ -1,5 +1,19 @@
 # @vlcn.io/direct-connect-browser
 
+## 0.6.0-next.0
+
+### Minor Changes
+
+- v0.16.0-next
+
+### Patch Changes
+
+- Updated dependencies
+  - @vlcn.io/crsqlite-wasm@0.16.0-next.0
+  - @vlcn.io/direct-connect-common@0.7.0-next.0
+  - @vlcn.io/rx-tbl@0.15.0-next.0
+  - @vlcn.io/xplat-api@0.15.0-next.0
+
 ## 0.5.2
 
 ### Patch Changes

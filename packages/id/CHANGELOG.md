@@ -1,5 +1,11 @@
 # @vlcn.io/id
 
+## 0.1.0-next.0
+
+### Minor Changes
+
+- v0.16.0-next
+
 ## 0.0.3
 
 ### Patch Changes
