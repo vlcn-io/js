@@ -29,7 +29,7 @@
     "@vlcn.io/rx-tbl": "workspace:*",
     "@vlcn.io/xplat-api": "workspace:*",
     "@vlcn.io/xplat-tests": "workspace:*",
-    "better-sqlite3": "^8.3.0",
+    "better-sqlite3": "^9.1.1",
     "fast-check": "^3.8.0",
     "nanoid": "^4.0.2"
   },

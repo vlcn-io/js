@@ -206,8 +206,8 @@ importers:
         specifier: workspace:*
         version: link:../xplat-api
       better-sqlite3:
-        specifier: ^8.3.0
-        version: 8.3.0
+        specifier: ^9.1.1
+        version: 9.1.1
       chokidar:
         specifier: ^3.5.3
         version: 3.5.3
@@ -262,8 +262,8 @@ importers:
         specifier: workspace:*
         version: link:../xplat-api
       better-sqlite3:
-        specifier: ^8.3.0
-        version: 8.3.0
+        specifier: ^9.1.1
+        version: 9.1.1
     devDependencies:
       '@types/jest':
         specifier: ^29.5.0
@@ -296,8 +296,8 @@ importers:
         specifier: workspace:*
         version: link:../xplat-tests
       better-sqlite3:
-        specifier: ^8.3.0
-        version: 8.3.0
+        specifier: ^9.1.1
+        version: 9.1.1
       fast-check:
         specifier: ^3.8.0
         version: 3.8.0
@@ -446,8 +446,8 @@ importers:
   packages/sandbox-node:
     dependencies:
       better-sqlite3:
-        specifier: ^8.3.0
-        version: 8.3.0
+        specifier: ^9.1.1
+        version: 9.1.1
     devDependencies:
       '@vlcn.io/crsqlite':
         specifier: workspace:*
@@ -557,8 +557,8 @@ importers:
         specifier: workspace:*
         version: link:../ws-server
       better-sqlite3:
-        specifier: ^8.3.0
-        version: 8.3.0
+        specifier: ^9.1.1
+        version: 9.1.1
       chokidar:
         specifier: ^3.5.3
         version: 3.5.3
@@ -591,8 +591,8 @@ importers:
         specifier: workspace:*
         version: link:../ws-common
       better-sqlite3:
-        specifier: ^8.3.0
-        version: 8.3.0
+        specifier: ^9.1.1
+        version: 9.1.1
       chokidar:
         specifier: ^3.5.3
         version: 3.5.3
@@ -2365,8 +2365,8 @@ packages:
     dependencies:
       '@types/yargs-parser': 21.0.0
 
-  /@types/yauzl@2.10.0:
-    resolution: {integrity: sha512-Cn6WYCm0tXv8p6k+A8PvbDG763EDpBoTzHdA+Q/MF6H3sapGjCm9NzoaJncJS9tUKSuCoDs9XHxYYsQDgxR6kw==}
+  /@types/yauzl@2.10.3:
+    resolution: {integrity: sha512-oJoftv0LSuaDZE3Le4DbKX+KS9G36NzOeSap90UIK0yMA/NhKJhqlSGtNDORNRaIbQfzjXDrQa0ytJ6mNRGz/Q==}
     requiresBuild: true
     dependencies:
       '@types/node': 18.17.5
@@ -2832,8 +2832,8 @@ packages:
       is-windows: 1.0.2
     dev: false
 
-  /better-sqlite3@8.3.0:
-    resolution: {integrity: sha512-JTmvBZL/JLTc+3Msbvq6gK6elbU9/wVMqiudplHrVJpr7sVMR9KJrNhZAbW+RhXKlpMcuEhYkdcHa3TXKNXQ1w==}
+  /better-sqlite3@9.1.1:
+    resolution: {integrity: sha512-FhW7bS7cXwkB2SFnPJrSGPmQerVSCzwBgmQ1cIRcYKxLsyiKjljzCbyEqqhYXo5TTBqt5BISiBj2YE2Sy2ynaA==}
     requiresBuild: true
     dependencies:
       bindings: 1.5.0
@@ -3099,7 +3099,7 @@ packages:
       normalize-path: 3.0.0
       readdirp: 3.6.0
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: 2.3.3
 
   /chownr@1.1.4:
     resolution: {integrity: sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==}
@@ -4064,7 +4064,7 @@ packages:
       get-stream: 5.2.0
       yauzl: 2.10.0
     optionalDependencies:
-      '@types/yauzl': 2.10.0
+      '@types/yauzl': 2.10.3
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -4284,8 +4284,8 @@ packages:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
     dev: true
 
-  /fsevents@2.3.2:
-    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
+  /fsevents@2.3.3:
+    resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
     requiresBuild: true
@@ -5103,7 +5103,7 @@ packages:
       micromatch: 4.0.5
       walker: 1.0.8
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: 2.3.3
     dev: true
 
   /jest-leak-detector@29.6.2:
@@ -6709,7 +6709,7 @@ packages:
     engines: {node: '>=10.0.0'}
     hasBin: true
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: 2.3.3
     dev: true
 
   /rollup@3.21.8:
@@ -6717,7 +6717,7 @@ packages:
     engines: {node: '>=14.18.0', npm: '>=8.0.0'}
     hasBin: true
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: 2.3.3
     dev: true
 
   /rollup@3.28.0:
@@ -6725,7 +6725,7 @@ packages:
     engines: {node: '>=14.18.0', npm: '>=8.0.0'}
     hasBin: true
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: 2.3.3
 
   /rtcpeerconnection-shim@1.2.15:
     resolution: {integrity: sha512-C6DxhXt7bssQ1nHb154lqeL0SXz5Dx4RczXZu2Aa/L1NJFnEVDxFwCBo3fqtuljhHIGceg5JKBV4XJ0gW5JKyw==}
@@ -7700,7 +7700,7 @@ packages:
       resolve: 1.22.4
       rollup: 3.28.0
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: 2.3.3
 
   /vite@4.4.9(@types/node@18.17.5):
     resolution: {integrity: sha512-2mbUn2LlUmNASWwSCNSJ/EG2HuSRTnVNaydp6vMCm5VIqJsjMfbIWtbH2kDuwUVW5mMUKKZvGPX/rqeqVvv1XA==}
@@ -7735,7 +7735,7 @@ packages:
       postcss: 8.4.27
       rollup: 3.28.0
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: 2.3.3
     dev: true
 
   /vitest@0.30.1:
