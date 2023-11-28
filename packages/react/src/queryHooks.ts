@@ -531,16 +531,9 @@ class AsyncResultStateMachine<T, M = readonly T[]> {
 }
 
 function usedTables(db: DBAsync, query: string): Promise<string[]> {
-  return db
-    .execA(
-      `SELECT tbl_name FROM tables_used('${query.replaceAll(
-        "'",
-        "''"
-      )}') AS u JOIN sqlite_master ON sqlite_master.name = u.name WHERE u.schema = 'main';`
-    )
-    .then((rows) => {
-      return rows.map((r) => r[0]);
-    });
+  return db.tablesUsedStmt.all(null, query).then((rows) => {
+    return rows.map((r) => r[0]);
+  });
 }
 
 function dataShallowlyEqual(left: any, right: any): boolean {
