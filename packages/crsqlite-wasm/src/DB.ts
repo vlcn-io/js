@@ -26,6 +26,7 @@ export class DB implements DBAsync {
   //   }
   // );
   #siteid: string | null = null;
+  #tablesUsedStmt: StmtAsync | null = null;
 
   private cache = new Map<string, Promise<any>>();
   #updateHooks: Set<
@@ -57,6 +58,17 @@ export class DB implements DBAsync {
       throw new Error("Site id already set");
     }
     this.#siteid = siteid;
+  }
+
+  _setTablesUsedStmt(stmt: StmtAsync) {
+    this.#tablesUsedStmt = stmt;
+  }
+
+  get tablesUsedStmt(): StmtAsync {
+    if (this.#tablesUsedStmt == null) {
+      throw new Error("tablesUsedStmt not set");
+    }
+    return this.#tablesUsedStmt;
   }
 
   async automigrateTo(

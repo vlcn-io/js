@@ -28,10 +28,20 @@ export class SQLite3 {
       topLevelMutex
     ).then((db: any) => {
       const ret = new DB(this.base, db, filename || ":memory:");
-      return ret.execA("select quote(crsql_site_id());").then((siteid) => {
-        ret._setSiteid(siteid[0][0].replace(/'|X/g, ""));
-        return ret;
-      });
+      return ret
+        .prepare(
+          `SELECT tbl_name FROM tables_used(?) AS u
+        JOIN sqlite_master ON sqlite_master.name = u.name
+        WHERE u.schema = 'main'`
+        )
+        .then((stmt) => {
+          ret._setTablesUsedStmt(stmt);
+        })
+        .then(() => ret.execA("select quote(crsql_site_id());"))
+        .then((siteid) => {
+          ret._setSiteid(siteid[0][0].replace(/'|X/g, ""));
+          return ret;
+        });
     });
   }
 }
