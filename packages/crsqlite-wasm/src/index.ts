@@ -35,6 +35,7 @@ export class SQLite3 {
         WHERE u.schema = 'main'`
         )
         .then((stmt) => {
+          stmt.raw(true);
           ret._setTablesUsedStmt(stmt);
         })
         .then(() => ret.execA("select quote(crsql_site_id());"))

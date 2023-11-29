@@ -184,6 +184,7 @@ export class DB implements DBAsync {
     for (const stmt of this.stmtFinalizer.values()) {
       await stmt.finalize(this);
     }
+    this.#tablesUsedStmt?.finalize(this);
     return this.exec("SELECT crsql_finalize()").then(() => {
       this.#closed = true;
       return serialize(
