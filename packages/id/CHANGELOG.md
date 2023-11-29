@@ -1,5 +1,11 @@
 # @vlcn.io/id
 
+## 0.1.0-next.1
+
+### Patch Changes
+
+- prepare `tables_used` query, correctly unzip native library from pre-builds
+
 ## 0.1.0-next.0
 
 ### Minor Changes

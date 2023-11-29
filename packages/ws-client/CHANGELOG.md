@@ -1,5 +1,13 @@
 # @vlcn.io/ws-client
 
+## 0.2.0-next.1
+
+### Patch Changes
+
+- prepare `tables_used` query, correctly unzip native library from pre-builds
+- Updated dependencies
+  - @vlcn.io/ws-common@0.2.0-next.1
+
 ## 0.2.0-next.0
 
 ### Minor Changes

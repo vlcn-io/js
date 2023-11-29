@@ -1,5 +1,15 @@
 # @vlcn.io/ws-server
 
+## 0.2.0-next.1
+
+### Patch Changes
+
+- prepare `tables_used` query, correctly unzip native library from pre-builds
+- Updated dependencies
+  - @vlcn.io/crsqlite@0.16.0-next.1
+  - @vlcn.io/logger-provider@0.2.0-next.1
+  - @vlcn.io/ws-common@0.2.0-next.1
+
 ## 0.2.0-next.0
 
 ### Minor Changes

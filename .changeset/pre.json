@@ -34,6 +34,7 @@
     "@vlcn.io/typed-sql": "0.2.13"
   },
   "changesets": [
+    "hot-snails-bathe",
     "lazy-pianos-film"
   ]
 }

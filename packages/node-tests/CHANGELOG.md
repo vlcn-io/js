@@ -1,5 +1,17 @@
 # @vlcn.io/nodeno-tests
 
+## 0.14.0-next.1
+
+### Patch Changes
+
+- prepare `tables_used` query, correctly unzip native library from pre-builds
+- Updated dependencies
+  - @vlcn.io/crsqlite@0.16.0-next.1
+  - @vlcn.io/crsqlite-allinone@0.15.0-next.1
+  - @vlcn.io/rx-tbl@0.15.0-next.1
+  - @vlcn.io/xplat-api@0.15.0-next.1
+  - @vlcn.io/xplat-tests@0.14.0-next.1
+
 ## 0.14.0-next.0
 
 ### Minor Changes

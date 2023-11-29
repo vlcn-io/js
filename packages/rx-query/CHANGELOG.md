@@ -1,5 +1,13 @@
 # @vlcn.io/rx-query
 
+## 0.8.0-next.1
+
+### Patch Changes
+
+- prepare `tables_used` query, correctly unzip native library from pre-builds
+- Updated dependencies
+  - @vlcn.io/xplat-api@0.15.0-next.1
+
 ## 0.8.0-next.0
 
 ### Minor Changes

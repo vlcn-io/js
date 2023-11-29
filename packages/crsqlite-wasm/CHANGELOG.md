@@ -1,5 +1,14 @@
 # @vlcn.io/wa-crsqlite
 
+## 0.16.0-next.1
+
+### Patch Changes
+
+- prepare `tables_used` query, correctly unzip native library from pre-builds
+- Updated dependencies
+  - @vlcn.io/wa-sqlite@0.22.0-next.1
+  - @vlcn.io/xplat-api@0.15.0-next.1
+
 ## 0.16.0-next.0
 
 ### Minor Changes
