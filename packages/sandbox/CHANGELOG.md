@@ -1,5 +1,13 @@
 # sandbox
 
+## 0.7.0-next.3
+
+### Patch Changes
+
+- Updated dependencies
+  - @vlcn.io/direct-connect-browser@0.6.0-next.3
+  - @vlcn.io/direct-connect-nodejs@0.7.0-next.3
+
 ## 0.7.0-next.2
 
 ### Patch Changes
