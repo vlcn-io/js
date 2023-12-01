@@ -1,5 +1,13 @@
 # @vlcn.io/ws-litefs
 
+## 0.2.0-next.3
+
+### Patch Changes
+
+- expose a method to get access to the db from the server
+- Updated dependencies
+  - @vlcn.io/ws-server@0.2.0-next.3
+
 ## 0.2.0-next.2
 
 ### Patch Changes

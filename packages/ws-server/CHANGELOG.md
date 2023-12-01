@@ -1,5 +1,11 @@
 # @vlcn.io/ws-server
 
+## 0.2.0-next.3
+
+### Patch Changes
+
+- expose a method to get access to the db from the server
+
 ## 0.2.0-next.2
 
 ### Patch Changes
