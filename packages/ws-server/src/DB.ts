@@ -1,4 +1,5 @@
 import Database from "better-sqlite3";
+import type BetterSqlite3 from "better-sqlite3";
 import { Config } from "./config.js";
 import path from "node:path";
 import fs from "node:fs";
@@ -12,6 +13,13 @@ export interface IDB {
   readonly siteId: Uint8Array;
   readonly schemaName: string;
   readonly schemaVersion: bigint;
+
+  /**
+   * This will work for single-node SQLite setups.
+   * Does not work under Turso.
+   * Will work for reads under LiteFS but not writes.
+   */
+  getDB(): BetterSqlite3.Database;
 
   getLastSeen(site: Uint8Array): [bigint, number];
   applyChangesetAndSetLastSeen(
@@ -206,6 +214,10 @@ export default class DB implements IDB {
 
   get schemaVersion() {
     return this.#schemaVersion;
+  }
+
+  getDB(): BetterSqlite3.Database {
+    return this.#db;
   }
 
   getLastSeen(site: Uint8Array): [bigint, number] {
