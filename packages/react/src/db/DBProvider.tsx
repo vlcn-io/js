@@ -2,7 +2,7 @@
 // Do not do any sync. Sync can be configured separately.
 // no wasm url.. that optimize deps thinger
 
-import react, { useEffect, useRef, useState } from "react";
+import react, { useEffect, useState } from "react";
 import dbFactory, { Schema } from "./DBFactory.js";
 import { CtxAsync } from "../context.js";
 import { createContext } from "./DBContext.js";
@@ -12,21 +12,44 @@ export default function DBProvider({
   schema,
   fallback,
   Render,
+  manualSetup,
 }: {
   dbname: string;
   schema: Schema;
   fallback?: react.ReactNode;
+  manualSetup?: (ctx: CtxAsync) => Promise<void>;
   Render: react.FunctionComponent;
 }) {
   const [contextRef, _setContextRef] = useState(createContext);
   const [dbRef, setDbRef] = useState<CtxAsync | null>(null);
   useEffect(() => {
     let closed = false;
-    dbFactory.get(dbname, schema, contextRef.useDb).then((db) => {
-      if (!closed) {
-        setDbRef(db);
-      }
-    });
+    dbFactory
+      .get(dbname, schema, contextRef.useDb)
+      .then((db) => {
+        if (closed) {
+          return;
+        }
+        if (manualSetup) {
+          manualSetup(db)
+            .then(() => {
+              if (closed) {
+                return;
+              }
+              setDbRef(db);
+            })
+            .catch((e) => {
+              console.error("Error running manual setup", e);
+              throw e;
+            });
+        } else {
+          setDbRef(db);
+        }
+      })
+      .catch((e) => {
+        console.error("Error creating db", e);
+        throw e;
+      });
     return () => {
       closed = true;
       setDbRef(null);
