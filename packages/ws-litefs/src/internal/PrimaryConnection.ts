@@ -118,6 +118,10 @@ export class PrimaryConnection {
     });
   }
 
+  writeOnPrimary(room: string, sql: string, params: unknown[]): Promise<void> {
+    throw new Error("not implemented");
+  }
+
   applyChangesOnPrimary(
     room: string,
     changes: readonly Change[],

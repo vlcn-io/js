@@ -2,6 +2,7 @@ import { Change } from "@vlcn.io/ws-common";
 import { IDB } from "@vlcn.io/ws-server";
 import { PrimaryConnection } from "./PrimaryConnection.js";
 import logger from "../logger.js";
+import type BetterSqlite3 from "better-sqlite3";
 
 export class LiteFSDB implements IDB {
   readonly #proxied;
@@ -27,6 +28,25 @@ export class LiteFSDB implements IDB {
   get schemaVersion(): bigint {
     return this.#proxied.schemaVersion;
   }
+
+  getDB(): BetterSqlite3.Database {
+    throw new Error(
+      "get db is unsafe under litefs deployments as litefs requires write forwarding to the primary"
+    );
+  }
+
+  // read<T>(sql: string, params: unknown[]): T[] {
+  //   return this.#proxied.read(sql, params);
+  // }
+
+  // async write(sql: string, params: unknown[]): Promise<void> {
+  //   if (!this.#primaryConnection.isPrimary()) {
+  //     logger.info("Proxying write to primary");
+  //     await this.#primaryConnection.writeOnPrimary(this.#room, sql, params);
+  //   } else {
+  //     await this.#proxied.write(sql, params);
+  //   }
+  // }
 
   getLastSeen(site: Uint8Array): [bigint, number] {
     return this.#proxied.getLastSeen(site);
