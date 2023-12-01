@@ -338,12 +338,17 @@ export function getDbPath(dbName: string, config: Config) {
   return path.join(config.dbFolder, dbName);
 }
 
-function getSchemaPath(schemaName: string, config: Config) {
+export function getSchemaPath(schemaName: string, config: Config) {
   if (hasPathParts(schemaName)) {
     throw new Error(`${schemaName} must not include '..', '/', or '\\'`);
   }
 
   return path.join(config.schemaFolder, schemaName);
+}
+
+export function getResidentSchemaVersion(schemaName: string, config: Config) {
+  const content = fs.readFileSync(getSchemaPath(schemaName, config), "utf-8");
+  return cryb64(content);
 }
 
 function hasPathParts(s: string) {

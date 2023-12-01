@@ -1,4 +1,4 @@
-import { IDB } from "./DB.js";
+import { IDB, getResidentSchemaVersion } from "./DB.js";
 import { IDBFactory } from "./DBFactory.js";
 import { Config } from "./config.js";
 import FSNotify from "./fs/FSNotify.js";
@@ -32,6 +32,16 @@ export default class DBCache {
       return 0;
     }
     return ret[0];
+  }
+
+  async use(roomId: string, schemaName: string, cb: (db: IDB) => unknown) {
+    const version = getResidentSchemaVersion(schemaName, this.#config);
+    const db = await this.getAndRef(roomId, schemaName, version);
+    try {
+      await cb(db);
+    } finally {
+      this.unref(roomId);
+    }
   }
 
   async getAndRef(roomId: string, schemaName: string, schemaVersion: bigint) {
