@@ -1,5 +1,15 @@
 # @vlcn.io/xplat-tests
 
+## 0.14.0-next.2
+
+### Patch Changes
+
+- fix error where separate connections would not report the correct db version
+- Updated dependencies
+  - @vlcn.io/sync-p2p@0.14.0-next.2
+  - @vlcn.io/rx-tbl@0.15.0-next.2
+  - @vlcn.io/xplat-api@0.15.0-next.2
+
 ## 0.14.0-next.1
 
 ### Patch Changes

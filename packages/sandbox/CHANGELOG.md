@@ -1,5 +1,18 @@
 # sandbox
 
+## 0.7.0-next.2
+
+### Patch Changes
+
+- fix error where separate connections would not report the correct db version
+- Updated dependencies
+  - @vlcn.io/crsqlite-wasm@0.16.0-next.2
+  - @vlcn.io/direct-connect-browser@0.6.0-next.2
+  - @vlcn.io/direct-connect-common@0.7.0-next.2
+  - @vlcn.io/direct-connect-nodejs@0.7.0-next.2
+  - @vlcn.io/react@3.1.0-next.2
+  - @vlcn.io/rx-tbl@0.15.0-next.2
+
 ## 0.7.0-next.1
 
 ### Patch Changes

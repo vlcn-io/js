@@ -1,5 +1,14 @@
 # @vlcn.io/browser-tests
 
+## 0.14.0-next.2
+
+### Patch Changes
+
+- fix error where separate connections would not report the correct db version
+- Updated dependencies
+  - @vlcn.io/crsqlite-wasm@0.16.0-next.2
+  - @vlcn.io/xplat-tests@0.14.0-next.2
+
 ## 0.14.0-next.1
 
 ### Patch Changes

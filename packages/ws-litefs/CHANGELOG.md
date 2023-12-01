@@ -1,5 +1,15 @@
 # @vlcn.io/ws-litefs
 
+## 0.2.0-next.2
+
+### Patch Changes
+
+- fix error where separate connections would not report the correct db version
+- Updated dependencies
+  - @vlcn.io/crsqlite@0.16.0-next.2
+  - @vlcn.io/ws-common@0.2.0-next.2
+  - @vlcn.io/ws-server@0.2.0-next.2
+
 ## 0.2.0-next.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @vlcn.io/xplat-api
 
+## 0.15.0-next.2
+
+### Patch Changes
+
+- fix error where separate connections would not report the correct db version
+
 ## 0.15.0-next.1
 
 ### Patch Changes
