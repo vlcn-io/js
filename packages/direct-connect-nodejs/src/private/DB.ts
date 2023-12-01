@@ -1,12 +1,11 @@
 import SQLiteDB from "better-sqlite3";
 import type { Database } from "better-sqlite3";
 import { Config } from "../Types.js";
-import { Change, bytesToHex } from "@vlcn.io/direct-connect-common";
+import { Change } from "@vlcn.io/direct-connect-common";
 import { extensionPath } from "@vlcn.io/crsqlite";
 import util from "./util.js";
 import touchHack from "./touchHack.js";
 import { SchemaRow } from "./ServiceDB.js";
-import logger from "../logger.js";
 
 /**
  * Wraps a normal better-sqlite3 connection to provide

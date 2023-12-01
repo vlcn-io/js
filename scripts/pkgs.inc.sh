@@ -18,6 +18,7 @@ declare -a pkgs=(
   "@vlcn.io/ws-browserdb"
   "@vlcn.io/typed-sql"
   "@vlcn.io/typed-sql-cli"
+  "@vlcn.io/id"
 )
 
 # two packages have directory names mismatched with package names hence this array.
