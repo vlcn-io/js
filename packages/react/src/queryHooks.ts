@@ -1,4 +1,4 @@
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
   DBAsync,
   StmtAsync,
@@ -93,17 +93,17 @@ export function useQuery<R, M = R[]>(
       stateMachine.current = null;
     };
   }, []);
-  useEffect(
-    () => {
-      stateMachine.current?.respondToBindingsChange(bindings || EMPTY_ARRAY);
-    },
-    _rowid_ == null
-      ? bindings || EMPTY_ARRAY
-      : [...(bindings || EMPTY_ARRAY), _rowid_]
-  );
-  useEffect(() => {
+
+  const [lastBindings, setLastBindings] = useState<unknown[] | undefined>();
+  const [lastQuery, setLastQuery] = useState<string | undefined>();
+  if (!arraysShallowEqual(bindings, lastBindings)) {
+    stateMachine.current?.respondToBindingsChange(bindings || EMPTY_ARRAY);
+    setLastBindings(bindings);
+  }
+  if (query !== lastQuery) {
     stateMachine.current?.respondToQueryChange(query);
-  }, [query]);
+    setLastQuery(query);
+  }
 
   return useSyncExternalStore<QueryData<M>>(
     stateMachine.current.subscribeReactInternals,
@@ -580,5 +580,24 @@ export default function shallowEqual(objA: any, objB: any) {
     }
   }
 
+  return true;
+}
+
+function arraysShallowEqual(
+  a: unknown[] | undefined,
+  b: unknown[] | undefined
+) {
+  if (a == null || b == null) {
+    return a === b;
+  }
+
+  if (a.length !== b.length) {
+    return false;
+  }
+  for (let i = 0; i < a.length && i < b.length; ++i) {
+    if (a[i] !== b[i]) {
+      return false;
+    }
+  }
   return true;
 }
