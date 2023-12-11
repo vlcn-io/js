@@ -224,6 +224,12 @@ class AsyncResultStateMachine<T, M = readonly T[]> {
     this.pendingFetchPromise = null;
     this.queriedTables = null;
     this.error = undefined;
+    if (this.data != null) {
+      this.fetchingState = {
+        ...this.data,
+        loading: true,
+      } as any;
+    }
     this.data = null;
     this.pullData(true);
   };
@@ -252,6 +258,12 @@ class AsyncResultStateMachine<T, M = readonly T[]> {
 
     this.pendingFetchPromise = null;
     this.error = undefined;
+    if (this.data != null) {
+      this.fetchingState = {
+        ...this.data,
+        loading: true,
+      } as any;
+    }
     this.data = null;
     this.pullData(true);
   };
