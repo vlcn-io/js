@@ -1,5 +1,13 @@
 # @vlcn.io/ws-demo
 
+## 1.1.0-next.4
+
+### Patch Changes
+
+- Updated dependencies
+  - @vlcn.io/react@3.1.0-next.3
+  - @vlcn.io/ws-server@0.2.0-next.4
+
 ## 1.1.0-next.3
 
 ### Patch Changes

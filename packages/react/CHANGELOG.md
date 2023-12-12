@@ -1,5 +1,11 @@
 # @vlcn.io/react
 
+## 3.1.0-next.3
+
+### Patch Changes
+
+- emulate useEffect via useState to get rid of UI tearing and flickering -- https://twitter.com/tantaman/status/1732140032729985512
+
 ## 3.1.0-next.2
 
 ### Patch Changes

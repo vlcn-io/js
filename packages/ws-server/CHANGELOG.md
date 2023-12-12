@@ -1,5 +1,11 @@
 # @vlcn.io/ws-server
 
+## 0.2.0-next.4
+
+### Patch Changes
+
+- emulate useEffect via useState to get rid of UI tearing and flickering -- https://twitter.com/tantaman/status/1732140032729985512
+
 ## 0.2.0-next.3
 
 ### Patch Changes
