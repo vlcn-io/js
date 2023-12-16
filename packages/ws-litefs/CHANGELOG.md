@@ -1,5 +1,12 @@
 # @vlcn.io/ws-litefs
 
+## 0.2.1
+
+### Patch Changes
+
+- Updated dependencies
+  - @vlcn.io/ws-server@0.2.1
+
 ## 0.2.0
 
 ### Minor Changes

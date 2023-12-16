@@ -1,5 +1,11 @@
 # @vlcn.io/ws-server
 
+## 0.2.1
+
+### Patch Changes
+
+- update better-sqlite3
+
 ## 0.2.0
 
 ### Minor Changes
