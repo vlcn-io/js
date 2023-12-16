@@ -585,6 +585,9 @@ importers:
 
   packages/ws-server:
     dependencies:
+      '@types/better-sqlite3':
+        specifier: ^7.6.8
+        version: 7.6.8
       '@vlcn.io/crsqlite':
         specifier: workspace:*
         version: link:../../deps/cr-sqlite/core
@@ -595,8 +598,8 @@ importers:
         specifier: workspace:*
         version: link:../ws-common
       better-sqlite3:
-        specifier: ^9.1.1
-        version: 9.1.1
+        specifier: ^9.2.2
+        version: 9.2.2
       chokidar:
         specifier: ^3.5.3
         version: 3.5.3
@@ -610,9 +613,6 @@ importers:
         specifier: ^8.13.0
         version: 8.13.0
     devDependencies:
-      '@types/better-sqlite3':
-        specifier: ^7.6.4
-        version: 7.6.4
       '@types/throttle-debounce':
         specifier: ^5.0.0
         version: 5.0.0
@@ -2083,6 +2083,12 @@ packages:
       '@types/node': 18.17.5
     dev: true
 
+  /@types/better-sqlite3@7.6.8:
+    resolution: {integrity: sha512-ASndM4rdGrzk7iXXqyNC4fbwt4UEjpK0i3j4q4FyeQrLAthfB6s7EF135ZJE0qQxtKIMFwmyT6x0switET7uIw==}
+    dependencies:
+      '@types/node': 18.17.5
+    dev: false
+
   /@types/body-parser@1.19.2:
     resolution: {integrity: sha512-ALYone6pm6QmwZoAgeyNksccT9Q4AWZQ6PvfwR37GT6r6FWUPguq6sUmNGSMV2Wr761oQoBxwGGa6DR5o1DC9g==}
     dependencies:
@@ -2837,6 +2843,14 @@ packages:
 
   /better-sqlite3@9.1.1:
     resolution: {integrity: sha512-FhW7bS7cXwkB2SFnPJrSGPmQerVSCzwBgmQ1cIRcYKxLsyiKjljzCbyEqqhYXo5TTBqt5BISiBj2YE2Sy2ynaA==}
+    requiresBuild: true
+    dependencies:
+      bindings: 1.5.0
+      prebuild-install: 7.1.1
+    dev: false
+
+  /better-sqlite3@9.2.2:
+    resolution: {integrity: sha512-qwjWB46il0lsDkeB4rSRI96HyDQr8sxeu1MkBVLMrwusq1KRu4Bpt1TMI+8zIJkDUtZ3umjAkaEjIlokZKWCQw==}
     requiresBuild: true
     dependencies:
       bindings: 1.5.0

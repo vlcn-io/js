@@ -21,17 +21,17 @@
     "directory": "https://github.com/vlcn-io/js/tree/main/js/packages/ws-server"
   },
   "dependencies": {
+    "@types/better-sqlite3": "^7.6.8",
     "@vlcn.io/crsqlite": "workspace:*",
-    "@vlcn.io/ws-common": "workspace:*",
     "@vlcn.io/logger-provider": "workspace:*",
-    "better-sqlite3": "^9.1.1",
+    "@vlcn.io/ws-common": "workspace:*",
+    "better-sqlite3": "^9.2.2",
     "chokidar": "^3.5.3",
     "throttle-debounce": "^5.0.0",
     "winston": "^3.10.0",
     "ws": "^8.13.0"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^7.6.4",
     "@types/throttle-debounce": "^5.0.0",
     "@types/ws": "^8.5.5",
     "vitest": "^0.30.1"
