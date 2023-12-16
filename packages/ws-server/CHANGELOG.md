@@ -1,5 +1,24 @@
 # @vlcn.io/ws-server
 
+## 0.2.0
+
+### Minor Changes
+
+- e4a0a42: v0.16.0-next
+
+### Patch Changes
+
+- d485812: prepare `tables_used` query, correctly unzip native library from pre-builds
+- 5accbfb: expose a method to get access to the db from the server
+- 6f0ccac: fix error where separate connections would not report the correct db version
+- 9af8a3d: emulate useEffect via useState to get rid of UI tearing and flickering -- https://twitter.com/tantaman/status/1732140032729985512
+- Updated dependencies [d485812]
+- Updated dependencies [e4a0a42]
+- Updated dependencies [6f0ccac]
+  - @vlcn.io/crsqlite@0.16.0
+  - @vlcn.io/logger-provider@0.2.0
+  - @vlcn.io/ws-common@0.2.0
+
 ## 0.2.0-next.4
 
 ### Patch Changes

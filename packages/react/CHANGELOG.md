@@ -1,5 +1,25 @@
 # @vlcn.io/react
 
+## 3.1.0
+
+### Minor Changes
+
+- e4a0a42: v0.16.0-next
+
+### Patch Changes
+
+- d485812: prepare `tables_used` query, correctly unzip native library from pre-builds
+- 6f0ccac: fix error where separate connections would not report the correct db version
+- 9af8a3d: emulate useEffect via useState to get rid of UI tearing and flickering -- https://twitter.com/tantaman/status/1732140032729985512
+- Updated dependencies [d485812]
+- Updated dependencies [e4a0a42]
+- Updated dependencies [6f0ccac]
+  - @vlcn.io/crsqlite-wasm@0.16.0
+  - @vlcn.io/rx-tbl@0.15.0
+  - @vlcn.io/ws-client@0.2.0
+  - @vlcn.io/xplat-api@0.15.0
+  - @vlcn.io/typed-sql@0.3.0
+
 ## 3.1.0-next.3
 
 ### Patch Changes
