@@ -1,5 +1,12 @@
 # @vlcn.io/direct-connect-nodejs
 
+## 0.7.1
+
+### Patch Changes
+
+- Updated dependencies
+  - @vlcn.io/crsqlite@0.16.1
+
 ## 0.7.0
 
 ### Minor Changes
