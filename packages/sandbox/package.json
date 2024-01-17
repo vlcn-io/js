@@ -2,7 +2,7 @@
   "name": "sandbox",
   "private": true,
   "type": "module",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "scripts": {
     "dev": "vite",
     "tsc": "tsc --noEmit",
