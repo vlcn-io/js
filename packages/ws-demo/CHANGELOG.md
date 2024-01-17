@@ -1,5 +1,11 @@
 # @vlcn.io/ws-demo
 
+## 1.1.3
+
+### Patch Changes
+
+- @vlcn.io/ws-server@0.2.3
+
 ## 1.1.2
 
 ### Patch Changes

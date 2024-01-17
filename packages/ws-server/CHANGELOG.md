@@ -1,5 +1,12 @@
 # @vlcn.io/ws-server
 
+## 0.2.3
+
+### Patch Changes
+
+- Updated dependencies
+  - @vlcn.io/crsqlite@0.16.3
+
 ## 0.2.2
 
 ### Patch Changes
